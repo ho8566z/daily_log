@@ -1,0 +1,650 @@
+20260513
+
+
+# quiz - 3,6,9 게임만들기
+'''
+1부터 99까지 1씩 증가하면서 숫자에 3,6,9가 들어있을 때마다 숫자와 함께
+'짝'을 출력하자
+3 -> '짝'
+33 -> '짝짝'
+'''
+
+for num in range(1, 100):
+
+    if num <= 9:                    #1의 단위
+        if num % 3 == 0:
+            print(f'{num},짝')
+        else:
+            print(f'{num}')
+                                
+    else:                          #10의 단위
+        # print(f'{num}')          #12-> 1,2 / 37-> 3,7 / 66-> 6,6
+        no = str(num)
+        firstNum = num // 10       #15-> 15 // 10-> 1
+        secondNum = num % 10       #15-> 15 % 10-> 5
+
+        if firstNum % 3 == 0:
+            # print(f'짝')
+            no += ',짝'
+        
+        if secondNum % 3 == 0 and secondNum != 0:
+            # print(f'짝')
+            no += ',짝'
+
+        print(f'{no}')
+
+------------------------------------------------------------------------
+(2버전)
+for num in range(1, 100):
+
+    if num <= 9:                    #1의 단위
+        if num % 3 == 0:
+            # print(f'{num},짝')
+            print(num, ', 짝', end='')
+        else:
+            print(num, end='')
+                                
+    else:                          #10의 단위
+        # print(f'{num}')          #12-> 1,2 / 37-> 3,7 / 66-> 6,6
+        # no = str(num)
+        print(num, end='')
+
+        firstNum = num // 10       #15-> 15 // 10-> 1
+        secondNum = num % 10       #15-> 15 % 10-> 5
+
+        if firstNum % 3 == 0:
+            # print(f'짝')
+            # no += ',짝'
+            print(',짝', end='')
+        
+        if secondNum % 3 == 0 and secondNum != 0:
+            # print(f'짝')
+            # no += ',짝'
+            print(',짝', end='')
+
+    print()
+	
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 열차 교차시간 파악하기
+'''
+대전역에는 3개 노선의 열차가 오전9시부터 오후6시까지 교차운행한다
+3대의 열차가 교차하는 시간을 구해 열차 충돌을 막자
+(단, 매일 오전9시에 대전역에서 모든 열차가 출발한다)
+
+a열차: 첫차 오전9시, 마지막 오후6시, 운행간격 10분
+b열차: 첫차 오전9시, 마지막 오후6시, 운행간격 25분
+c열차: 첫차 오전9시, 마지막 오후6시, 운행간격 30분
+
+ab: 50분, ac: 30분, bc: 300분(5시간)
+'''
+
+trainA = 10
+trainB = 25
+trainC = 30
+
+for time in range(1, 541):
+    if time % trainA == 0 and time % trainB == 0 and time % trainC == 0:
+        print('trainA <-> trainB <-> trainC: ', end='')
+        print(9 + time // 60, end='')               #시(시각)
+        print('시', end='')
+        print(time % 60, end='')
+        print('분')
+
+    elif time % trainA == 0 and time % trainB == 0:
+        print('trainA <-> trainB: ', end='')
+        print(9 + time // 60, end='')               #시(시각)
+        print('시', end='')
+        print(time % 60, end='')
+        print('분')
+
+    elif time % trainA == 0 and time % trainC == 0:
+        print('trainA <-> trainC: ', end='')
+        print(9 + time // 60, end='')               #시(시각)
+        print('시', end='')
+        print(time % 60, end='')
+        print('분')
+
+    elif time % trainB == 0 and time % trainC == 0:
+        print('trainB <-> trainC: ', end='')
+        print(9 + time // 60, end='')               #시(시각)
+        print('시', end='')
+        print(time % 60, end='')
+        print('분')
+		
+------------------------------------------------------------------------
+(간소화? - 참고? <-변수명 선언 안해서 참고 정도만)
+for time in range(1, 541):
+    if time % trainA == 0 and time % trainB == 0 and time % trainC == 0:
+        print('trainA <-> trainB <-> trainC: ', end='')
+        print(f'{9 + time // 60}시 {'00' if time % 60 == 0 else str(time % 60)}분')
+
+
+    elif time % trainA == 0 and time % trainB == 0:
+        print('trainA <-> trainB: ', end='')
+        timeSet = '0' if time % 60 == 0 else time
+        print(f'{9 + time // 60}시 {'00' if time % 60 == 0 else str(time % 60)}분')
+
+    elif time % trainA == 0 and time % trainC == 0:
+        print('trainA <-> trainC: ', end='')
+        timeSet = '0' if time % 60 == 0 else time
+        print(f'{9 + time // 60}시 {'00' if time % 60 == 0 else str(time % 60)}분')
+
+    elif time % trainB == 0 and time % trainC == 0:
+        print('trainB <-> trainC: ', end='')
+        timeSet = '0' if time % 60 == 0 else time
+        print(f'{9 + time // 60}시 {'00' if time % 60 == 0 else str(time % 60)}분')
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 로그인 기능 만들기
+'''
+시스템 관리자(administrator) 로그인 기능을 만들어 보자
+관리자가 암호를 입력하고 로그인을 시도할 때 암호가 틀렸다면'암호를 다시 확인하세요!'를 출력하고
+다시 암호를 물어봅니다. 
+5회 이상 로그인에 실패하면 '로그인 실패!! 횟수 초과!!!' 메시지를 출력하고 종료합니다.
+암호가 올바르다면 '로그인 됐습니다.'를 출력하고 종료합니다. 올바른 암호는 'dwac1234'입니다.
+'''
+
+ADMIN_PW = 'dwac1234'
+cnt = 1
+while True:
+
+    if cnt > 5:
+        print(f'암호 입력 실패 - 입력횟수 초과')
+        break
+
+    inputPw = input(f'관리자 암호입력: ')
+
+    if inputPw != ADMIN_PW:
+        print(f'암호 입력 실패 - 재입력: ')
+        cnt += 1
+    
+    elif inputPw == ADMIN_PW:
+        print(f'암호 입력 성공')
+        break
+		
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz
+'''
+사용자가 입력한 양수를 이용해 팩토리얼 값을 구하는 프로그램을 만들어라
+팩토리얼(factorial, !) n!은 1부터 양의 정수 n까지의 모든 정수를 곱한 값이다
+(예를 들어, 4!은 1x2x3x4 = 24이다)
+'''
+
+userInputIntegerData = int(input(f'양수 입력: '))
+result = 1
+for num in range(1, userInputIntegerData + 1):
+    result *= num
+print(f'{userInputIntegerData}의 팩토리얼은 {result}이다')
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 숫자 맞추기 게임
+'''
+0부터 100사이의 난수를 발생시키고 사용자가 난수를 맞출 때까지 계속해서 물어보는 게임
+다음은 프로그램 개발에 필요한 요구사항이다
+
+요구사항
+-1부터 100까지의 난수를 발생시킴
+-사용자가 입력한 숫자가 난수와 일치하면 '정답'을 출력하고 게임을 종료
+-사용자가 입력한 숫자가 난수와 일치하지 않으면 '오답'을 출력하고, 다시 질문
+-기회는 10회로 제한하고, 만약 10번을 넘으면 '게임 실패'를 출력하고 게임을 종료
+-사용자가 틀릴 때마다 사용자가 입력한 숫자와 난수를 비교해서 크고, 작음을 출력한다
+-마지막으로, 게임을 종료하기 전에 난수를 출력한다
+'''
+
+import random
+randomNum = random.randint(1, 100)
+cnt = 0
+
+while True:
+
+    userNum = int(input('숫자 입력: '))    
+    cnt += 1
+
+    if userNum == randomNum:
+        print(f'정답')
+        break
+
+    elif cnt >= 10:
+        print(f'오답')
+        break
+
+    elif randomNum < userNum:
+        print(f'입력한 숫자 {userNum}는 난수보다 크다')
+
+    elif randomNum > userNum:
+        print(f'입력한 숫자 {userNum}는 난수보다 작다')
+
+print(f'정답: {randomNum}')
+
+------------------------------------------------------------------------
+(모범 답안)
+import random
+randNum = random.randint(1, 100)
+count = 0
+
+while True:
+
+    myRandNum = int(input('난수를 입력하세요.'))
+    count += 1
+    
+    if myRandNum == randNum:
+        print('정답입니다.')
+        break
+
+    elif count >= 10:
+     print('틀렸습니다.')
+     break
+
+    elif myRandNum > randNum:
+        print('난수보다 수가 작습니다.')
+    
+    else:
+        print('난수보다 수가 큰 수입니다.')
+
+print(f'정답:{randNum}')
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 다음 요구조건을 참고해 가로와 세로 길이의 변화에 따른 사각형의 넓이를 구하는 프로그램
+'''
+-가로길이는 1부터 2의 배수로 증가
+-세로길이는 1부터 3의 배수로 증가
+-사각형의 넓이가 150보다 크면 프로그램 종료
+-가장 작은 사각형과 가장 큰 사각형의 넓이를 출력
+'''
+
+# 초기값
+width = 1
+height = 1
+
+# 가장 작은 사각형 넓이
+minArea = width * height
+# 가장 큰 사각형 넓이
+maxArea = width * height
+
+while True:
+
+    area = width * height   #사각형 넓이
+
+    if area > 150:
+        break
+
+    print(f'가로: {width}, 세로: {height}, 넓이: {area}')
+
+    if area < minArea:  #최소 넓이
+        minArea = area 
+
+    if area > maxArea:  #최대 넓이
+        maxArea = area
+
+    if width == 1:      #width가 1인 경우
+        width = 2
+    else:               #width가 1이 아닌 경우
+        width += 2
+
+    if height == 1:
+        height = 3
+    else:
+        height += 3
+
+print(f'가장 작은 넓이: {minArea}')
+print(f'가장 큰 넓이: {maxArea}')
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+복습: 5교시
+
+컨테이너 자료형
+여러개의 데이터를 묶어서 관리하는 것을 말함
+
+# 기존 변수명 선언방식
+fruit1 = '사과'
+fruit2 = '포도'
+fruit3 = '복숭아'
+
+# 컨테이너 자료형 방식
+fruits = ['사과', '포도', '복숭아']     #컨테이너 자료형: list(리스트)
+print(f'fruits: {fruits}')              #fruits: ['사과', '포도', '복숭아']
+print(f'fruits type: {type(fruits)}')   #fruits type: <class 'list'>
+
+파이썬에서 컨테이너 자료형으로는
+리스트(list), 튜플(tuple), 딕셔너리(dictionery)가 있다
+
+# 리스트(list) 정의(선언 + 초기화)
+fruits = ['사과', '포도', '복숭아']
+
+인덱스(index): 아이템에 부여된 아이템 식별 번호
+
+   0       1       2
+['사과', '포도', '복숭아']
+
+# 아이템 조회
+print(f'fruits[0]: {fruits[0]}')    #fruits[0]: 사과
+print(f'fruits[1]: {fruits[1]}')    #fruits[1]: 포도
+print(f'fruits[2]: {fruits[2]}')    #fruits[2]: 복숭아
+# print(f'fruits[3]: {fruits[3]}')    #IndexError: list index out of range
+
+------------------------------------------------------------------------
+# 리스트의 길이(아이템의 개수)
+cnt = len(fruits)
+print(cnt)     #3
+
+# 리스트의 마지막 아이템의 인덱스 값은 '리스트 길이 -1'이다
+print(f'last data: {fruits[len(fruits)-1]}')    #last data: 복숭아
+print(f'last data: {fruits[0]}')                #last data: 사과
+
+# 리스트의 전체 데이터 조회
+# 리스트는 반복가능한 객체(데이터)이다 -> 이터러블한 데이터
+for fruits in fruits:
+    print(f'fruits: {fruits}')
+# fruits: 사과
+# fruits: 포도
+# fruits: 복숭아
+
+for idx, fruits in enumerate(fruits):
+    print(f'index: {idx}, fruits: {fruits}')
+# index: 0, fruits: 사과
+# index: 1, fruits: 포도
+# index: 2, fruits: 복숭아
+
+# by while문
+i = 0
+fruits = ['사과', '포도', '복숭아']
+while i < len(fruits):
+    print(fruits[1])
+    i += 1
+# 포도
+# 포도
+# 포도
+
+------------------------------------------------------------------------
+# 아이템 삽입
+# 리스트 마지막에 삽입
+fruits = ['사과', '포도', '복숭아']
+fruits.append('수박')
+print(f'fruits: {fruits}')
+# fruits: ['사과', '포도', '복숭아', '수박']
+
+# 특정 위치에 삽입
+fruits.insert(2, '멜론')
+print(f'fruits: {fruits}')
+# fruits: ['사과', '포도', '멜론', '복숭아', '수박']
+
+# 리스트 연결
+list1 = [1, 2, 3]
+list2 = [11, 12, 13]
+
+list1.extend(list2)
+print(f'list1: {list1}')            #list1: [1, 2, 3, 11, 12, 13]
+print(f'list2: {list2}')            #list2: [11, 12, 13]
+
+# 리스트 연결: +
+list3 = list1 + list2       #새로운 메모리 공간에 만들어짐()
+print(f'list3: {list3}')              #list3: [1, 2, 3, 11, 12, 13]
+
+------------------------------------------------------------------------
+# 아이템 삭제하기
+sports = ['football', 'baseball', 'volleyball', 'basketball']
+
+# 마지막 아이템 삭제하기
+sports.pop()
+print(f'sports: {sports}')      #sports: ['football', 'baseball', 'volleyball']
+
+# 특정 위치 아이템 삭제하기
+sports.pop(1)
+print(f'sports: {sports}')      #sports: ['football', 'volleyball']
+
+------------------------------------------------------------------------
+# pop()과 비슷하게 사용할 수 있는 키워드 del
+del sports[1]
+print(f'sports: {sports}')      #sports: ['football']
+
+# pop() vs del
+nums = [1, 2, 3, 4, 5, 6]
+deletedNum = nums.pop(3)
+print(f'deletedNum: {deletedNum}')     #deletedNum: 4
+
+# 특정 아이템 삭제 by아이템
+
+languages = ['c/c++', 'c#', 'java', 'python']
+languages.pop(2)        #['c/c++', 'c#', 'python']
+
+languages.remove('java')
+print(f'language: {languages}')     #language: ['c/c++', 'c#', 'python']
+
+# remove()를 이용해서 아이템을 삭제할 때 
+# 삭제하려는 아이템의 개수가 2개 이상일 때 처음 아이템만 삭제된다
+languages = ['c/c++', 'c#', 'java', 'python', 'java']
+languages.remove('java')
+print(f'languages: {languages}')    #languages: ['c/c++', 'c#', 'python', 'java']
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 과일 리스트에서 야채를 찾아 삭제하기
+'''
+다음은 냉장고에 있는 과일을 리스트로 나타낸 것이다
+['사과', '망고', '당근', '수박', '포도', '참외', '토마토']
+이중 과일이 아닌 '당근'과 '토마토'를 찾아 삭제하는 프로그램
+'''
+
+fruits = ['사과', '망고', '당근', '수박', '포도', '참외', '토마토']
+print(f'fruits: {fruits}')   #fruits: ['사과', '망고', '당근', '수박', '포도', '참외', '토마토']
+
+for item in fruits:
+    if item == '당근' or item == '토마토':
+        fruits.remove(item)
+print(f'fruits: {fruits}')   #fruits: ['사과', '망고', '수박', '포도', '참외']
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 합격 여부 판단하기
+'''
+다음은 홍길동 수험생의 2020년 공인중개사 자격증 시험 성적표입니다.
+아래 합격 기준에 만족하는지 구하는 프로그램을 만들어봅시다.
+ - 매 과목 100점을 만점으로 하여 매 과목 40점 이상
+ - 전 과목 평균 60점 이상 득점
+
+ 홍길동 수험생 성적표
+ 부동산 개론: 55점
+ 민법: 35점
+ 공법: 40점
+ 공시법: 70점
+ 세법: 65점
+ 중개사법: 30점
+'''
+
+scores = [55, 35, 40, 70, 65, 30]
+
+total           = 0    # 총점
+underSubject    = 0    # 과락 과목 개수
+average         = 0    # 과목 평균
+
+for score in scores:
+    if score < 40:      # 과락 과목 개수
+        underSubject += 1
+
+    total += score      # 총합
+
+print(f'40점 미만 과목 수: {underSubject}')     #40점 미만 과목 수: 2
+average = total / len(scores)
+
+print(f'평균: {average:.2f}')    #평균: 49.17
+
+# 합격 여부
+if underSubject > 0 or average < 60:
+    print(f'다음 기회')
+else:
+    print(f'합격')
+	
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 리스트 데이터 정렬
+'''
+sort() 함수는 리스트의 아이템을 정렬하는 데 사용한다
+reserve 옵션이 False면 오름차순(ASC), True면 내림차순(DESC)으로 정렬한다
+'''
+numbers = [5, 3, 7, 1, 6, 9]
+print(f'numbers: {numbers}')        #numbers: [5, 3, 7, 1, 6, 9]
+
+# 오름차순(ASC)
+numbers.sort()
+print(f'numbers: {numbers}')        #numbers: [1, 3, 5, 6, 7, 9]
+# (=)오름차순
+numbers.sort(reverse=False)
+print(f'numbers: {numbers}')        #numbers: [1, 3, 5, 6, 7, 9]
+
+# 내림차순(DESC)
+numbers.sort(reverse=True)
+print(f'numbers: {numbers}')        #numbers: [9, 7, 6, 5, 3, 1]
+
+
+# 한글 버전
+kor = ['ㄱ', 'ㅇ', 'ㅎ', 'ㅁ', 'ㅌ', 'ㅅ']
+kor.sort()
+print(f'kor: {kor}')                #kor: ['ㄱ', 'ㅁ', 'ㅅ', 'ㅇ', 'ㅌ', 'ㅎ']
+kor.sort(reverse=True)
+print(f'kor: {kor}')                #kor: ['ㅎ', 'ㅌ', 'ㅇ', 'ㅅ', 'ㅁ', 'ㄱ']
+
+
+scores = [90, 100, 88, 85, 95, 92, 70, 75, 100, 92, 78, 80, 75, 95, 90, 100, 84]
+print(f'scores: {scores}')
+#scores: [90, 100, 88, 85, 95, 92, 70, 75, 100, 92, 78, 80, 75, 95, 90, 100, 84]
+scores.sort()
+print(f'scores: {scores}')
+#scores: [70, 75, 75, 78, 80, 84, 85, 88, 90, 90, 92, 92, 95, 95, 100, 100, 100]
+scores.sort(reverse=True)
+print(f'scores: {scores}')
+#scores: [100, 100, 100, 95, 95, 92, 92, 90, 90, 88, 85, 84, 80, 78, 75, 75, 70]
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz) 회의 참석자 정렬하기
+# 다음은 회의 참석자 명단입니다. 참석자 명단을 오름차순과 내림차순으로 정렬해봅시다.
+# names = ['홍길동', '김길동', '이길동', '박길동', '정길동']
+
+names = ['홍길동', '김길동', '이길동', '박길동', '정길동']
+names.sort()
+print(f'names: {names}')    #names: ['김길동', '박길동', '이길동', '정길동', '홍길동']
+names.sort(reverse=True)
+print(f'names: {names}')    #names: ['홍길동', '정길동', '이길동', '박길동', '김길동']
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 리스트 데이터 순서 뒤집기
+# reverse() 함수를 이용하면 리스트의 아이템을 역순으로 뒤집을 수 있다
+vegetables = ['당근', '오이', '양파', '감자', '고구마']
+vegetables.reverse()
+print(f'vegetables: {vegetables}')
+#vegetables: ['고구마', '감자', '양파', '오이', '당근']
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 리스트 슬라이싱
+# 슬라이싱이란, 리스트에서 필요한 부분의 아이템만 뽑아내는 것을 말한다
+animals = ['호랑이', '사자', '곰', '여우', '늑대']
+print(f'animals: {animals}')    #animals: ['호랑이', '사자', '곰', '여우', '늑대']
+'''
+          |1---------------3|
+['호랑이', '사자', '곰', '여우', '늑대']
+'''
+print(f'animals: {animals[1:4]}')       #[1:4] = 1에서 부터 3까지
+#animals: ['사자', '곰', '여우']
+print(f'animals: {animals}')
+#animals: ['호랑이', '사자', '곰', '여우', '늑대']
+
+sliceanimals = animals[1:4]
+print(f'sliceanimals: {sliceanimals}')
+#sliceanimals: ['사자', '곰', '여우']
+
+#[n:m] : n 인덱스부터 (m-1) 인덱스 까지의 아이템을 슬라이싱(추출)한다
+
+------------------------------------------------------------------------
+animals = ['호랑이', '사자', '곰', '여우', '늑대']
+print(f'animals: {animals[:2]}')    #[:2] : 0(생략)부터 2(2-1)까지 아이템 슬라이싱
+#animals: ['호랑이', '사자']
+
+print(f'animals: {animals[3:]}')    #[3:] : 3부터 4(생략)까지 아이템 슬라이싱
+#animals: ['여우', '늑대']
+
+
+# 뒤에서 2개의 아이템을 슬라이싱
+print(f'animals: {animals[len(animals)-2:]}')   
+#[len(animals)-2:] : len() 함수를 사용하여, 끝에서 부터 2개만 슬라이싱
+#animals: ['여우', '늑대']
+
+print(f'animals: {animals[:-1]}')
+#[:-1] : 0(생략)부터 -1까지(마지막에서 1개 뺀 만큼만) 슬라이싱
+#animals: ['호랑이', '사자', '곰', '여우']
+
+print(f'animals: {animals[:]}')
+#animals: ['호랑이', '사자', '곰', '여우', '늑대']
+
+print(f'animals: {animals[::2]}')
+#[::2] : 0과 2, 그리고 4만 슬라이싱(::2는 스텝 / 1개 하고, 1개 띄고 하는 방식으로)
+#animals: ['호랑이', '곰', '늑대']
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 다음 리스트를 보고 답해라
+
+#1 알파벳 리스트를 역순으로 출력
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+
+alphabet.reverse()
+print(f'alphabet: {alphabet}')
+#alphabet: ['j', 'i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a']
+
+------------------------------------------------------------------------
+#2 다음 요구사항에 맞게 alphabet 리스트를 슬라이싱해라
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+
+#인덱스 2부터 5까지의 아이템을 출력하시오.
+print(f'alphabet: {alphabet[2:6]}')
+#alphabet: ['c', 'd', 'e', 'f']
+
+#인덱스 0부터 4까지의 아이템을 출력하시오.
+print(f'alphabet: {alphabet[:5]}')
+#alphabet: ['a', 'b', 'c', 'd', 'e']
+
+#인덱스 3부터 7까지의 아이템을 출력하시오.
+print(f'alphabet: {alphabet[3:8]}')
+#alphabet: ['d', 'e', 'f', 'g', 'h']
+
+#인덱스 5부터 끝까지의 아이템을 출력하시오.
+print(f'alphabet: {alphabet[5:]}')
+#alphabet: ['f', 'g', 'h', 'i', 'j']
+
+#인덱스 3부터 8까지의 아이템을 출력하시오.
+print(f'alphabet: {alphabet[3:9]}')
+#alphabet: ['d', 'e', 'f', 'g', 'h', 'i']
+
+# 뒤에서 4개 아이템을 출력해라
+print(f'alphabet: {alphabet[len(alphabet)-4:]}')
+#alphabet: ['g', 'h', 'i', 'j']
+
+# (=)뒤에서 4개 아이템을 출력해라
+print(f'alphabet: {alphabet[-4:]}')
+#alphabet: ['g', 'h', 'i', 'j']
+
+------------------------------------------------------------------------
+(-숫자 버전)
+#          |-10---9----8----7----6----5----4----3----2----1-|
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+print(f'alphabet: {alphabet[-5:-2]}')
+#alphabet: ['f', 'g', 'h']
+
+------------------------------------------------------------------------
+(del 버전)
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+print(f'alphabet: {alphabet}')
+#lphabet: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+
+del alphabet[2:7]
+print(f'del alphabet: {alphabet}')
+#del alphabet: ['a', 'b', 'h', 'i', 'j']

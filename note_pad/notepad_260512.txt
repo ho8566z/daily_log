@@ -1,0 +1,304 @@
+20260512
+
+
+# 컨테이나 자료형(container data type)
+
+# 많은 데이터를 효율적으로 관리하기 위해 사용한다
+# list(리스트)
+# tuple(튜플)
+# dictionary(딕셔너리)
+
+------------------------------------------------------------------------
+# 기초 데이터 타입: 변수명 선언과 초기화에 따른 데이터 입력/삽입
+# 참조 데이터 타입(레퍼런스 데이터 타입): 리스트명의 데이터는 []내부의 첫번째 데이터의 메모리 
+# 주소를 담고 있다 때문에 데이터를 직접 관리하지 않고, '참조'한다
+
+------------------------------------------------------------------------
+# list: 리스트를 선언할때는 대괄호를 이용해서 데이터를 묶고, 쉼표로 구분한다
+
+fruits = ['apple', 'grape', 'peach', 'melon', 'watermelon']   #fruits = fruit_list
+print(fruits[0:])   #['apple', 'grape', 'peach', 'melon', 'watermelon']
+fruits = ['knife', 'pencle', 'peach', 'melon']
+print(fruits[0:])   #['knife', 'pencle', 'peach', 'melon']
+# 리스트명의 데이터 []의 첫번째 데이터의 메모리 주소를 담고있던 것을, 최근 []의 첫 데이터의 
+# 메모리 주소를 담는다
+#(리스트명은 변하지 않고, 담긴 데이터의 메모리 주소만 변경된다 / 원래 [] 데이터의 메모리는 더미가 된다)
+
+------------------------------------------------------------------------
+# 리스트
+fruits = ['사과', '포도', '수박', '참외', '배', '자두', '복숭아', '바나나']
+print(f'fruits: {fruits}')
+print(f'fruits: {type(fruits)}')
+# fruits: ['사과', '포도', '수박', '참외', '배', '자두', '복숭아', '바나나']
+# fruits: <class 'list'>
+
+------------------------------------------------------------------------
+# 리스트와 데이터
+'''
+리스트에 포함되는 데이터는 어떤 자료형이든 상관없음
+예를 들어 정수, 실수, 문자(열)이 하나의 리스트로 묶일 수도 있음
+'''
+complexList = [10, 3.14, 'a', 'hello']
+# 이렇게 하나의 리스트에 다양한 데이터 타입의 데이터를 넣을 수 있는 언어는
+# python과 javascript뿐이다(java는 해당x)
+print(f'complexList: {complexList}')
+print(f'fruits: {type(complexList)}')
+# complexList: [10, 3.14, 'a', 'hello']
+# fruits: <class 'list'>
+
+------------------------------------------------------------------------
+# how to 리스트 아이템 조회
+# 특정 아이템 조회
+
+# 인덱스(index): 리스트가 메모리에 저장될때마다 자동으로 부여되는 순서
+#(인덱스는 0부터 시작하며, 데이터를 불러올때 인덱스 번호를 통해 불러온다)
+
+fruits = ['apple', 'grape', 'peach', 'melon', 'watermelon']   
+#fruits = fruit_list
+print(fruits[0])    #apple
+
+------------------------------------------------------------------------
+# 인덱스 에러
+# 만약 리스트에 존재하지 않는 인덱스를 참조하면 당연히 '에러'가 발생한다
+fruits = ['apple', 'grape', 'peach', 'melon', 'watermelon']   
+#fruits = fruit_list
+print(f'fruits[6]: {fruits[6]}')    #IndexError: list index out of range
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 리스트 길이(아이템 개수) 조회 방법
+'''
+리스트 길이란 리스트의 아이템 개수를 뜻하는 것으로 'len()' 함수를 사용하면 알 수 있다
+다음은 'len()' 함수를 이용해서 리스트의 길이를 확인하는 코드이다
+'''
+
+nums = [1, 2, 3, 4, 5]
+print(f'nums: {nums}')
+print(f'nums length : {len(nums)}')
+# nums: [1, 2, 3, 4, 5]
+# nums lensgh : 5
+
+------------------------------------------------------------------------
+nums = [1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 21, 22, 23, 24, 25, 31, 32, 33, 34, 35]
+# 첫번째 데이터 조회
+print(f'첫번째 데이터: {nums[0]}')
+
+# 마지막 데이터 조회
+print(f'마지막 데이터: {nums[len(nums)-1]}')
+
+# 첫번째 데이터: 1
+# 마지막 데이터: 35
+
+------------------------------------------------------------------------
+# len() 함수는 문자열의 길이를 조회하는데에도 사용된다
+str = "hellohowyou"
+print(len(str))    #11
+
+------------------------------------------------------------------------
+#quiz - 사용자가 입력한 글자수를 확인하기
+
+word = input(f'메세지 입력: ')
+wordLen = len(word)
+print(f'메세지 길이: {wordLen}')
+# 메세지 입력: 안녕하세요
+# 메세지 길이: 5
+
+------------------------------------------------------------------------
+print(len(['hello', 'python']))    #2
+(문자열 데이터도 ''와 ,를 통해 구분할 수 있다)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 리스트 전체 데이터 조회
+balls = ['축구공', '야구공', '농구공', '배구공']
+print(f'{balls[0]}')
+print(f'{balls[1]}')
+print(f'{balls[2]}')
+print(f'{balls[3]}')
+# 축구공
+# 야구공
+# 농구공
+# 배구공
+
+
+(간소화)
+for item in balls:
+    print(f'item: {item}')
+# item: 축구공
+# item: 야구공
+# item: 농구공
+# item: 배구공
+
+------------------------------------------------------------------------
+idx = 0    #인덱스 번호도 확인할때
+for item in balls:
+    print(f'item: {item}, index: {idx}')
+    idx += 1
+# item: 축구공, index: 0
+# item: 야구공, index: 1
+# item: 농구공, index: 2
+# item: 배구공, index: 3
+
+(간소화)
+for idx, item in enumerate(balls):   #enumerate: 변수 2개를 동시 조회가능
+    print(f'item: {item}, index: {idx}')
+# item: 축구공, index: 0
+# item: 야구공, index: 1
+# item: 농구공, index: 2
+# item: 배구공, index: 3
+
+(while문 버전)
+balls = ['축구공', '야구공', '농구공', '배구공']
+
+i = 0
+while i < len(balls):
+    print(f'{balls[i]}, index: {i}')
+    i += 1
+# 축구공, index: 0
+# 야구공, index: 1
+# 농구공, index: 2
+# 배구공, index: 3
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 문자열과 len
+# 문자열(str)은 문자(char)를 나열한 데이터 리스트와 같다고 볼 수 있다
+# 때문에 문자열 또한 'len()' 함수를 통해 길이를 조회할 수 있다
+
+------------------------------------------------------------------------
+# quiz - 다음 리스트에서 마지막 인덱스 값을 출력하는 프로그램
+sports = ['baseball', 'basketball', 'tennis', 'golf', 'football']
+lenVar = len(sports) - 1
+print(sports[lenVar])   #football
+print(f'{len(sports)}')    #5
+
+------------------------------------------------------------------------
+# quiz - 다음 리스트에서 'python' 문자열의 인덱스 값을 출력
+language = ['c/c++', 'c#', 'python', 'java']
+for idx, str in enumerate(language):
+    if str == 'python':
+        print(f'python idx: {idx}')    #python idx: 2
+
+(index 함수를 사용하여 간소화)
+targetIdx = language.index("python")
+print(f'targetIdx: {targetIdx}')
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 취미 추가하기
+'''
+취미들을 저장할 리스트를 정의하고 사용자가 입력한 취미가 추가되는 프로그램
+그리고 취미의 개수 출력까지
+'''
+
+hobbies = []
+flag = True
+
+while flag:
+    hobby = input('취미 입력: ')
+    hobbies.append(hobby)
+    print(f'hobbies: {hobbies}')
+    selectedMenuNum = int(input('1.추가  2.종료'))
+    if selectedMenuNum == 2:
+        print(f'총 개수: {len(hobbies)}')
+        flag = False
+
+------------------------------------------------------------------------
+(break버전)
+hobbies = []
+flag = True
+
+while flag:
+    hobby = input('취미 입력: ')
+    hobbies.append(hobby)
+    print(f'hobbies: {hobbies}')
+    selectedMenuNum = int(input('1.추가  2.종료'))
+    if selectedMenuNum == 2:
+        print(f'총 개수: {len(hobbies)}')
+        break
+		
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 특정 위치에 아이템 삽입
+# 리스트의 원하는 위치에 아이템을 삽입할 때는 insert() 함수를 이용한다
+countries = ['korea', 'china', 'japan']
+countries.insert(1, 'usa')
+print(f'countries: {countries}')
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# dynamic data management: 리스트의 데이터 메모리를 여유롭게 관리하는 방법
+#(insert 함수로 데이터가 추가될 때, 다른 리스트의 데이터 메모리에 영향을 끼칠 수 없기
+# 때문에 데이터가 추가된 리스트의 메모리는 전부 옮겨진다)
+# -> 그래서 이러한 상황을 예방하기 위해 데이터 메모리의 관리는 항상 여유롭게 유지/관리된다
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 누락된 숫자 추가하기
+# numbers = [1, 2, 3, 4, 5, 7, 8, 9]
+# numbers 리스트를 보고 1~10까지 숫자 중 누락된 숫자를 추가
+numbers = [1, 2, 3, 4, 5, 7, 8, 9]
+numbers.insert(5, 6)	#(5번째 자리에 '6'을 삽입하는 함수)
+print(f'numbers: {numbers}')
+numbers.append(10)
+print(f'numbers: {numbers}')
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 리스트 연결하기
+# 리스트에 또 다른 리스트를 연결할 때는 extend() 함수를 사용한다
+
+list1 = [1, 2, 3]
+print(f'list1: {list1}')    #list1: [1, 2, 3]
+
+list2 = [10, 20, 30]
+print(f'list2: {list2}')    #list2: [10, 20, 30]
+
+list1.extend(list2)
+print(f'list1: {list1}')    #list1: [1, 2, 3, 10, 20, 30]
+print(f'list2: {list2}')    #list2: [10, 20, 30]
+
+------------------------------------------------------------------------
+list3 = list1 + list2
+print(f'list1: {list1}')    #list1: [1, 2, 3]
+print(f'list2: {list2}')    #list2: [10, 20, 30]
+print(f'list3: {list3}')    #list3: [1, 2, 3, 10, 20, 30, 10, 20, 30]
+
+------------------------------------------------------------------------
+# 리스트 아이템 삭제하기
+# 리스트 마지막 아이템 삭제
+sports = ['baseball', 'basketball', 'tennis', 'football']
+print(f'sports: {sports}')
+#ports: ['baseball', 'basketball', 'tennis', 'football']
+
+sports.pop()
+print(f'sports: {sports}')
+#sports: ['baseball', 'basketball', 'tennis']
+
+sports.pop(1)
+print(f'sports: {sports}')
+#sports: ['baseball', 'tennis']
+
+#(pop() 함수에 원하는 인덱스 번호를 넣으면, 해당 인덱스 번호에 해당하는 데이터가 삭제되지만,
+# 숫자 없이 사용하면, 마지막 데이터가 삭제된다)
+
+removedItem = sports.pop()
+print(f'removedItem: {removedItem}')
+#removedItem: tennis
+
+------------------------------------------------------------------------
+# pop() 함수 대신에 del 키워드를 사용해서 아이템을 삭제할 수 있다
+sports = ['baseball', 'basketball', 'tennis', 'football']
+del sports[1]
+print(f'sports: {sports}')
+#sports: ['baseball', 'tennis', 'football']
+
+------------------------------------------------------------------------
+#quiz - sports 리스트에서 'tennis'을 삭제하는 프로그램
+sports = ['baseball', 'basketball', 'tennis', 'football']
+tennisIdx = sports.index('tennis')
+sports.pop(tennisIdx)
+print(f'tennisIdx: {tennisIdx}')    #tennisIdx: 2
+

@@ -1,0 +1,435 @@
+260507
+1-2교시
+
++git, github 복습
+
+------------------------------------------------------------------------
+3-4교시
++나눗셈 연산자
+
+print(10 / 2)   #5.0
+print(3.14 / 0.5)   #6.28
+print(3.14 / .5)    #6.28 ('0.5'에서 0생략하고 '.5'만 입력해도 가능)
+
+num1 = 100
+num2 = 10
+print(f'num1 / num2 = {num1 / num2}')   #num1 / num2 = 10.0
+
+
+ex) 'bmi(=weight / (height * height)'
+weight = float(input('몸무게를 입력하세요(kg): '))	#93
+height = float(input('신장을 입력하세요(m): '))	#1.80
+bmi = weight / (height * height)
+print(f'BMI: {bmi:}')	#28.703703703703702
+print(f'BMI: {bmi:.2f}')	#28.70 (소수점 2번째까지만 표시함)
+
+
+# 숫자 0을 어떤 수로 나누어도 결과는 항상 0이다
+print(0 / 122)  #0.0(무조건 실수의 결과)
+
+# 어떤 숫자를 0으로 나눌 수 없다 #에러
+print(122 / 0)  #ZeroDivisionError: division by zero
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 나머지, 몫, 거듭제곱
+
+# 나머지 '%'
+print(10 % 2)   # 0 (10을 2로 나눴을 때, 몫은 5이고, 나머지는 0이다)
+print(10 % 3)   # 1 (10을 3으로 나눴을 때, 몫은 3이고, 나머지는 1이다)
+
+# quiz (짝수는 0, 홀수는 1을 출력)
+inputData = int(input('손 안에 동전의 개수를 입력하세요.'))	#5(홀수) - 4(짝수)
+result = inputData % 2
+print(result)	#1(홀수) - 0(짝수)
+
+------------------------------------------------------------------------
+# 몫 '//'
+
+print(10 // 3)  # 3
+print(1187 // 3)   # 395
+
+
+# quiz (97개의 빵을 3개씩 나누어 줄 때, 최대 몇명에게 나누어 줄 수 있는지?)
+bread = 97
+breadCnt = 3
+maxFriendsCnt = bread // breadCnt
+print(f'빵을 나누어 줄 수 있는 최대 학생 수: {maxFriendsCnt}')
+	#빵을 나누어 줄 수 있는 최대 학생 수: 32 
+	(97 / 3 = 32.33이기 때문에 결과, 몫은 32이다)
+
+restBreadCnt = bread % breadCnt
+print(f'남는 빵의 개수: {restBreadCnt}')
+	#남는 빵의 개수: 1
+	(97 / 3 = 32.33이기 때문에 결과, 나머지는 1이다)
+	
+------------------------------------------------------------------------
+# 거듭제곱 '**'
+
+print(2**2)     #4
+print(2**3)     #8
+print(2**10)    #1024
+
+
+# quiz (전염병 예상 감염자 수 구하기)
+# 보건 당국은 전염병의 감염 확산 추세를 파악한 결과,
+# 하루에 1명이 1명을 감염시킴
+# 감염자 1명이 생길 때, 30일 이후에 몇 명으로 확산될것인가?
+
+man = 2
+date = 30
+total = man ** date
+print(f'{date}일 이후, 예상 감염자 수: {total}')
+    #30일 이후, 예상 감염자 수: 1073741824
+	(2 ** 30 = 2의 30승)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 할당 연산자(대입 연산자)
+# 할당 연산자는 변수에 값을 대입하는 데 사용하는 연산자
+
+# 할당 연산자 "="
+num = 5
+
+# 복합대입 연산자 "+=, -=, *=, /=, %=, //=, **="
+num = num + 5
+num += 5
+
+num = num - 5
+num -= 5
+
+num = num * 5
+num *= 5
+
+num = num / 5
+num /= 5
+
+num = num % 5
+num %= 5
+
+num = num // 5
+num //= 5
+
+num = num ** 5
+num **= 5
+
+
+# quiz (복리 계산기 만들기)
+# 예금 계획
+# 5년 정기 예금을 복리로 하면, 가장 큰 목돈 마련 가능
+# 500만원씩 5년 만기인 정기 예금 상품에 가입했을 때,
+# 5년 후. 받을 수 있는 총 수령액은? (이자율: 연 5%)
+
+myMoney = 5000000
+rate = 0.05
+
+# 1년 후 총 금액
+myMoney = myMoney + (myMoney * rate)
+
+# 2년 후 총 금액
+myMoney = myMoney + (myMoney * rate)
+
+# 3년 후 총 금액
+myMoney = myMoney + (myMoney * rate)
+
+# 4년 후 총 금액
+myMoney = myMoney + (myMoney * rate)
+
+# 5년 후 총 금액
+myMoney = myMoney + (myMoney * rate)
+('1~5년 후 총 금액'은 보여주기)
+(myMoney = myMoney + (myMoney * rate) = 내 돈 = 내 돈 + (내 돈 * 5년) = 복리)
+
+print(f'5년 후, 총 수령액: {int(myMoney):,}원')
+    #5년 후, 총 수령액: 6,381,407원
+	(5,000,000원 + (5년치 복리 이자)1,381,407원 = 6,381,407원)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+5-6교시
+
+# 비교 연산자
+
+
+'''
+a == b : a와 b는 같다 -> True or Flase
+a != b : a와 b는 같지 않다 -> True or Flase
+a > b : a가 b보다 크다 -> True or Flase
+a >= b : a가 b보다 크거나 같다 -> True or Flase
+a < b : a가 b보다 작다 -> True or Flase
+a <= b : a가 b보다 작거나 같다 -> True or Flase
+'''
+
+num1 = 10; num2 = 20
+
+print(num1 == num2)    #False
+print(num1 != num2)    #True
+print(num1 > num2)     #False
+print(num1 >= num2)    #False
+print(num1 < num2)     #True
+print(num1 <= num2)    #True
+
+
+ex)
+# quiz
+# DW 놀이동산에서 범퍼카는 신장이 120cm 이상인 어린이만 탑승할 수 있다
+# 사용자가 신장을 입력하면, 범퍼카를 탑승할 수 있는지 여부를 출력하는
+# 프로그램을 만들자
+# True: 탑승가능, False: 탑승불가
+
+height = int(input('어린이의 신장을 입력하세요.'))	#119 - 120
+print(height >= 120)	#False - True
+
+------------------------------------------------------------------------
+# 문자 vs 문자 비교 -> 아스키코드(ASCII) (문자열x, 문자만o)
+print('a' == 'b')   #False
+print('a' < 'b')    #True
+print('a' > 'b')    #False
+
+print('@' >= '/')   #True
+print('[' < '(')    #False 
+print('=' >= ' ')   #True
+(문자, 기호 등 마다 각각의 ASCII에 따른 각각의 순서가 있기 때문)
+
+------------------------------------------------------------------------
+# 문자열 비교
+str1 = 'hello'
+str2 = 'hello'
+print(str1 == str2)    #True
+print(str1 != str2)    #False
+
+print(str1 > str2)     #False
+print(str1 <= str2)    #True
+
+print('안녕' == '안녕하세요')   #False
+(한글, 공백에도 각각의 ASCII에 따른 각각의 순서가 있기 때문)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 논리 연산자
+# 논리 연산자는 피연산자의 논리 자료형(True/False)을 이용하는 
+# 연산자로 and, or, not이 있다
+
+# and 연산자
+# and는 '그리고'라는 뜻으로,
+# 피연산자가 모두 True인 경우에만 결과가 True이다
+# 피연산자가 하나라도 False인 경우에는 결과가 False이다
+
+var1 = True
+var2 = True
+print(var1 and var2)    #True
+
+var1 = True
+var2 = False
+print(var1 and var2)    #False
+
+var1 = False
+var2 = False
+print(var1 and var2)    #False
+print(var1 & var2)	    #False
+# 피연산자가 하나라도 False인 경우에는 결과가 False이다
+(shift + 7 = &)
+
+------------------------------------------------------------------------
+# or 연산자
+# or은 '또는'이라는 뜻으로,
+# 피연산자 중 하나라도 True라면 결과값은 True이다
+
+var1 = True
+var2 = True
+print(var1 or var2)    #True
+
+var1 = True
+var2 = False
+print(var1 or var2)    #True
+
+var1 = False
+var2 = False
+print(var1 or var2)    #False
+print(var1 | var2)     #False
+(shift + \ = |)
+
+------------------------------------------------------------------------
+# not 연산자(:부정 연산자)
+# not은 '부정'이라는 뜻으로,
+# 피연산자와 현재 상태를 부정하는 연산자이다
+# 피연산자가 True이면, 결과로 False를 출력하고, 
+# False이면, True를 출력한다
+
+var1 = True
+print(not var1)
+
+var2 = False
+print(not var2)
+
+------------------------------------------------------------------------(여기부터)
+# quiz
+num1 = 10; num2 = 20; num3 = 30
+result = (num1 < num3) and (num2 < num3)
+print(f'result: {result}')     #result: True
+
+result = (num1 > num3) and (num2 < num3)
+print(f'result: {result}')     #result: False
+
+result = (num1 > num3) and (num2 >= num3)
+print(f'result: {result}')     #result: False
+
+result = (num1 < num2) and (num2 < num3) and (num3 > num1)
+print(f'result: {result}')     #result: True
+
+------------------------------------------------------------------------
+# and, or 연산시 주의사항
+# and 연산자는 모든 피연산자가  True인 경우에만, 결과를 True로
+# 출력하기 때문에 첫 번째 연산의 결과가 False이면 더 이상 연산을
+# 실행하지 않는다
+(((-보고, 읽고 넘어갈 것-)))
+
+num1 = 10; num2 = 20
+result = (num1 < 15) and (num2 > 15)
+print(result)    #True
+
+num1 = 17; num2 = 20
+result = (num1 < 15) and (num2 > 15)
+print(result)    #False
+
+
+# or 연산자는 피연산자 중 하나라도 True가 있다면, 결과값은
+# True이기 때문에 True 피연산자를 만나게 되면 이후, 피연산자의
+# 연산은 무시하고 무조건 True를 출력한다
+
+num1 = 10
+print(f'num1: {num1}')
+print(abc)
+
+print((num1 > 5) or abc)    #True
+(((-보고, 읽고 넘어갈 것-)))
+
+------------------------------------------------------------------------
+# quiz
+# DW 놀이동산에서 범퍼카는 신장이 120cm 이상이고
+# 170cm 미만인 어린이만 탑승할 수 있다
+# 어린이용 범퍼카를 탑승할 수 있는지 여부를 알려주는 프로그램을 만들자
+# True: 탑승가능, False: 탑승불가
+
+height = int(input('어린이의 신장을 입력하세요. '))   #166 - 175
+result = (height >= 120) and (height < 170)
+print(f'result: {result}')	 #result: True - result: False
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+7교시
+
+# 조건식 == 삼항 연산자
+num1 = 10       #이항 연산자
+num1 = 10 - 5   #이항 연산자
+not True        #단항 연산자
+
+# 삼항 연산자
+targetScore = 90
+myScore = 95
+
+#myScore가 targetScore보다 크거나 같으면 합격, 그렇지 않으면 불합격
+result = '합격' if myScore >= targetScore else '불합격'
+print(f'result: {result}')  #result: 합격
+
+targetWeight = float(input('목표 체중을 입력하세요.'))  #78
+myWeight = float(input('현재 체중을 입력하세요.'))      #93
+result = '대단해요' if myWeight <= targetWeight else '노력하세요'
+print(f'result: {result}')  #result: 노력하세요
+
+------------------------------------------------------------------------
+
+# quiz
+# 적자/흑자 판단하기
+# DW마트는 수입과 지출을 입력하면, 흑자인지 적자인지 판별하는 프로그램을
+# 도일하려 한다
+# 마트 수익을 알려주는 프로그램은 만들자
+
+incoming = int(input('수입: '))	#수입: 120
+outgoing = int(input('지출: '))	#지출: 80
+result = '흑자' if incoming > outgoing else '적자'
+print(f'result: {result}')	#result: 흑자
+
+
+# quiz2
+# 조명 장치 on/off 프로그램 만들기
+currentLight = 75
+targetLight = 60
+result = 'Turn on' if currentLight < targetLight else 'Turn off'
+print(f'result: {result}')	#result: Turn off
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 모듈
+'''
+모듈이란 특정 기능을 모아놓은 파일로 모듈을 이용하면 우리가 직접 코딩해야
+하는 수고를 덜 수 있다.
+예를 들어 random 모듈은 난수를 발생시키는 기능을 가지고 있는데, 만약
+random 모듈을 사용하지 않고 직접 난수를 발생시키려면 직접 프로그램을
+작성해야 하는 수고가 존재한다
+
+모듈을 사용하려면 우선 import를 이용해서 모듈은 가지고 와야 한다
+'''
+
+import random
+randomNum = random.randrange(1, 46)
+print(f'randomNum: {randomNum}')
+
+------------------------------------------------------------------------
+# operator 모듈(+, -, *, / 등의 연산자 모듈)
+# 모듈을 사용하면 연산자 기호를 사용하는 것보다 더욱 빠른 실행이 가능하다
+(((-보고, 읽고 넘어갈 것-)))
+
+import operator
+
+print(10 + 20)
+print(operator.add(10, 20))	#30
+
+print(10 - 20)
+print(operator.sub(10, 20))	#-10
+
+print(10 * 20)
+print(operator.mul(10, 20))	#200
+
+print(10 / 20)
+print(operator.truediv(10, 20))	#0.5
+
+print(10 % 20)
+print(operator.mod(10, 20))	#10
+
+print(10 // 20)
+print(operator.floordiv(10, 20))  #0
+
+print(10 ** 20)
+print(operator.pow(10, 20))	 #100000000000000000000
+
+#비교 연산자 모듈
+print(10 == 20)
+print(operator.eq(10, 20))	#False
+
+print(10 != 20)
+print(operator.ne(10, 20))	#True
+
+print(10 > 20)
+print(operator.gt(10, 20))	#False
+
+print(10 >= 20)
+print(operator.ge(10, 20))	#False
+
+print(10 < 20)
+print(operator.lt(10, 20))	#True
+
+print(10 <= 20)
+print(operator.le(10, 20))	#True
+
+#논리 연산자 모듈
+print(True and False)
+print(operator.and_(True, False))	#False
+
+print(True or False)
+print(operator.or_(True, False))	#True
+
+print(not True)
+print(operator.not_(True))	#False
+
+(((-보고, 읽고 넘어갈 것-)))

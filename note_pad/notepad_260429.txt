@@ -1,0 +1,152 @@
+20260429
+1-2교시
+
++git bash에서
+-git init
+
+-git config --global user.email "ho8566z@gmail.com"
+(config:설정 명령, --global:명령 옵션, "~":명령 내용)
+
+-git config --global user.name "ho8566z"
+
+-git config --list
+(--list:user.email/name 확인 명령옵션)
+(q:list에서 마무리짓고, 다음 커맨드로)
+
+-git status
+(git repo에서 현재상황 확인 명령)
+
+-git add doc.txt
+(git add "~.txt":개별 파일만 스테이지에 올리는 명령)
+
+-git add .
+(git add ".":모든 파일을 스테이지에 올리는 명령)
+
+-git commit -m "20260429 by lyh first commit"
+(commit:스테이지에 있는 모든 파일을 로컬저장소에 저장하는 명령)
+
+-git restore --staged doc.txt
+(restore --staged doc.txt:스테이지에 있는 파일을 스테이지에서 내리는 명령)
+
+-git log
+(log:지금까지의 commit명령에 따른 log기록 나열하는 명령)
+(commit외에도 push origin, checkout등의 명령 이후에도 실행되었는지 확인할 것)
+
+-git checkout "특정commit번호"
+(checkout "특정commit번호":이전 버전의 commit으로 되돌아가는 명령)
+
+-git reflog
+(reflog:checkout으로 사라진 log기록까지 모두 확인하는 명령)
+
+-git checkout master
+(checkout master:git log에서 마지막 commit을 master를 통해 관리/바라보는 명령)
+(이전까지 "HEAD, MASTER"였는데, "HEAD -> MASTER"로 변경됨)
+(이때, checkout한다면 git이 깨지면서 다시 최근의 commit으로 되돌아와도 
+"HEAD, MASTER"상태로서 git을 다시 설정해야 함)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+-git reset --hard "~"
+(reset --hard "~":이전의 commit으로 돌아가도HEAD -> MASTER가 유지되는 명령)
+(다시 최신 commit으로 돌아가기 위해선 "~"에 최신의 '특정commit번호'를 입력해야 함)
+
+-----HEAD는 second이고, MASTER는 first일때, '우선 HEAD와 MASTER를 동일하게 만들어야 함'
+('git checkout master'를 입력하여 "HEAD -> MASTER"를 다시 연결시킨 다음,
+'git reset --hard 특정commit번호'를 입력하면, 원하는 commit으로 이동 가능함)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+사진 참조
+-Local Repo에서 Remote Repo로 보내는 모든 Task를 'PUSH'라고 말함
+-Remote Repo에서 Local Repo로 처음 Task를 당겨오면/다운받으면 'Clone'이라고 말함
+-Remote Repo에서 Local Repo로 기존 Task에 추가적으로 Task를 당겨오면/다운받으면 
+'PULL'이라고 말함
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+3-4교시
+
++git bash에서
+-git remote add origin https://github.com/ho8566z/myremote.git
+(remote add origin https://~:Local Repo에서 나의 github로 길을 연결하는 명령)
+
+-git remote -v
+(remote -v:'fatch', 'push'라고 뜨면 제대로 연결되었는지 확인하는 명령)
+
+-git branch -M main
+(branch -M main:git에서의 'master'를 'main'으로 변경하는 명령)
+(git과 github를 제대로 연결하기 위해서는 gir에서의 'master'를 'main'로 변경해야 
+github와 충돌없이 제대로 연결가능함)
+(HEAD->MASTER에서 MASTER를 MAIN으로 바꾸는 명령)
+
+-git push origin main
+(push origin main:Local Repo에 저장되어 있는 doc.txt를 chrome에서 github로 
+push해서 보내는 명령)
+(이후, github에서 제대로 업로드 되었는지 확인할 것:git log명령으로)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
++git에서
+-403에러가 뜬다면
+
+-윈도우에서, '사용자 계정' -> '자격 증명 관리자'
+(예전 계정과 지금 실행하는 계정이 달라서 충돌하는 상황)
+(해결방법:원래의 계정을 삭제하고, 다시 실행할 것)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+5교시
+
++Clone받는법
+-대시보드, Remote Repo에서 'Code'를 email이나 kakaotalk으로 공유해서 실행
+-새로운 폴더(디렉토리)에 git bash를 열어서 
+gi"git clone https://github.com/ho8566z/myremote.git ."을 입력하면, 완료
+-이후, 다시 업로드 하거나, 계속해서 작업을 할 경우에는 위의 내용과 같이 진행할 것
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+-이어서
+-git clone https://github.com/ho8566z/myremote.git .
+(clone:'push'를 통해 Local Repo에서 Remote Repo로 보낸 commit을 당겨오는 명령)
+('https://github.com/ho8566z/myremote.git' 다음에 "."을 꼭 작성해야 함)
+
+-git pull origin main
+(clone을 통해 다운받은 git commit에 추가적인 정보를 다운로드 할때,사용하는 명령)
+
+-컴플릿:CONFLICT
+(개발하면서 서로 버전이 다른 상황의 2명 이상의 개발자들의 리소스가 충돌이 생기면서
+발생하는 현상으로, "무조건 소통할 것")
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+1. 소통:slack
+2. 형상관리(버전관리):git(github)
+3. 문서:notion
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
++hoazzinews 님의 블로그
+(교수님 블로그를 보고 복습하기)
+
+[Git] 01. Git 설치 방법
+[Git] 02. 로컬 저장소 만들기
+[Git] 03. 저장소(Local Repository)에 저장하기
+[Git] 04. 다른 커밋으로 이동하기
+[Git] 05. detached HEAD
+[Git] 06. master에서 temp-branch로 이동하기
+[Git] 07. 브랜치 merge 하기
+[Git] 08. GitHub 가입하기
+[Git] 09. GitHub에 원격 저장소 만들기
+------------------------------------------------------------------------
+[1장] 파이썬 설치
+[2장] 처음 해보는 파이썬 코딩
+[3장] VSCode 설치 및 기본 설정
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+6-7교시
+
++Python
++MS VSCode
+
+-

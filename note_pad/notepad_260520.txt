@@ -1,0 +1,434 @@
+20260520
+
+
+# Toy 프로젝트
+'''
+처음 프로그램이 실행하면, 다음과 같은 메뉴를 출력한다
+메뉴: 1.회원가입   2.로그인   3.특정 회원정보 출력   4.모든 회원정보 출력   99.종료
+
+'1.회원가입'을 선택하면, 회원ID, 회원Email, 회원Phone 정보를 입력받아 회원가입을 진행한다
+'2.로그인'을 선택하면, 회원ID, 회원PW를 입력받아 로그인 '성공'또는 '실패'를 출력한다
+--> 인증(Authentication), 인가(authorization)
+'3.특정 회원정보 출력'을 선택하면, 회원ID와 회원PW를 입력받아 일치하는 회원정보를 모두 출력한다
+'4.모든 회원정보 출력'을 선택하면, 가입되어있는 모든 회원정보를 출력한다
+'99.종료'를 선택하면, 프로그램을 종료한다
+'''
+
+------------------------------------------------------------------------
+SIGN_UP             = 1
+SIGN_IN             = 2
+PRINT_MY_INFO       = 3
+PRINT_ALL_MEMBER_INFO      = 4
+SYSTEM_SHUTDOWN     = 99
+
+DEV_MOD = False
+
+members = {}
+
+if DEV_MOD:
+
+    uIds = ['1111', '5555', 'aaaa']
+    uPws = ['2222', '6666', 'bbbb']
+    uEmails = ['3333', '7777', 'cccc']
+    uPhones = ['4444', '8888', 'dddd']
+
+    for n in range(len(uIds)):
+        members[uIds[n]] = {
+            'uId': uIds[n],
+            'uPw': uPws[n],
+            'uEmail': uEmails[n],
+            'uPhone': uPhones[n]
+        }
+
+# functions START
+def getSelectedMenuNum():
+    selectedMenuNum = int(input('메뉴: 1.회원가입   2.로그인   3.내 회원정보 출력   4.모든 회원정보 출력   99.종료'))
+    return selectedMenuNum
+
+def setNewNum(uId, uPw, uEmail, uPhone):
+    members[uId] = {
+        'uId': uId,
+        'uPw': uPw,
+        'uEmil': uEmail,
+        'uPhone': uPhone
+    }
+
+def isMember(uId):
+    if uId in members:
+        print(f'{uId}은/는 이미 사용중입니다. 다시 입력하세요.')
+        return True
+    else:
+        return False
+
+def printAllMemberInfo(value):
+    for key1, value1 in value.items():
+        print(f'{key1}: {value1}')
+
+# function END
+
+
+flag = True
+while flag:
+    
+    userSelectedMenuNum = getSelectedMenuNum()
+
+    if userSelectedMenuNum == SIGN_UP:        #1.회원가입
+        uId = input('input member ID: ')
+        if not isMember(uId):       #False: 회원이 없는 경우(가입o), True: 회원이 있는 경우(가입x)
+            uPw = input('input membetr PW: ')
+            uEmail = input('input member Email: ')
+            while True:
+                if '@' not in uEmail:
+                    print('입력한 Email주소가 형식에 맞지 않습니다.')
+                    uEmail = input('input member Email: ')
+                else:
+                    break
+
+        uPhone = input('input membetr Phone: ')
+
+        setNewNum(uId, uPw, uEmail, uPhone)
+        # members[uId] = {
+        #         'uId': uId,
+        #         'uPW': uPw,
+        #         'uEmil': uEmail,
+        #         'uPhone': uPhone
+        #     }
+
+        print('SIGN UP - SUCCESS')
+
+        if DEV_MOD: print(f'members: {members}')
+
+
+    elif userSelectedMenuNum == SIGN_IN:      #2.로그인
+        signInCount = 0
+        while True:
+            uId = input('input member ID: ')
+            uPw = input('input member PW: ')
+
+            if uId in members:
+                uInfo = members[uId]
+                if uInfo['uPw'] == uPw:
+                    print('SIGN UP - SUCCESS')
+                    break
+                else:
+                    print('SIGN UP - FAIL')
+                    signInCount += 1
+                    if signInCount >= 3:
+                        print('로그인을 3회 실패했습니다.')
+                        break
+            else:
+                print(f'존재하지 않는 ID입니다.')
+                signInCount += 1
+                if signInCount >= 3:
+                    print('로그인을 3회 실패했습니다.')
+                    break
+
+
+    elif userSelectedMenuNum == PRINT_MY_INFO:      #3.내 회원정보 출력
+        uId = input('input member ID: ')
+        uPw = input('input membetr PW: ')
+
+        if uId in members:
+            uInfo = members[uId]
+            if uInfo['uPw'] == uPw:
+                print('SIGN UP - SUCCESS')
+
+                print('-' * 40)
+                for key, value in uInfo.items():
+                    print(f'{key}: {value}')
+                print('-' * 40)
+
+            else:
+                print('SIGN UP - FAIL')
+        else:
+            print(f'존재하지 않는 ID입니다.')
+
+    elif userSelectedMenuNum == PRINT_ALL_MEMBER_INFO:      #4.모든 회원정보 출력
+        for key, value in members.items():
+            print(f'{key}님의 정보---------------------------')
+            printAllMemberInfo(value)
+            print('-' * 40)
+
+    elif userSelectedMenuNum == SYSTEM_SHUTDOWN:     #99.종료
+        flag = False
+        print('Good Bye')
+# 메뉴: 1.회원가입   2.로그인   3.내 회원정보 출력   4.모든 회원정보 출력   99.종료1
+# input member ID: 1111
+# input membetr PW: 2222
+# input member Email: 3333@
+# input membetr Phone: 4444
+# SIGN UP - SUCCESS
+# 메뉴: 1.회원가입   2.로그인   3.내 회원정보 출력   4.모든 회원정보 출력   99.종료2
+# input member ID: 1111
+# input member PW: 2222
+# SIGN UP - SUCCESS
+# 메뉴: 1.회원가입   2.로그인   3.내 회원정보 출력   4.모든 회원정보 출력   99.종료3
+# input member ID: 1111
+# input membetr PW: 2222
+# SIGN UP - SUCCESS
+# ----------------------------------------
+# uId: 1111
+# uPw: 2222
+# uEmil: 3333@
+# uPhone: 4444
+# ----------------------------------------
+# 메뉴: 1.회원가입   2.로그인   3.내 회원정보 출력   4.모든 회원정보 출력   99.종료4
+# 1111님의 정보---------------------------
+# uId: 1111
+# uPw: 2222
+# uEmil: 3333@
+# uPhone: 4444
+# ----------------------------------------
+# 메뉴: 1.회원가입   2.로그인   3.내 회원정보 출력   4.모든 회원정보 출력   99.종료99
+# Good Bye
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 단위환산 프로그램
+'''
+mm 단위의 길이를 입력하면, cm, m, inch, ft 등으로 단위가 변환되어 출력되는 함수가 포함된
+프로그램을 만들자
+'''
+
+def convertUnit(lenMm):
+
+    unitDic = {}
+
+    unitDic['cm'] = lenMm * .1
+    unitDic['m'] = lenMm * .001
+    unitDic['inch'] = lenMm * .03937
+    unitDic['ft'] = lenMm * .003281
+
+    return unitDic
+
+def printLength(lengths):
+    for len in lengths.keys():
+        print(f'{len}: {lengths[len]}{len}')
+
+
+inputMmData = int(input('길이(mm) 입력하세요. '))
+resultData = convertUnit(inputMmData)
+printLength(resultData)
+# 길이(mm) 입력하세요. 999
+# cm: 99.9cm
+# m: 0.999m
+# inch: 39.33063inch
+# ft: 3.2777190000000003ft
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 할인된 상품 가격표 출력 프로그램
+'''
+DW마트는 고객감사의 일환으로 '오늘의 할인' 이벤트를 진행할 계획입니다.
+아래의 상품 가격표를 참고해서 '오늘의 할인'을 입력하면 할인된 가격이 출력되는
+프로그램은 만들자
+
+쌀: 9,900
+상추: 1,900
+고추: 2,900
+마늘: 8,900
+통닭: 5,600
+햄: 6,900
+치즈: 3,900
+'''
+
+standardPrice = {
+    '쌀': 9900,
+    '상추': 1900,
+    '고추': 2900,
+    '마늘': 8900,
+    '통닭': 5600,
+    '햄': 6900,
+    '치즈': 3900
+}
+
+def getDiscountPrice(rate):
+    dcPrice = {}
+
+    for goodsName in standardPrice.keys():
+        disPrice = int(standardPrice[goodsName] * (1 - (rate / 100)))
+        dcPrice[goodsName] = disPrice
+
+    return dcPrice
+
+def printPrice(priceList):
+    for goodsName, goodsPrice in priceList.items():
+        print(f'{goodsName}\t: {standardPrice[goodsName]}원 -{inputRateData}%(DC)--> {goodsPrice}원')
+
+inputRateData = int(input('오늘의 할인율 입력: '))
+
+discountPrice = getDiscountPrice(inputRateData)
+
+printPrice(discountPrice)
+# 오늘의 할인율 입력: 50
+# 쌀      : 9900원 -50% DC--> 4950원
+# 상추    : 1900원 -50% DC--> 950원
+# 고추    : 2900원 -50% DC--> 1450원
+# 마늘    : 8900원 -50% DC--> 4450원
+# 치즈    : 3900원 -50% DC--> 1950원
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 영어 사전
+
+englishDictionary = {
+    'apple': '사과',
+    'chair': '의자',
+    'doll': '인형',
+    'book': '책',
+    'piano': '피아노',
+    'clock': '시계'
+}
+
+def printWord(engWord):
+    print(f'{engWord}: {englishDictionary[engWord]}')
+
+printWord(input('찾고자 하는 영단어 입력: '))
+# 찾고자 하는 영단어 입력: apple
+# 사과
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 모듈이란?
+# 프로그램을 개발할 때, 이미 만들어져 있는 기능을 가져다 쓸 수 있는 기능
+# 특정 기능(함수)을 포함하고 있는 파일(xxx.py)로 다른 프로그램에 이식해서 사용하는 것
+
+# 모듈의 장점: 프로그램 개발시간 단축, 검증된 코드로서 오류가 적음,
+# 기능 구현을 분업화하고 공유할 수 있어 전체적인 작업속도를 향상시킴
+# But, 위의 모듈의 장점은 단점이 될 수도 있기에 주의가 필요함
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+----1개의 폴더에, 2개 이상의 파일을 모듈파일과 실행파일로 구분하고 작동하는 법----
+------------------------------------------------------------------------
+20260520ex -> ex001 -> ex01
+# calaulator.py(모듈 파일 -1)
+
+# calculator 모듈
+
+def addition(n1, n2):
+    print(f'덧셈 연산결과: {n1 + n2}')
+
+def subtraction(n1, n2):
+    print(f'뺄셈 연산결과: {n1 - n2}')
+
+def multiplication(n1, n2):
+    print(f'곱셈 연산결과: {n1 * n2}')
+
+def division(n1, n2):
+    if n2 == 0:
+        print('어느 숫자도 0으로 나눌 수 없다.')
+    print(f'나눗셈 연산결과: {n1 / n2}')
+
+def rest(n1, n2):
+    print(f'나머지 연산결과: {n1 % n2}')
+
+def portion(n1, n2):
+    print(f'몫 연산결과: {n1 // n2}')
+
+------------------------------------------------------------------------
+# convertUnitModule.py(모듈 파일 -2)
+
+def convertUnit(lenMm):
+
+    unitDic = {}
+
+    unitDic['cm'] = lenMm * .1
+    unitDic['m'] = lenMm * .001
+    unitDic['inch'] = lenMm * .03937
+    unitDic['ft'] = lenMm * .003281
+
+    return unitDic
+
+def printLength(lengths):
+    for len in lengths.keys():
+        print(f'{len}: {lengths[len]}{len}')
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# main.py
+# ('calaulator.py' and 'convertUnitModule.py' 모듈 파일을 실행하는 'main'파일)
+
+# calculator 모듈 사용하기
+
+import calculator
+import convertUnitModule
+
+calculator.addition(10, 20)
+calculator.subtraction(20, 10)
+calculator.multiplication(10, 10)
+calculator.division(100, 10)
+calculator.rest(100, 3)
+calculator.portion(100, 10)
+# 덧셈 연산결과: 30
+# 뺄셈 연산결과: 10
+# 곱셈 연산결과: 100
+# 나눗셈 연산결과: 10.0
+# 나머지 연산결과: 1
+# 몫 연산결과: 10
+
+
+# calculator.division(100, 0)
+# #     print('어느 숫자도 0으로 나눌 수 없다.')
+# #                    ^
+# # SyntaxError: invalid syntax. Is this intended to be part of the string?
+
+
+
+inputMmData = int(input('길이(mm) 입력: '))
+result = convertUnitModule.convertUnit(inputMmData)
+print(result)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+20260520ex -> ex001 -> ex02
+# examCalaulator.py(모듈 파일)
+
+def getTotalScore(s1, s2, s3):
+    return s1 + s2 + s3
+
+def getAverageScore(s1, s2, s3):
+    return getTotalScore(s1, s2, s3) / 3
+
+def getPassOrFail(s1, s2, s3):
+    if getAverageScore(s1, s2, s3) >= 60:
+        if s1 >= 40 and s2 >= 40 and s3 >= 40:
+            return 'Pass'
+    
+    return 'Fail'
+
+------------------------------------------------------------------------
+# main.py
+# ('examCalaulator.py' 모듈 파일을 실행하는 'main'파일)
+
+'''
+사용자가 3과목의 시험 점수를 입력하면 총점, 평점, 통과 여부를 출력하는 프로그램을 모듈을 이
+용해서 만들어 봅시다. 시험 통과 여부는 평점이 60이상이고 한 과목도 40미만이 없다면 ‘Pass’, 
+그렇지 않으면 ‘Fail’로 판정합니다.
+'''
+
+import examCalculator
+
+score1 = int(input('1과목 점수를 입력하세요.'))
+score2 = int(input('2과목 점수를 입력하세요.'))
+score3 = int(input('3과목 점수를 입력하세요.'))
+
+print(f'총점: {examCalculator.getTotalScore(score1, score2, score3)}')
+print(f'평점: {examCalculator.getAverageScore(score1, score2, score3)}')
+print(f'합격여부: {examCalculator.getPassOrFail(score1, score2, score3)}')
+# 1과목 점수를 입력하세요.100
+# 2과목 점수를 입력하세요.70
+# 3과목 점수를 입력하세요.80 
+# 총점: 250
+# 평점: 83.33333333333333
+# 합격여부: Pass
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+

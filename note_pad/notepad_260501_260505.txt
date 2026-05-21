@@ -1,0 +1,88 @@
+260501_260505
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+260501_복습
++변수선언 및 초기화
+
+ex)변수선언
+-red = "maxVerstappen"
+-fer = "charlesLeclerc"
+
+-print(red) (=maxVerstappen)
+-print(fer) (=charlesLeclerc)
+
+-print(red + fer) (=maxVerstappencharlesLeclerc)
+-print(red + " " + fer) (=maxVerstappen charlesLeclerc)
+(변수1 + 변수2:해당 수식의 결과는 '변수1변수2'와 같이 '뛰어쓰기'없이 붙어서 출력됨)
+(변수1 + " " + 변수2:해당 수식의 결과는 '변수1 변수2'와 같이 '뛰어쓰기'가 존재함,
+결과적으로 '공백'과 'space'는 다르다는 것을 보여줌)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+260503_복습
++다중 변수의 다중 대입, 다중 출력
+
+ex)
+-a = 10
+-b = 20
+-print(a,b)
+(변수의 출력 결과, a는 10으로 b는 20으로 출력됨)
+
+-a,b = b,a
+-print(a,b)
+(복수의 변수를 한번에 대입하여 임시 변수 없이 '스와이프'함)
+(변수의 출력 결과, a는 b의 이전 값인 20을, b는 a의 이전 값인 10으로 출력됨)
+
+------------------------------------------------------------------------
++변수는 여러번의 '변수 선언'과 '변수 초기화'를 진행한다면, 가장 '마지막'으로 
+할당된 값을 기억해 출력한다.
+
+ex)
+-num1 = 10
+-num1 = 20
+-print(num1)
+(print(num1):해당 print명령으로 출력되는 변수의 값은 '20'이다)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+260505_복습
++다중 변수의 다중 대입, 다중 출력_2
+
+ex)
+-no7 = "cristianoRonaldo"
+-no10 = "lionelMessi"
+-no13 = "jisungPark"
+-print(no7) (=cristianoRonaldo)
+-print(no10) (=lionelMessi)
+-print(no13) (=jisungPark)
+
+-no7, no10, no13 = no10, no13, no7
+-print(no7) (=lionelMessi)
+-print(no10) (=jisungPark)
+-print(no13) (=cristianoRonaldo)
+('no7, no10, no13 = no10, no13, no7'해당 명령은 '다중 변수의 다중 대입'으로 
+배치된 변수의 순서대로 변수명이 변경된다, "="를 기준으로 왼쪽은 새롭게 할당하려는 
+변수명이고, 오른쪽은 이전의 변수명에 해당한다)
+(때문에 왼쪽 no7은 오른쪽 no10의 이전 값인 'lionelMessi'를, 왼쪽 no10은 오른쪽 
+no13의 이전 값인 'jisungPark'을, 왼쪽 no13은 오른쪽 no7의 이전 값인 
+'cristianoRonaldo'를 갖게 된다.)
+
+-no7, no10, no13 = no10, no13, no7
+-print(no7) (=jisungPark)
+-print(no10) (=cristianoRonaldo)
+-print(no13) (=lionelMessi)
+('no7, no10, no13 = no10, no13, no7'해당 명령은 바로 위의 명령과 다르다,
+바로 위의 명령은 기존 변수 선언에 따른 1차 변경이지만, 이번 명령은 1차 명령에 따른 변수 
+선언에 대한 2차 변화이기 때문이다)
+(때문에 왼쪽 no7은 오른쪽 no10의 이전 값인 'jisungPark'를, 왼쪽 no10은 오른쪽 
+no13의 이전 값인 'cristianoRonaldo'을, 왼쪽 no13은 오른쪽 no7의 이전 값인 
+'lionelMessi'를 갖게 된다.)
+
+-쉽게
+              기존,                 1차 변경,            2차 변경
+-print(no7)  (=cristianoRonaldo -> lionelMessi      -> jisungPark)
+-print(no10) (=lionelMessi      -> jisungPark       -> cristianoRonaldo)
+-print(no13) (=jisungPark       -> cristianoRonaldo -> lionelMessi)
+('no7, no10, no13 = no10, no13, no7':명령이 반복되는 이유는 기존에서 1차, 2차로 
+변경될 때, 순서대로 변경하기 때문이다)

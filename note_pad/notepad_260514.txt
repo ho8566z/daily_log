@@ -1,0 +1,620 @@
+20260514
+
+(코드: 함수, 명령 목록)
+
+print	출력	→화면에 보여주기
+input	입력	→사용자한테 값 받기
+if	만약	조건 →검사
+else	아니면	→ if가 틀렸을 때
+for	반복→	여러 번 실행
+while	~하는 동안	→ 조건이 참이면 반복
+list→	리스트	여러 데이터 저장
+append	→추가	리스트에 값 넣기
+sort	→정렬	순서대로 배치
+reverse	→뒤집기/반대	반대로 정렬
+len	길이→	개수 세기
+range	범위	→숫자 범위 만들기
+int	정수	→숫자형
+str	문자열→	글자
+float	실수	→ 소수점 숫자
+True	참	
+False	거짓
+sum	합계→	모두 더하기
+max	최대값	→가장 큰 값
+min	최소값→	가장 작은 값
+index	순서번호→	위치 번호
+variable	변수	→데이터를 저장하는 공간
+function	함수	→기능 묶음
+condition	조건→	if에서 검사하는 것
+loop	반복문→	반복 실행 코드
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 출석부 관리 시스템
+'''
+이번에 만들 출석부 관리 시스템은 리스트를 이용해서 학급의 학생 명단을 관리하는 프로그램으로, 
+시나리오에 따라 프로그래밍을 전개합니다. 예제가 쉬운 만큼 시나리오만 보고 직접 코딩해 보는 
+것을 추천합니다
+
+[[ 시나리오 ]]
+ #1 :  학급 학생수가 10명(정우람, 박으뜸, 배힘찬, 천영웅, 신석기, 배민규, 전민수, 박건
+ 우, 박찬호, 이승엽)인 리스트를 만든다.
+ #2 :  ‘가나다’ 순으로 정렬한다.
+ #3 :  ‘박찬호’ 학생이 전학을 가게 되었다. 출석부에서 삭제한 후 전체 학생과 학생 수를 
+ 출력한다.
+ #4 :  선생님을 돕기 위한 학생으로 앞에서 3명을 뽑는다.
+ #5 :  새로운 친구가 전학 왔다. 이름은 ‘이병규’이다.
+ #6 :  자리를 바꾸기 위해서 학생 순서를 역순으로 뒤집는다.
+ #7 :  ‘정우람’ 학생이 이름을 ‘정잘남’으로 개명했다.
+'''
+
+#1
+students = ['정우람', '박으뜸', '배힘찬', '천영웅', '신석기', 
+            '배민규', '전민수', '박건우', '박찬호', '이승엽']
+print(f'students: {students}')
+#students: ['정우람', '박으뜸', '배힘찬', '천영웅', '신석기', 
+# '배민규', '전민수', '박건우', '박찬호', '이승엽']
+print(f'students type: {type(students)}')
+#students type: <class 'list'>
+
+#2
+students.sort()
+print(f'students: {students}')
+#students: ['박건우', '박으뜸', '박찬호', '배민규', 
+# '배힘찬', '신석기', '이승엽', '전민수', '정우람', '천영웅']
+
+#3
+students.remove('박찬호')
+print(f'students: {students}')
+#students: ['박건우', '박으뜸', '배민규', '배힘찬', '신석기', 
+# '이승엽', '전민수', '정우람', '천영웅']
+print(f'students count: {len(students)}')
+#students: ['박건우', '박으뜸', '배민규', '배힘찬', '신석기', 
+# '이승엽', '전민수', '정우람', '천영웅']
+
+#4
+studentsSupport = students[:3]
+print(f'students support: {studentsSupport}')
+#students support: ['박건우', '박으뜸', '배민규']
+
+#5
+students.append('이병규')
+students.sort()
+print(f'students: {students}')
+#students: ['박건우', '박으뜸', '배민규', '배힘찬', '신석기', 
+# '이병규', '이승엽', '전민수', '정우람', '천영웅']
+print(f'students count: {len(students)}')
+#students count: 10
+
+#6
+students.reverse()
+print(f'students: {students}')
+#students: ['천영웅', '정우람', '전민수', '이승엽', '이병규', 
+# '신석기', '배힘찬', '배민규', '박으뜸', '박건우']
+
+#7
+idx = students.index('정우람')
+students[idx] = '정잘남'
+print(f'students: {students}')
+#students: ['천영웅', '정잘남', '전민수', '이승엽', '이병규', 
+# '신석기', '배힘찬', '배민규', '박으뜸', '박건우']
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+#import random - shuffle
+
+import random
+nums = [1, 2, 3, 4, 5, 6]
+random.shuffle(nums)
+print(nums)     #[2, 6, 1, 5, 3, 4]
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 혈액 보관 시스템
+'''
+혈액 프로그램을 통해 10명의 기부자에게 혈액을 받아 리스트에 보관하고,
+보관하고 있는 혈액형을 종류별로 몇 팩씩 보유하고 있는지 보여주는 프로그램
+'''
+
+LOOP_COUNT = 10
+
+bloods = []
+for i in range(LOOP_COUNT):
+    print(f'헌혈 감사합니다, 혈액형을 선택하세요. (1.A, 2.B, 3.AB, 4.O)')
+    bloods.append(input())
+
+print(f'bloods: {bloods}')
+
+print('-' * 30)
+print(f'혈액형 개수\t|')
+print('-' * 30)
+print(f'A형\t: {bloods.count('A')}')
+print(f'B형\t: {bloods.count('B')}')
+print(f'AB형\t: {bloods.count('AB')}')
+print(f'O형\t: {bloods.count('O')}')
+# bloods: ['A', 'A', 'A', 'A', 'B', 'B', 'B', 'O', 'O', 'AB']
+# ------------------------------
+# 혈액형 개수     |
+# ------------------------------
+# A형     : 4
+# B형     : 3
+# AB형    : 1
+# O형     : 2
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 컨테이나 자료형(container data type)
+
+# 많은 데이터를 효율적으로 관리하기 위해 사용한다
+# list(리스트)
+# tuple(튜플)
+# dictionary(딕셔너리)
+
+# 기초 데이터 타입: 변수명 선언과 초기화에 따른 데이터 입력/삽입
+# 참조 데이터 타입(레퍼런스 데이터 타입): 리스트명의 데이터는 []내부의 첫번째 데이터의 메모리 
+# 주소를 담고 있다 때문에 데이터를 직접 관리하지 않고, '참조'한다
+
+# list(리스트) == tuple(튜플)
+
+
+# tuple(튜플): 튜플은 리스트와 다르게 소속된 아이템의 변경, 추가, 삭제 등의 수정행위가 
+# 불가능하고, 오직 '조회'만 가능하다(처음 데이터가 정해지면, 불변)
+# 데이터의 수정을 막아야 하는 경우에 '튜플'이 사용
+
+# fruits = ('사과', '배', '포도', '복숭아', '바나나', '자두', '수박')
+# ->튜플은 리스트와 다르게 []가 아닌, ()를 사용해 아이템을 선언한다
+
+fruits = ('사과', '배', '포도', '복숭아', '바나나', '자두', '수박')
+print(f'fruits: {fruits}')
+print(f'fruits type: {type(fruits)}')
+# fruits: ('사과', '배', '포도', '복숭아', '바나나', '자두', '수박')
+# fruits type: <class 'tuple'>
+
+------------------------------------------------------------------------
+# 튜플 조회
+'''
+튜플은 아이템의 수정이 불가능하기 때문에 아이템의 삽입, 삭제, 정렬 등의 기능은 없고, 
+조회하는 기능을 주로 사용한다
+'''
+fruits = ('사과', '배', '포도', '복숭아', '바나나', '자두', '수박')
+print(f'fruits: {fruits[3]}')       #fruits: 복숭아
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 인덱스가 홀수안 아이템 조회하기
+sports = ('태권도', '야구', '농구', '축구', '배구', '권투', '양궁')
+
+for idx, item in enumerate(sports):
+    if idx % 2 == 1:
+        print(f'idx: {idx}, ite,: {item}')
+# idx: 1, ite,: 야구
+# idx: 3, ite,: 축구
+# idx: 5, ite,: 권투
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 특정 아이템의 인덱스(index) 조회
+fruits = ('사과', '배', '포도', '복숭아', '바나나', '자두', '수박')
+print(f'fruits idx: {fruits.index('바나나')}')      #fruits idx: 4
+
+------------------------------------------------------------------------
+# quiz - 아이템 값으로 인덱스 출력하기
+# name 튜플에서 사용자가 선수 이름을 입력하면 이름에 해당하는 인덱스를 출력하자
+names = ('박찬호', '이승엽', '박세리', '박지성', '이순철', '선동열', '손흥민', '김연아')
+
+inputData = input('선수 이름 입력: ')
+print(f'선수이름: {inputData}, 인덱스: {names.index(inputData)}')
+# 선수 이름 입력: 이순철
+# 선수이름: 이순철, 인덱스: 4
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# split(쪼갠다)
+names = ('박찬호', '이승엽', '박세리', '박지성', '이순철', '선동열', '손흥민', '김연아')
+print(f'names: {names}')
+print(f'names type: {type(names)}')
+# names: ('박찬호', '이승엽', '박세리', '박지성', '이순철', '선동열', '손흥민', '김연아')
+# names type: <class 'tuple'>
+
+------------------------------------------------------------------------
+str = "박찬호 이승엽 박세리 박지성 이순철 선동열 손흥민 김연아"
+splitedStr = str.split(" ")     #spit()으로 나눌 때는 ' '나 =, + 등으로 나눌 수 있다
+print(f'splitedStr: {splitedStr}')
+print(f'splitedStr type: {type(splitedStr)}')
+# splitedStr: ['박찬호', '이승엽', '박세리', '박지성', '이순철', '선동열', '손흥민', '김연아']
+# splitedStr type: <class 'list'>
+
+# list -> tuple: split으로 list가 된 것을 다시 tuple로 변형할 때
+tuple(splitedStr)
+print(f'splitedStr: {splitedStr}')
+print(f'splitedStr type: {type(splitedStr)}')
+# splitedStr: ['박찬호', '이승엽', '박세리', '박지성', '이순철', '선동열', '손흥민', '김연아']
+# splitedStr type: <class 'list'>
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 튜플 안의 아이템 유/무 확인하기
+# in과 not in을 사용하면 튜플 안에 특정 아이템의 존재 유/무를 확인할 수 있다
+
+colors = ('Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Indigo', 'Purple')
+print(f'colors Green: {'Green' in colors}')         #colors Green: True
+print(f'colors Green++: {'Green++' in colors}')     #colors Green++: False
+
+
+if 'Green' in colors:
+    print('colors에는 Green이 있다.')
+else:
+    print('colors에는 Green이 없다.')
+#colors에는 Green이 있다.
+
+(not in버전)
+if 'Green' not in colors:
+    print('colors에는 Green이 없다.')
+else:
+    print('colors에는 Green이 있다.')
+#colors에는 Green이 있다.
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 학사경고 프로그램 만들기
+'''
+scores는 1학기 성적을 튜플로 나타낸 것이다. F학점이 있으먄 '경고'를 출력하는 프로그램
+scores = ('A', 'A+', 'B', 'B-', 'F')
+'''
+
+scores = ('A', 'A+', 'B', 'B-', 'F')
+if 'F' in scores:
+    print(f'경고')
+else:
+    print(f'경고 없음')
+#경고
+
+scores = ('A', 'A+', 'F', 'B', 'B-', 'F')
+fCnt = scores.count('F')
+print(f'F학점 개수: {fCnt}')        #F학점 개수: 2
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 튜플 결합
+# at list
+nums1 = [1, 2, 3]
+nums2 = [11, 12, 13]
+
+# 1st
+nums1.extend(nums2)
+print(f'nums1: {nums1}')        #nums1: [1, 2, 3, 11, 12, 13]
+print(f'nums2: {nums2}')        #nums2: [11, 12, 13]
+
+# 2nd
+result = nums1 + nums2
+print(f'nums1: {nums1}')        #nums1: [1, 2, 3]
+print(f'nums2: {nums2}')        #nums2: [11, 12, 13]
+print(f'result: {result}')      #result: [1, 2, 3, 11, 12, 13]
+
+------------------------------------------------------------------------
+# at tuple
+nums1 = (1, 2, 3)
+nums2 = (11, 12, 13)
+
+# nums1.extend(nums2)
+# #Exception has occurred: AttributeError 
+# :속성 에러(튜플은 수정이 불가능 하기 때문에 num1이라는 tuple의 데이터 수정하는 것, 또한 불가능)
+# print(f'nums1: {nums1}')
+# print(f'nums2: {nums2}')
+
+result = nums1 + nums2
+print(f'result: {result}')      #result: (1, 2, 3, 11, 12, 13)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+num1 = 10
+num2 = num1
+print(f'num1: {num1}')      #num1: 10
+print(f'num2: {num2}')      #num2: 10
+
+num1 = 100
+print(f'num1_1: {num1}')    #num1_1: 100
+print(f'num2_2: {num2}')    #num2_2: 10
+
+#-------------------------------------------------------------#
+#-------------------------------------------------------------#
+
+# 얕은 복사
+nums1 = [1, 2, 3]
+nums2 = nums1
+print(f'nums1: {nums1}')        #nums1: [1, 2, 3]
+print(f'nums2: {nums2}')        #nums2: [1, 2, 3]
+
+nums1[0] = 100
+print(f'nums1_1: {nums1}')      #nums1_1: [100, 2, 3]
+print(f'nums2_2: {nums2}')      #nums2_2: [100, 2, 3]
+
+#-------------------------------------------------------------#
+
+# 깊은 복사
+nums1 = [1, 2, 3]
+nums2 = [0, 0, 0]
+
+for idx, num in enumerate(nums1):
+    nums2[idx] = num
+
+print(f'nums1: {nums1}')        #nums1: [1, 2, 3]
+print(f'nums2: {nums2}')        #nums2: [1, 2, 3]
+# (얕은 복사와 달리, 출력된 값이 같더라도 각각 인식한 데이터는 다른 출처를 가지고 있음)
+
+#-------------------------------------------------------------#
+
+# copy (=깊은 복사 / 데이터 연산 속도가 훨씬 빠름)
+
+import copy
+
+numA = [1, 2, 3, 4, 5]
+numB = copy.deepcopy(numA)
+
+numB[0] = 100
+
+print(f'numA: {numA}')      #numA: [1, 2, 3, 4, 5]
+print(f'numB: {numB}')      #numB: [100, 2, 3, 4, 5]
+
+#-------------------------------------------------------------#
+
+# copy_2 (사용량 저조한 버전)
+import copy
+
+numA = [1, 2, 3, 4, 5]
+numB = numA.copy()
+
+numB[0] = 100
+
+print(f'numA: {numA}')      #numA: [1, 2, 3, 4, 5]
+print(f'numB: {numB}')      #numB: [100, 2, 3, 4, 5]
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 튜플 슬라이싱: tuple slicing
+animals = ('호랑이', '사자', '곰', '여우', '늑대')
+print(f'animals: {animals}')    #animals: ('호랑이', '사자', '곰', '여우', '늑대')
+
+print(f'animals[:3]: {animals[:3]}')        #animals[:3]: ('호랑이', '사자', '곰')
+print(f'animals[1:4]: {animals[1:4]}')      #animals[1:4]: ('사자', '곰', '여우')
+print(f'animals[:-2]: {animals[:-2]}')      #animals[:-2]: ('호랑이', '사자', '곰')
+print(f'animals[-1:-2]: {animals[-1:-2]}')  #animals[-1:-2]: ()
+print(f'animals[-3:-1]: {animals[-3:-1]}')  #animals[-3:-1]: ('곰', '여우')
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# quiz - 슬라이싱 연습하기
+'''
+fruits 튜플에서 주어진 요구사항에 맞게 슬라이싱해봅시다.
+fruits = ('apple', 'banana', 'plum', 'watermelon', 'peach')
+ - 인덱스 2부터 4까지의 아이템을 출력하시오.
+ - 인덱스 0부터 3까지의 아이템을 출력하시오.
+ - 인덱스 3부터 끝까지의 아이템을 출력하시오.
+'''
+
+fruits = ('apple', 'banana', 'plum', 'watermelon', 'peach')
+print(f'fruits[2:5]: {fruits[2:5]}')    #fruits[2:5]: ('plum', 'watermelon', 'peach')
+print(f'fruits[2:]: {fruits[2:]}')      #fruits[2:]: ('plum', 'watermelon', 'peach')
+
+print(f'fruits[0:4]: {fruits[0:4]}')    
+#fruits[0:4]: ('apple', 'banana', 'plum', 'watermelon')
+
+print(f'fruits[3:]: {fruits[3:]}')      
+#fruits[3:]: ('watermelon', 'peach')
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 리스트와 튜플 간 변환(형변화, casting)
+'''
+불가피하게 튜플의 아이템을 수정하려면 리스트로 변환해야 한다
+또한 리스트로 선언된 데이터를 수정이 안 되도록 하려면 변환해야 한다
+다음은 데이터 변환을 통해 리스트와 튜플을 변환하고 있다
+'''
+
+colors = ('Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Indigo', 'Purple')
+
+# Orange => 오렌지
+# colors[1] => 오렌지
+colors = list(colors)
+print(f'colors type: {type(colors)}')   #colors type: <class 'list'>
+
+colors[1] = '오렌지'
+print(f'colors: {colors}')
+#colors: ['Red', '오렌지', 'Yellow', 'Green', 'Blue', 'Indigo', 'Purple']
+
+colors = tuple(colors)
+print(f'colors: {colors}')
+#colors: ('Red', '오렌지', 'Yellow', 'Green', 'Blue', 'Indigo', 'Purple')
+print(f'colors type: {type(colors)}')   #colors type: <class 'tuple'>
+
+------------------------------------------------------------------------
+# quiz - 튜플 정렬하기
+colors = ('Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Indigo', 'Purple')
+
+(list로)
+colors = list(colors)
+# print(f'colors: {colors}')
+# print(f'colors type: {type(colors)}')
+colors.sort()
+print(f'colors: {colors}')
+print(f'colors type: {type(colors)}')
+# colors: ['Blue', 'Green', 'Indigo', 'Orange', 'Purple', 'Red', 'Yellow']
+# colors type: <class 'list'>
+
+(다시, tuple로)
+colors = tuple(colors)
+print(f'colors: {colors}')
+print(f'colors type: {type(colors)}')
+# colors: ('Blue', 'Green', 'Indigo', 'Orange', 'Purple', 'Red', 'Yellow')
+# colors type: <class 'tuple'>
+
+#-------------------------------------------------------------#
+
+# re 정렬
+colors = ('Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Indigo', 'Purple')
+
+reColors = sorted(colors)
+print(f'reColors: {reColors}')
+print(f'reColors type: {type(reColors)}')
+# reColors: ['Blue', 'Green', 'Indigo', 'Orange', 'Purple', 'Red', 'Yellow']
+# reColors type: <class 'list'>
+
+reColors = tuple(sorted(colors))
+print(f'reColors: {reColors}')
+print(f'reColors type: {type(reColors)}')
+# reColors: ('Blue', 'Green', 'Indigo', 'Orange', 'Purple', 'Red', 'Yellow')
+# reColors type: <class 'tuple'>
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 컨테이나 자료형(container data type)
+
+# 많은 데이터를 효율적으로 관리하기 위해 사용한다
+# list(리스트)
+# tuple(튜플)
+# dictionary(딕셔너리)
+
+# 기초 데이터 타입: 변수명 선언과 초기화에 따른 데이터 입력/삽입
+# 참조 데이터 타입(레퍼런스 데이터 타입): 리스트명의 데이터는 []내부의 첫번째 데이터의 메모리 
+# 주소를 담고 있다 때문에 데이터를 직접 관리하지 않고, '참조'한다
+
+------------------------------------------------------------------------
+# 딕셔너리(dictionary)
+'''
+딕셔너리는 리스트, 튜플과 같이 파이썬에서 많이 사용되는 컨테이너 자료형이다
+리스트가 인덱스를 이용해 아이템을 참조한다면, 딕셔너리는 인덱스 대신에 '키(key)'를 
+이용해 아이템을 참조한다
+
+딕셔너리는 '키(key)'와 '값(value)'로 이루어져 있고, 이를 '키 값'이라고 한다
+= '키-> 키값 : k' / '값-> 밸류값 : v'
+'''
+
+------------------------------------------------------------------------
+# 딕셔너리 정의
+# 딕셔너리 -> {}
+
+sportsPlayers = {}
+ages = {'박찬호': 48, '박지성': 40, '박세리': 50, '이승엽': 43}
+# {'박찬호': 48, '박지성': 40}: 앞의 이름은 '키', 뒤의 나이는 '값'
+# 딕셔너리를 선언할 때는 '중 괄호' 사용, 키값의 구분은 ','로서 구분한다
+
+# ages = {'박찬호': 48, '박지성': 40, '박세리': 50, '이승엽': 43, '박지성': 100}
+#-> '키(key)'값은 절대로 중복되어서는 안된다
+
+# ages = {'박찬호': 48, '박지성': 40, '박세리': 50, '이승엽': 43, '지성팍': 40}
+#-> '밸류(value)'값은 중복되어도 상관없다
+
+print(f'ages: {ages}')
+#ages: {'박찬호': 48, '박지성': 40, '박세리': 50, '이승엽': 43}
+print(f'ages type: {type(ages)}')       #ages type: <class 'dict'>
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# dictionary - ex)
+
+scores = {
+    'c/c++': 'A',
+    'Java': 'B+',
+    '네트워킹': 'C',
+    '보안': 'A+',
+    '해킹': 'F',
+    '시스템': 'C+'
+}
+
+print(f'scoresL {scores}')
+#scoresL {'c/c++': 'A', 'Java': 'B+', '네트워킹': 'C', '보안': 'A+', 
+# '해킹': 'F', '시스템': 'C+'}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 마지막 내용
+# 리스트, 튜플, 딕셔너리
+
+listVar1 = [1, 3.14, 'hello']
+print(f'listVar1: {listVar1}')
+print(f'listVar1 type: {type(listVar1)}')
+# listVar1: [1, 3.14, 'hello']
+# listVar1 type: <class 'list'>
+
+listVar2 = (1, 3.14, 'hello')
+print(f'listVar2: {listVar2}')
+print(f'listVar2 type: {type(listVar2)}')
+# listVar2: (1, 3.14, 'hello')
+# listVar2 type: <class 'tuple'>
+
+listVar3 = {
+    'AAA': 10,
+    'BBB': 3.14,
+    'CCC': '안녕하세요'
+}
+print(f'listVar3: {listVar3}')
+print(f'listVar3 type: {type(listVar3)}')
+# listVar3: {'AAA': 10, 'BBB': 3.14, 'CCC': '안녕하세요'}
+# listVar3 type: <class 'dict'>
+
+------------------------------------------------------------------------
+listVar10 = [1, 2, 3]
+print(f'listVar10: {listVar10}')
+#listVar10: [1, 2, 3]
+
+listVar20 = [10, 20, 30, listVar10]
+print(f'listVar20: {listVar20}')
+#listVar20: [10, 20, 30, [1, 2, 3]]
+
+print(f'listVar20[3]: {listVar20[3]}')
+#listVar20[3]: [1, 2, 3]
+
+# 2차원 배열
+print(f'listVar20[3][1]: {listVar20[3][1]}')
+#listVar20[3][1]: 2
+
+------------------------------------------------------------------------
+print(type(listVar20[2]))       #<class 'int'>
+print(type(listVar20[3]))       #<class 'list'>
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+dicts = {
+    'name': '박찬호',
+    'age': 20,
+    'addr': '대전 중구',
+    'hobby': ['축구', '농구', '배구']
+}
+
+print(f'dicts: {dicts}')
+# dicts: {'name': '박찬호', 'age': 20, 'addr': '대전 중구', 
+# 'hobby': ['축구', '농구', '배구']}
+
+print(dicts['hobby'])       #['축구', '농구', '배구']
+print(dicts['hobby'][1])    #농구
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+'''
+1차원: nums[]
+2차원: nums[][]
+3차원: nums[][][]
+4차원: nums[][][][]
+N차원: nums[][][][] --- []
+-데이터 구조 설계의 권장 차원: 2차원 까지만
+'''
+
+------------------------------------------------------------------------
+dicts = {
+    'name': '박찬호',
+    'age': 20,
+    'addr': '대전 중구',
+    'hobby': ['축구', '농구', '배구'],
+    (1, 2, 10): 100
+}
+
+print(f'dicts: {dicts}')
+# dicts: {'name': '박찬호', 'age': 20, 'addr': '대전 중구', 
+# 'hobby': ['축구', '농구', '배구'], (1, 2, 10): 100}
+#(튜플 또한 '키'값으로 '밸류'값을 담을 수 있다 -> 튜플의 아이템은 변화하지 않기 때문에)
+#(but, 리스트는 튜플과 달리 '키'값으로 '밸류'값을 담을 수 없다 
+# -> 리스트의 아이템을 변화시킬 수 있기 때문에)
+
