@@ -1,3 +1,365 @@
 20260522
 
 
+20260521ex --> oneDiary
+------------------------------------------------------------------------
+#config_dir -> dir -> config.py : 상수_모듈
+
+SIGN_UP         = 1
+SIGN_IN         = 2
+MEMBER_MODIFY   = 3
+MEMBER_DELETE   = 4
+SYSTEM_OUT      = 99
+SIGN_OUT        = 5
+DIARY_WRITE     = 6
+DIARY_READ      = 7
+
+DEV_MOD = True
+
+------------------------------------------------------------------------
+#db -> member_db.py : 회원DB_모듈
+memberDB = {}
+
+------------------------------------------------------------------------
+#db -> diray_db.py : diaryDB_모듈
+diaryDB = {}
+
+------------------------------------------------------------------------
+#member -> session.py : sign-user 모듈
+signInedMemberid = ''
+
+------------------------------------------------------------------------
+#member -> member_dumy.py : 회원dumy_모듈
+
+from db import member_db
+from db import diary_db
+
+ids = ['gildong', 'chanho']
+pws = ['1234', '5678']
+mails = ['gildong@gmail.com', 'chanho@naver.com']
+phones = ['010-0001-0002', '010-0011-0022']
+
+
+def dumyInit():
+    for n in range(len(ids)):
+        member_db.memberDB[ids[n]] = {
+            'uId': ids[n],
+            'uPw': pws[n],
+            'uMail': mails[n],
+            'uPhone':phones[n]
+        }
+
+        diary_db.diaryDB[ids[n]] = []
+
+------------------------------------------------------------------------
+#main.py : main_파일
+
+from config_dir.dir import config
+from member import session
+from db import member_db
+from db import diary_db
+from member import member_dumy
+import copy
+
+if config.DEV_MOD:
+    member_dumy.dumyInit()
+    print(f'memberDB: {member_db.memberDB}')
+
+flag = True
+
+while flag:
+
+    menuNum = ''
+    if session.signInedMemberid == '':
+        # sign-out 일때
+        menuNum = int(input('1.sign-up | 2.sign-in | 6.write | 7.read | 99.end'))
+    else:
+        # sign-in 일때
+        menuNum = int(input('3.modify | 5.sign-out | 4.delete | 6.write | 7.read | 99.end'))
+
+
+    if menuNum == config.SIGN_UP:
+        print('1.sign-up')
+        uId = input('please input new member ID: ')
+        uPw = input('please input new member PW: ')
+        uMail = input('please input new member MAIL: ')
+        uPhone = input('please input new member PHONE: ')
+
+        member_db.memberDB[uId] = {
+            'uId': uId,
+            'uPw': uPw,
+            'uMail':uMail,
+            'uPhone': uPhone
+        }
+
+        print('New member sign-up success')
+
+        if config.DEV_MOD:
+            print(f'memberDB: {member_db.memberDB}')
+
+        diary_db.diaryDB[uId] = []
+
+    elif menuNum == config.SIGN_IN:
+        print('2.sign-in')
+        uId = input('please input member ID: ')
+        uPw = input('please input member PW: ')
+
+
+        if uId in member_db.memberDB:
+            if member_db.memberDB[uId]['uPw'] == uPw:
+                print('sign-in success')
+                session.signInedMemberid = uId
+            else:
+                print('sign-in fail -- PW trouble')
+        else:
+            print('sign-in fail -- ID trouble')
+
+        # if uId in member_db.memberDB and member_db.memberDB[uId]['uPw'] == uPw:
+        #         print('sign-in success')
+        # else:
+        #     print('sign-in fail -- ID or PW trouble')
+
+
+    elif menuNum == config.MEMBER_MODIFY:
+        print('3.modify')
+        '''
+        id pw, mail, phone 중에서 어떤 정보들을 수정가능케 할지 정해야 한다
+        id: x, 또한 이미 탈퇴한 사용자의 id라도 절대 변경/수정을 허용하는 것은 않된다
+        pw: 절대 수정이 불가능하지는 않지만, 쉽게 변경할 수는 없다
+        mail, phone: 비교적 수정이 간단하게 가능하다 
+        '''
+        uPw = input('please input member PW: ')
+        uMail = input('please input member MAIL: ')
+        uPhone = input('please input member PHONE: ')
+        '''
+            -member_db 모듈에 있는 memberDB 딕셔너리에서 회원정보를 변경한다
+            -현재 member_db에는 'gildong', 'chanho'회원이 존재하기 때문에, 
+            -현 상황에 로그인되어 있는 회원의 정보를 불러와서 회원정보를 수정한다
+            -즉, session.signInedMemberid에 현재 로그인되어 있는 회원의 ID를 
+                가져와서 사용하면 된다
+        '''
+        currentSignInedMemberID = session.signInedMemberid
+        memberInfo = member_db.memberDB[currentSignInedMemberID]
+
+        if config.DEV_MOD: print(f'memberInfo: {memberInfo}')
+
+        memberInfo['uPw'] = uPw
+        memberInfo['uMail'] = uMail
+        memberInfo['uPhone'] = uPhone
+
+        if config.DEV_MOD: print(f'after modify: memberInfo: {memberInfo}')
+
+    elif menuNum == config.MEMBER_DELETE:
+        print('4.delete')
+        '''
+        현재 로그인 되어 있는 회원의 id를 session.signInedMemberid에서 가져와서
+        해당하는 회원의 정보를 member_db.memberDB에서 삭제한다
+        '''
+        currentSignInedMemberID = session.signInedMemberid
+        del member_db.memberDB[currentSignInedMemberID]
+        del diary_db.diaryDB[currentSignInedMemberID]
+        
+        print('member info delete')
+        session.signInedMemberid = ''
+
+        if config.DEV_MOD: print(f'member_db.memberDB: {member_db.memberDB}')
+
+    elif menuNum == config.SYSTEM_OUT:
+        print('99.end')
+        flag = False
+
+    elif menuNum == config.SIGN_OUT:
+        print('5.sign-out')
+        '''
+        메뉴를 변경한다
+        로그인 값 또한 변경한다
+        session모듈에 signinedMemverId 변수에 있는지?
+        '''
+        print('sign-out success')
+        session.signInedMemberid = ''
+
+    elif menuNum == config.DIARY_WRITE:
+        print(f'6.write')
+
+        if session.signInedMemberid == '':
+            print('sorry, please sign-in')
+        else:
+            while True:
+                diaryTxt = input('10자 이하의 짧은 글을 입력하세요. ')
+                if len(diaryTxt) > 10:
+                    print(f'10자를 초과했습니다.({len(diaryTxt)})')
+                else:
+                    diary_db.diaryDB[session.signInedMemberid].append(diaryTxt)
+                    if config.DEV_MOD: print(f'diary_db.diaryDB: {diary_db.diaryDB}')
+                    break
+
+    elif menuNum == config.DIARY_READ:
+        print(f'7.read')
+
+        if session.signInedMemberid == '':
+            print('sorry, please sign-in')
+        else:
+            currentSignInedMemberID = session.signInedMemberid
+            myDiaries = diary_db.diaryDB[currentSignInedMemberID]
+
+            deepcopiedDiaries = copy.deepcopy(myDiaries)
+            deepcopiedDiaries.reverse()
+            for idx, diaryTxt in enumerate(deepcopiedDiaries):
+                print(f'({idx +1}): {diaryTxt}')
+
+    else:
+        print('선택한 번호는 없습니다. 다시 선택하세요.')
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 모듈명 단축하기: as
+
+ex) 유명한 모듈(명)
+import numpy --> import numpy as np
+import pandas --> import pandas as pd
+
+------------------------------------------------------------------------
+#20260522ex --> ex001
+
+#examCalculator.py : 계산기_모듈
+
+def addition(n1, n2):
+    print(f'덧셈: {n1 + n2}')
+
+def subtraction(n1, n2):
+    print(f'뺄셈: {n1 - n2}')
+
+def multiplication(n1, n2):
+    print(f'곱셈: {n1 * n2}')
+
+def division(n1, n2):
+    print(f'나눗셈: {n1 / n2}')
+
+def rest(n1, n2):
+    print(f'나머지: {n1 % n2}')
+
+def portion(n1, n2):
+    print(f'몫: {n1 // n2}')
+
+------------------------------------------------------------------------
+#smartModule.py : main_파일
+
+# 모듈명 단축하기: as
+
+# import examCalculator as ca
+
+# # examCalculator.addition(10, 20)
+# # examCalculator.subtraction(20, 10)
+# # examCalculator.multiplication(10, 10)
+# # examCalculator.division(100, 10)
+# # examCalculator.rest(100, 30)
+# # examCalculator.portion(100, 10)
+
+# ca.addition(10, 20)
+# ca.subtraction(20, 10)
+# ca.multiplication(10, 10)
+# ca.division(100, 10)
+# ca.rest(100, 30)
+# ca.portion(100, 10)
+
+
+#-----------------------------------##
+#-----------------------------------##
+
+from examCalculator import addition
+
+addition(10, 20)
+#덧셈: 30
+
+subtraction(20, 10)
+#NameError: name 'subtraction' is not defined
+# (from 모듈명 import (특정)함수명)
+
+# from 모듈명 import '.'
+# 특정 함수가 아닌, 모든 함수를 사용하기 위함
+# But, 'from 모듈명 import .' 보다는
+# 'import examCalculator as ca'를 더 많이 사용함
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+#20260522ex --> ex002
+
+#module01.py : test01_모듈
+
+def fun():
+    print('module01의 함수 실행')
+
+# fun()
+
+# print(f'module01의 __name__: {__name__}')
+
+if __name__ == '__main__':
+    fun()
+
+# 해당: module01.py 파일이 실행 파일일때, 해당 파일의 타입은 __main__이 되면서
+# 해당 명령이 실행되지만, 다른 파일에서 실행한다면, 위의 명령은 실행되지 않는다.
+
+------------------------------------------------------------------------
+#module02.py : test02_모듈
+
+def fun():
+    print('module02의 함수 실행')
+
+fun()
+
+print(f'module02의 __name__: {__name__}')
+
+------------------------------------------------------------------------
+#module03.py : test03_모듈
+
+def fun():
+    print('module03의 함수 실행')
+
+fun()
+
+print(f'module03의 __name__: {__name__}')
+
+------------------------------------------------------------------------
+#app.py : main_파일
+
+import module01
+import module02
+import module03
+
+# print('this is 실행파일')
+# # module01의 함수 실행
+# # module02의 함수 실행
+# # module03의 함수 실행
+# # this is 실행파일
+
+
+# ex)
+# print(f'app:실행파일의 __name__: {__name__}')
+# # module01의 함수 실행
+# # module01의 __name__: module01     #해당 모듈명
+# # module02의 함수 실행
+# # module02의 __name__: module02
+# # module03의 함수 실행
+# # module03의 __name__: module03
+# # this is 실행파일
+# # app:실행파일의 __name__: __main__     #구분: main 파일
+
+
+
+# if __name__ == '__main__':
+#     fun()
+
+# ex2)
+print(f'app:실행파일의 __name__: {__name__}')
+# module02의 함수 실행
+# module02의 __name__: module02
+# module03의 함수 실행
+# module03의 __name__: module03
+# app:실행파일의 __name__: __main__
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+

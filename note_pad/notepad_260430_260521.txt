@@ -1749,7 +1749,7 @@ fun4()
 #   [Previous line repeated 996 more times]
 # RecursionError: maximum recursion depth exceeded
 
-# (함수는 변수와 달리, 메모리 상에서 무한 복사 및 복제가 되면서 매모리가 full되면서 셧다운되기 
+# (함수는 변수와 달리, 메모리 상에서 무한 복사 및 복제가 되면서 메모리가 full되면서 셧다운되기 
 # 전에 시스템이 중단한다: '[Previous line repeated 996 more times]' 
 # 996번 이상 실행 불가하다는 것)
 
@@ -1814,7 +1814,7 @@ inputNumber2 = float(input('두 번째 숫자 입력: '))
 
 calculator()
 
-# 1개의 함수에는 1개의 기능을 담을 것(1개 함수에 2개 이상의 기능을 담믐 것은 지양할 것)
+# 1개의 함수에는 1개의 기능을 담을 것(1개 함수에 2개 이상의 기능을 담는 것은 지양할 것)
 # 최대한 가능한 만큼 부품화(부분 모듈화) 하는게 이상적이다
 
 ------------------------------------------------------------------------
@@ -2348,460 +2348,17 @@ fun1()
 ------------------------------------------------------------------------
 [20260520]
 
-# 딕셔너리
-# 딕셔너리란, 파이싼에서 묶음 데이터를 관리하기 위한 컨테이너 자료형 중 하나이다
-# 키(key): 밸류(value)로 데이터를 관리한다, 이 말은 딕셔너리에는 인덱스가 존재하지 않는다
-
-members = {
-    '2019-052001': {
-        '이름': '박찬호',
-        '나이': 25,
-        '성별': 'M',
-        '연락처': '010-1234-5678',
-        '이용서비스': ['헬스, 수영'],
-        '할인율': 0
-    },
-    '2019-052004': {
-        '이름': '박용택',
-        '나이': 65,
-        '성별': 'M',
-        '연락처': '010-9012-3456',
-        '이용서비스': '수영',
-        '할인율': 50
-    },
-    '2019-052003': {
-        '이름': '박.세리',
-        '나이': 70,
-        '성별': 'W',
-        '연락처': '010-7890-1234',
-        '이용서비스': '아쿠아로빅',
-        '할인율': 50
-    }
-}
-
-print(members['2019-052001']['이용서비스'])
-
-------------------------------------------------------------------------
-# 함수기본
-# 함수란, 특정 기능을 정의한 구문으로 기능을 재사용하기 위해서 사용한다
-# VS 변수란, 데이터를 관리하기 위한 메모리 공간으로 데이터를 재사용하기 위해 사용한다
-
-'''
-- 함수 기번
-def 함수이름:
-    기능(실행문)
-'''
-
-# 인사말이 출력되는 함수를 만들지
-# 함수 정의(선언) --> 함수 선언부
-def printIntro():
-    print('안녕하세요, 좋은 아침인가요?')
-
-# 함수 호출(call) --> 함수 호출부
-printIntro()
-
-
-# 함수는 이렇게 만들자 -> 기능을 최대한 작게, 다른 프로그램에 이식이 간단하도록
-
-------------------------------------------------------------------------
-# 계산기 프로그램을 함수를 이용해 만들자
-
-# (하나의 함수에 많은 기능이 있는 상태)
-def calculator():
-    if operator == 1:
-        print(f'덧셈 결과: {num1 + num2}')
-
-    elif operator == 2:
-        print(f'뺄셈 결과: {num1 - num2}')
-
-    elif operator == 3:
-        print(f'곱셈 결과: {num1 * num2}')
-
-    elif operator == 4:
-        print(f'나눗셈 결과: {num1 / num2}')
-
-------------------------------------------------------------------------
-# (하나의 함수에, 하나의 기능만)
-def add():
-    print(f'덧셈 결과: {num1 + num2}')
-
-def sub():
-    print(f'뺄셈 결과: {num1 - num2}')
-
-def mul():
-    print(f'곱셈 결과: {num1 * num2}')
-
-def div():
-    print(f'나눗셈 결과: {num1 / num2}')
-
-
-def calculator():
-    if operator == 1:
-        add()
-
-    elif operator == 2:
-        sub()
-
-    elif operator == 3:
-        mul()
-
-    elif operator == 4:
-        div()
-
-
-num1 = float(input('1st 숫자 입력: '))
-operator = int(input('연산자 선택: 1.덧셈    2.뺄셈    3.곱셈    4.나눗셈'))
-num2 = float(input('2nd 숫자 입력: '))
-
-calculator()
-
-------------------------------------------------------------------------
-# 지역변수 vs 전역변수
-# 지역변수는 함수 내부에서 선언된 변수로 함수 내부에서만 사용 가능하다
-# 전역변수는 함수 외부에서 선언된 변수로 함수 외부와 내부에서도 모두 사용 가능하다
-
-# # ex)
-# num = 10
-
-# def fun():
-#     num = 20                    #지역변수 등장
-#     print(f'num: {num}')        #전역변수, num: 10 --> 지역변수, num: 20
-
-# print(f'num: {num}')            #전역변수, num: 10
-
-# fun()
-
-
-# ex2)
-num = 10
-
-def fun():
-    # num = 20                  #지역변수 등장
-    num = num +1                #데이터 수정 num(전역변수) = 10 + 1
-#UnboundLocalError: cannot access local variable 'num' where it is not associated with a value
-#파이썬에서는, 전역변수를 함수에 가져와서 참조하는 것은 가능하지만, 수정하는 것은 불가능하다
-#때문에, 'global'키워드를 사용해 이를 해결한다
-    print(f'num: {num}')        #전역변수, num: 10 --> 지역변수, num: 20
-
-print(f'num: {num}')            #전역변수, num: 10
-
-fun()
-
-'''
-global 키워드는 함수 내에서 전역변수의 값을 '수정'하고자 할때 반드시 명시할 것
-'''
-
-------------------------------------------------------------------------
-# 매개변수
-# 매개: 둘 사이에서 양 편의 '관계를 맺어'주는 것
-# 함수를 사용하기 위해 먼저 함수를 정의하고 필요할 때 호출하는데,
-# 이 때 함수를 정의하는 쪽을 함수(정의부), 함수를 호출하는 쪽을 호출부라고 한다
-
-# 함수를 호출할 때, 데이터를 넘겨줄 수 있는데 이 데이터를 '인수'라고 한다
-# 함수 정의부는 인수를 받으면, '매개변수'라는 변수에 저장한다
-# -> 매개변수는 지역변수의 일종이다
-
-
-# ex)
-def greet():
-    print(f'홍길동 님 안녕하세요.')
-
-greet()
-
-------------------------------------------------------------------------
-# ex2)
-def greet(name):
-    #neme = '홍길동' or '박찬호' or '박세리'
-    print(f'{name}님 안녕하세요.')
-
-greet('홍길동')
-greet('박찬호')
-greet('박세리')
-# 홍길동님 안녕하세요.
-# 박찬호님 안녕하세요.
-# 박세리님 안녕하세요.
-
-------------------------------------------------------------------------
-# ex3)
-def greet(name, age, addr):
-    #neme = '홍길동' or '박찬호' or '박세리'
-    print(f'{name}님 안녕하세요. 나이는 {age}입니다. 출신지는 {addr}입니다.')
-
-greet('홍길동', 25, '서울')
-greet('박찬호', 30, 'LA')
-greet('박세리', 35, '대전')
-# 홍길동님 안녕하세요. 나이는 25입니다. 출신지는 서울입니다.
-# 박찬호님 안녕하세요. 나이는 30입니다. 출신지는 LA입니다.
-# 박세리님 안녕하세요. 나이는 35입니다. 출신지는 대전입니다.
-
-------------------------------------------------------------------------
-# name = '홍길동' or '박찬호' or '박세리'
-# name: 매개변수 <--지역변수의 일종, 함수 내부에서만 사용 가능
-# '홍길동' or '박찬호' or '박세리': 인수 <--출력하고자 하는 데이터의 일종
-
-# 전달하고자 하는 데이터를 인수로서 매개변수에 전달하면 매개변수는 일종의 
-# 지역변수로서 인수를 전달받아 출력 등으로 기능/작동한다 
-
-# 매개변수는 2개 이상, 동시 사용이 가능하다 --> 매개변수의 개수만큼, 
-# 인수 또한 개수를 맞춰줘야 한다
-
-------------------------------------------------------------------------
-# 인수의 개수를 모르는 경우
-# 우리 학급 학생들의 시험점수 총합과 평균을 구하는 함수를 만들자
-# 우리 학급 학생수는 총 3명이다
-
-# 1차(: 3명일때 - 하드코딩)
-def printScoreForStudent(score1, score2, score3):
-    totalScore = score1 + score2 + score3
-    averageScore = totalScore / 3
-
-    print(f'총합: {totalScore}')
-    print(f'평균: {averageScore}')
-
-printScoreForStudent(90, 80, 100)
-# 총합: 270
-# 평균: 90.0
-
-------------------------------------------------------------------------
-# 2차(: 인수의 개수를 몰라도 적용 가능함)
-def printScoreForStudent(*scores):      
-# '*(가변인자)'를 사용하면 자동으로 '튜플'로서 전달해 기능한다
-    print(f'scores type: {type(scores)}')   #scores type: <class 'tuple'>
-    print(f'scores length: {len(scores)}')  #scores length: 인수의 개수만큼
-
-    totalScore = 0
-    for score in scores:
-        totalScore += score
-        averageScore = totalScore / len(scores)
-        
-    print(f'총합: {totalScore}')
-    print(f'평균: {averageScore}')
-
-printScoreForStudent(90, 80, 100, 60, 70)
-# 총합: 400
-# 평균: 80.0
-
-------------------------------------------------------------------------
-# 3차(: 인수의 개수를 몰라도 적용 가능함 + 2개 이상의 매개변수)
-def printScoreForStudent(subject, *scores):      
-# '*(가변인자)'를 사용하면 자동으로 '튜플'로서 전달해 기능한다
-# '*(가변인자)'는 마지막 매개변수에만 작성해야 한다
-    print(f'scores type: {type(scores)}')   #scores type: <class 'tuple'>
-    print(f'scores length: {len(scores)}')  #scores length: 인수의 개수만큼
-
-    totalScore = 0
-    for score in scores:
-        totalScore += score
-        averageScore = totalScore / len(scores)
-        
-    print(f'{subject} 과목 총합: {totalScore}')
-    print(f'{subject} 과목 평균: {averageScore}')
-
-printScoreForStudent('국어', 90, 80, 100, 60, 70)
-# 국어 과목 총합: 400
-# 국어 과목 평균: 80.0
-
-------------------------------------------------------------------------
-# 4차(예외)
-'''
-교사가 몇명일지 모르는 학생들의 점수를 입력할 때, 학생 점수의 총합과 평균을 구하는
-함수를 만들어 이용가능한 프로그램을 만들자
-'''
-
-flag = True
-studentScores = []
-
-def printScoreForStudent(scores):       #scores = [,,,,,,,,]
-    if len(scores) == 0:
-        print('학생수가 0명이라 총점과 평균을 구할 수 없다')
-
-    else:
-        pass
-
-        totalScore = 0
-        for score in scores:
-            totalScore += score
-            averageScore = totalScore / len(scores)
-
-        print(f'총점: {totalScore}')
-        print(f'평균: {averageScore}')
-
-while flag:
-    selectedMenuNum = int(input('1.학생 점수입력     2.종료'))
-    if selectedMenuNum == 1:
-        score = int(input('학생 점수 입력: '))
-        studentScores.append(score)
-    else:
-        flag = False
-
-printScoreForStudent(studentScores)
-# 1.학생 점수입력     2.종료1
-# 학생 점수 입력: 80
-# 1.학생 점수입력     2.종료1
-# 학생 점수 입력: 90
-# 1.학생 점수입력     2.종료1
-# 학생 점수 입력: 100
-# 1.학생 점수입력     2.종료2
-# 총점: 270
-# 평균: 90.0
-
-# 1.학생 점수입력     2.종료2
-# 학생수가 0명이라 총점과 평균을 구할 수 없다
-
-
-# studentScores라는 전역변수를 while문에서 수정했음에도 오류가 발생하지 않은 이유
-# -> 'studentScores'라는 변수가 레퍼런스 타입의 '리스트'이기 때문에
-# --> 리스트 같은 레퍼런스 타입은 데이터를 직접 갖고있지 않고, 리스트 내부의 첫번쨰
-# 데이터의 주소 값을 가지고 있기 때문에 변경/수정되어도 오류가 발생하지 않는다
-
-
-
-# flag변수 vs while문의 break
-# flag변수의 경우, 해당되는 함수나 for문, if문, whilw문의 바깥에서도 컨트롤이 가능하지만,
-# while문의 break의 경우에는 해당되는 함수나 for문, if문, whilw문의 내부에서만 컨트롤이
-# 가능하기 때문에 'flag'변수가 break보다 더 깔끔하게 기능한다
-
-------------------------------------------------------------------------
-# 인수와 매개변수의 순서가 일치하지 않을 경우
-def printMemberInfo(name, email, major, grade):
-    print(f'name\t: {name}')
-    print(f'email\t: {email}')
-    print(f'major\t: {major}')
-    print(f'grade\t: {grade}')
-    print('----------------------------------')
-
-printMemberInfo('Hong Gildong', 'gildomg@gmail.com', 'art', 1)
-# name    : Hong Gildong
-# email   : gildomg@gmail.com
-# major   : art
-# grade   : 1
-# ----------------------------------
-
-printMemberInfo('gildomg@gmail.com', 'art', 'Hong Gildong', 1)
-# name    : gildomg@gmail.com
-# email   : art
-# major   : Hong Gildong
-# grade   : 1
-# ----------------------------------
-
-printMemberInfo(email='gildomg@gmail.com', 
-                major='art', 
-                name='Hong Gildong', 
-                grade=1)
-# name    : Hong Gildong
-# email   : gildomg@gmail.com
-# major   : art
-# grade   : 1
-# ----------------------------------
-#('매개변수=인수'의 형식으로 작성한다면, 매개변수와 인수의 인덱스번호가 다르더라도 
-# 원래의 목적에 따르는 방향으로, 매개변수와 인수간 정확한 관계로 이어진다)
-# But, 매개변수의 순서에 맞게 인수를 작성하는 것을 우선해서 엄격해야 한다
-
-------------------------------------------------------------------------
-def printMemberInfo(info):
-    print(f'email: {info['email']}')
-    print(f'major: {info['major']}')
-    print(f'grade: {info['grade']}')
-    print(f'name: {info['name']}')
-
-printMemberInfo(
-    {
-        'name': 'Hong Gildong', 
-        'email': 'gildong@gmail.com',
-        'major': 'art',
-        'grade': 1
-    }
-)
-
-# email: gildong@gmail.com
-# major: art
-# grade: 1
-# name: Hong Gildong
-
-------------------------------------------------------------------------
-# 변수명: 명사와 명사 조합 위주로 / 함수명: 작동하는 기능을 알수 있게(동사+명사 조합으로)
-
-------------------------------------------------------------------------
-# 매개변수의 기본값 설정
-# 직원 급여 지급 프로그램을 만들자
-
-# ex) - '박용택'의 pay값이 없기 때문에 오류발생
-def setSalary(name, pay):
-    print(f'{name}의 급여: {pay}원 지급')
-
-setSalary('박찬호', 400)
-setSalary('박세리', 600)
-setSalary('박용택')     
-#TypeError: setSalary() missing 1 required positional argument: 'pay'
-
-
-
-# ex2) - pay의 기본값을 설정
-def setSalary(name, pay = 250):
-    print(f'{name}의 급여: {pay}원 지급')
-
-setSalary('박찬호', 400)
-setSalary('박세리', 600)
-setSalary('박용택')         #'pay'부분의 값이 앖는 관계로 기본값 '250'을 사용함
-# 박찬호의 급여: 400원 지급
-# 박세리의 급여: 600원 지급
-# 박용택의 급여: 250원 지급
-
-------------------------------------------------------------------------
-# 데이터 반환(return)
-# 데이터 반환이란, 함수는 실행이 끝난 후에 결과물(값)을 호출부로 반환할 수 있다
-# 이때 사용하는 키워드가 'return'이다
-# 덧셈 연산 함수를 만들어 결과를 출력하는 프로그램을 만들자
-
-# ex) - 함수1개에 기능2개를 담은 상황
-def addFunction(n1, n2):
-    sum = n1 + n2
-    print(f'결과 값: {sum}')
-
-addFunction(10, 20)                 #결과 값: 30
-
-------------------------------------------------------------------------
-# ex2) - return받아서 result로 받은 경우
-def addFunction(n1, n2):
-    sum = n1 + n2
-    # print(f'결과 값: {sum}')
-    return sum
-
-result = addFunction(10, 20)        #return으로 받아도, 받지 않아도 그만
-print(f'result: {result}')          #result: 30
-
-------------------------------------------------------------------------
-# ex3) - 함수1개에 기능1개만
-def printResult(value):
-    print(f'value: {value}')
-
-def addFunction(n1, n2):
-    sum = n1 + n2
-    # print(f'결과 값: {sum}')
-    printResult(sum)
-    return sum
-
-result = addFunction(10, 20)        #return으로 받아도, 받지 않아도 그만
-print(f'result: {result}')  
-
-------------------------------------------------------------------------
-def fun1():
-    print('11111111')
-    print('22222222')
-    return
-    print('33333333')
-    print('44444444')
-
-fun1()
-# 11111111
-# 22222222
-
-# (retuen키워드는 데이터를 반환하는 것, 이외에도 'break'와 같이 실행을 
-# 종료/중단하고 탈출할 수 있다)
+# 모듈이란?
+# 프로그램을 개발할 때, 이미 만들어져 있는 기능을 가져다 쓸 수 있는 기능
+# 특정 기능(함수)을 포함하고 있는 파일(xxx.py)로 다른 프로그램에 이식해서 사용하는 것
+
+# 모듈의 장점: 프로그램 개발시간 단축, 검증된 코드로서 오류가 적음,
+# 기능 구현을 분업화하고 공유할 수 있어 전체적인 작업속도를 향상시킴
+# But, 위의 모듈의 장점은 단점이 될 수도 있기에 주의가 필요함
 
 ------------------------------------------------------------------------
 ----1개의 폴더에, 2개 이상의 파일을 모듈파일과 실행파일로 구분하고 작동하는 법----
-------------------------------------------------------------------------
+
 20260520ex -> ex001 -> ex01
 # calaulator.py(모듈 파일 -1)
 
@@ -2845,6 +2402,7 @@ def printLength(lengths):
     for len in lengths.keys():
         print(f'{len}: {lengths[len]}{len}')
 
+------------------------------------------------------------------------
 ------------------------------------------------------------------------
 # main.py
 # ('calaulator.py' and 'convertUnitModule.py' 모듈 파일을 실행하는 'main'파일)
@@ -2892,4 +2450,360 @@ team project ==> toy-project
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
 [20260522]
+
+20260521ex --> oneDiary
+------------------------------------------------------------------------
+#config_dir -> dir -> config.py : 상수_모듈
+
+SIGN_UP         = 1
+SIGN_IN         = 2
+MEMBER_MODIFY   = 3
+MEMBER_DELETE   = 4
+SYSTEM_OUT      = 99
+SIGN_OUT        = 5
+DIARY_WRITE     = 6
+DIARY_READ      = 7
+
+DEV_MOD = True
+
+------------------------------------------------------------------------
+#db -> member_db.py : 회원DB_모듈
+memberDB = {}
+
+------------------------------------------------------------------------
+#db -> diray_db.py : diaryDB_모듈
+diaryDB = {}
+
+------------------------------------------------------------------------
+#member -> session.py : sign-user 모듈
+signInedMemberid = ''
+
+------------------------------------------------------------------------
+#member -> member_dumy.py : 회원dumy_모듈
+
+from db import member_db
+from db import diary_db
+
+ids = ['gildong', 'chanho']
+pws = ['1234', '5678']
+mails = ['gildong@gmail.com', 'chanho@naver.com']
+phones = ['010-0001-0002', '010-0011-0022']
+
+
+def dumyInit():
+    for n in range(len(ids)):
+        member_db.memberDB[ids[n]] = {
+            'uId': ids[n],
+            'uPw': pws[n],
+            'uMail': mails[n],
+            'uPhone':phones[n]
+        }
+
+        diary_db.diaryDB[ids[n]] = []
+
+------------------------------------------------------------------------
+#main.py : main_파일
+
+from config_dir.dir import config
+from member import session
+from db import member_db
+from db import diary_db
+from member import member_dumy
+import copy
+
+if config.DEV_MOD:
+    member_dumy.dumyInit()
+    print(f'memberDB: {member_db.memberDB}')
+
+flag = True
+
+while flag:
+
+    menuNum = ''
+    if session.signInedMemberid == '':
+        # sign-out 일때
+        menuNum = int(input('1.sign-up | 2.sign-in | 6.write | 7.read | 99.end'))
+    else:
+        # sign-in 일때
+        menuNum = int(input('3.modify | 5.sign-out | 4.delete | 6.write | 7.read | 99.end'))
+
+
+    if menuNum == config.SIGN_UP:
+        print('1.sign-up')
+        uId = input('please input new member ID: ')
+        uPw = input('please input new member PW: ')
+        uMail = input('please input new member MAIL: ')
+        uPhone = input('please input new member PHONE: ')
+
+        member_db.memberDB[uId] = {
+            'uId': uId,
+            'uPw': uPw,
+            'uMail':uMail,
+            'uPhone': uPhone
+        }
+
+        print('New member sign-up success')
+
+        if config.DEV_MOD:
+            print(f'memberDB: {member_db.memberDB}')
+
+        diary_db.diaryDB[uId] = []
+
+    elif menuNum == config.SIGN_IN:
+        print('2.sign-in')
+        uId = input('please input member ID: ')
+        uPw = input('please input member PW: ')
+
+
+        if uId in member_db.memberDB:
+            if member_db.memberDB[uId]['uPw'] == uPw:
+                print('sign-in success')
+                session.signInedMemberid = uId
+            else:
+                print('sign-in fail -- PW trouble')
+        else:
+            print('sign-in fail -- ID trouble')
+
+        # if uId in member_db.memberDB and member_db.memberDB[uId]['uPw'] == uPw:
+        #         print('sign-in success')
+        # else:
+        #     print('sign-in fail -- ID or PW trouble')
+
+
+    elif menuNum == config.MEMBER_MODIFY:
+        print('3.modify')
+        '''
+        id pw, mail, phone 중에서 어떤 정보들을 수정가능케 할지 정해야 한다
+        id: x, 또한 이미 탈퇴한 사용자의 id라도 절대 변경/수정을 허용하는 것은 않된다
+        pw: 절대 수정이 불가능하지는 않지만, 쉽게 변경할 수는 없다
+        mail, phone: 비교적 수정이 간단하게 가능하다 
+        '''
+        uPw = input('please input member PW: ')
+        uMail = input('please input member MAIL: ')
+        uPhone = input('please input member PHONE: ')
+        '''
+            -member_db 모듈에 있는 memberDB 딕셔너리에서 회원정보를 변경한다
+            -현재 member_db에는 'gildong', 'chanho'회원이 존재하기 때문에, 
+            -현 상황에 로그인되어 있는 회원의 정보를 불러와서 회원정보를 수정한다
+            -즉, session.signInedMemberid에 현재 로그인되어 있는 회원의 ID를 
+                가져와서 사용하면 된다
+        '''
+        currentSignInedMemberID = session.signInedMemberid
+        memberInfo = member_db.memberDB[currentSignInedMemberID]
+
+        if config.DEV_MOD: print(f'memberInfo: {memberInfo}')
+
+        memberInfo['uPw'] = uPw
+        memberInfo['uMail'] = uMail
+        memberInfo['uPhone'] = uPhone
+
+        if config.DEV_MOD: print(f'after modify: memberInfo: {memberInfo}')
+
+    elif menuNum == config.MEMBER_DELETE:
+        print('4.delete')
+        '''
+        현재 로그인 되어 있는 회원의 id를 session.signInedMemberid에서 가져와서
+        해당하는 회원의 정보를 member_db.memberDB에서 삭제한다
+        '''
+        currentSignInedMemberID = session.signInedMemberid
+        del member_db.memberDB[currentSignInedMemberID]
+        del diary_db.diaryDB[currentSignInedMemberID]
+        
+        print('member info delete')
+        session.signInedMemberid = ''
+
+        if config.DEV_MOD: print(f'member_db.memberDB: {member_db.memberDB}')
+
+    elif menuNum == config.SYSTEM_OUT:
+        print('99.end')
+        flag = False
+
+    elif menuNum == config.SIGN_OUT:
+        print('5.sign-out')
+        '''
+        메뉴를 변경한다
+        로그인 값 또한 변경한다
+        session모듈에 signinedMemverId 변수에 있는지?
+        '''
+        print('sign-out success')
+        session.signInedMemberid = ''
+
+    elif menuNum == config.DIARY_WRITE:
+        print(f'6.write')
+
+        if session.signInedMemberid == '':
+            print('sorry, please sign-in')
+        else:
+            while True:
+                diaryTxt = input('10자 이하의 짧은 글을 입력하세요. ')
+                if len(diaryTxt) > 10:
+                    print(f'10자를 초과했습니다.({len(diaryTxt)})')
+                else:
+                    diary_db.diaryDB[session.signInedMemberid].append(diaryTxt)
+                    if config.DEV_MOD: print(f'diary_db.diaryDB: {diary_db.diaryDB}')
+                    break
+
+    elif menuNum == config.DIARY_READ:
+        print(f'7.read')
+
+        if session.signInedMemberid == '':
+            print('sorry, please sign-in')
+        else:
+            currentSignInedMemberID = session.signInedMemberid
+            myDiaries = diary_db.diaryDB[currentSignInedMemberID]
+
+            deepcopiedDiaries = copy.deepcopy(myDiaries)
+            deepcopiedDiaries.reverse()
+            for idx, diaryTxt in enumerate(deepcopiedDiaries):
+                print(f'({idx +1}): {diaryTxt}')
+
+    else:
+        print('선택한 번호는 없습니다. 다시 선택하세요.')
+
+------------------------------------------------------------------------
+# 모듈명 단축하기: as
+
+ex) 유명한 모듈(명)
+import numpy --> import numpy as np
+import pandas --> import pandas as pd
+
+------------------------------------------------------------------------
+#20260522ex --> ex001
+
+#examCalculator.py : 계산기_모듈
+
+def addition(n1, n2):
+    print(f'덧셈: {n1 + n2}')
+
+def subtraction(n1, n2):
+    print(f'뺄셈: {n1 - n2}')
+
+def multiplication(n1, n2):
+    print(f'곱셈: {n1 * n2}')
+
+def division(n1, n2):
+    print(f'나눗셈: {n1 / n2}')
+
+def rest(n1, n2):
+    print(f'나머지: {n1 % n2}')
+
+def portion(n1, n2):
+    print(f'몫: {n1 // n2}')
+
+------------------------------------------------------------------------
+#smartModule.py : main_파일
+
+# 모듈명 단축하기: as
+
+# import examCalculator as ca
+
+# # examCalculator.addition(10, 20)
+# # examCalculator.subtraction(20, 10)
+# # examCalculator.multiplication(10, 10)
+# # examCalculator.division(100, 10)
+# # examCalculator.rest(100, 30)
+# # examCalculator.portion(100, 10)
+
+# ca.addition(10, 20)
+# ca.subtraction(20, 10)
+# ca.multiplication(10, 10)
+# ca.division(100, 10)
+# ca.rest(100, 30)
+# ca.portion(100, 10)
+
+
+#-----------------------------------##
+from examCalculator import addition
+
+addition(10, 20)
+#덧셈: 30
+
+subtraction(20, 10)
+#NameError: name 'subtraction' is not defined
+# (from 모듈명 import (특정)함수명)
+
+# from 모듈명 import '.'
+# 특정 함수가 아닌, 모든 함수를 사용하기 위함
+# But, 'from 모듈명 import .' 보다는
+# 'import examCalculator as ca'를 더 많이 사용함
+
+------------------------------------------------------------------------
+#20260522ex --> ex002
+
+#module01.py : test01_모듈
+
+def fun():
+    print('module01의 함수 실행')
+
+# fun()
+
+# print(f'module01의 __name__: {__name__}')
+
+if __name__ == '__main__':
+    fun()
+
+# 해당: module01.py 파일이 실행 파일일때, 해당 파일의 타입은 __main__이 되면서
+# 해당 명령이 실행되지만, 다른 파일에서 실행한다면, 위의 명령은 실행되지 않는다.
+
+------------------------------------------------------------------------
+#module02.py : test02_모듈
+
+def fun():
+    print('module02의 함수 실행')
+
+fun()
+
+print(f'module02의 __name__: {__name__}')
+
+------------------------------------------------------------------------
+#module03.py : test03_모듈
+
+def fun():
+    print('module03의 함수 실행')
+
+fun()
+
+print(f'module03의 __name__: {__name__}')
+
+------------------------------------------------------------------------
+#app.py : main_파일
+
+import module01
+import module02
+import module03
+
+# print('this is 실행파일')
+# # module01의 함수 실행
+# # module02의 함수 실행
+# # module03의 함수 실행
+# # this is 실행파일
+
+
+# ex)
+# print(f'app:실행파일의 __name__: {__name__}')
+# # module01의 함수 실행
+# # module01의 __name__: module01     #해당 모듈명
+# # module02의 함수 실행
+# # module02의 __name__: module02
+# # module03의 함수 실행
+# # module03의 __name__: module03
+# # this is 실행파일
+# # app:실행파일의 __name__: __main__     #구분: main 파일
+
+
+
+# if __name__ == '__main__':
+#     fun()
+
+# ex2)
+print(f'app:실행파일의 __name__: {__name__}')
+# module02의 함수 실행
+# module02의 __name__: module02
+# module03의 함수 실행
+# module03의 __name__: module03
+# app:실행파일의 __name__: __main__
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[20260526]
 
