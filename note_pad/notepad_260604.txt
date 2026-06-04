@@ -1,0 +1,669 @@
+20260604
+
+
+# 공공 데이터 포털에서 request해서 response받는법
+# ['한국문화관광연구원_출입국관광통계서비스']
+
+------------------------------------------------------------------------
+import urllib.request
+import datetime
+import json
+
+SERVICE_KEY = '1fac12c20ae2a975376bc2dedd43773c22483d8f7be8953e009f33d65a5efb06'
+
+------------------------------------------------------------------------
+def getRequestURL(url):
+    req = urllib.request.Request(url)
+
+    try:
+        res = urllib.request.urlopen(req)
+        if res.getcode() == 200:    
+            print(f'[{datetime.datetime.now()}]: REQUEST COMMUNICATION SUCCESS')
+            return res.read().decode('utf-8')
+
+    except Exception as e:
+        print(f'[{datetime.datetime.now()}]: REQUEST COMMUNICATION FAIL')
+        print(f'e: {e}')
+        return None
+
+------------------------------------------------------------------------
+def getTourismStatesItem(yyyymm, nat_cd, ed_cd):
+    serviceURL = 'http://openapi.tour.go.kr/openapi/service/EdrcntTourismStatsService/getEdrcntTourismStatsList'
+
+    paraneters = "?"
+    paraneters += "_type=json&"
+    paraneters += "YM=" + yyyymm + '&'
+    paraneters += "NAT_CD=" + nat_cd + '&'
+    paraneters += "ED_CD=" + ed_cd + '&'
+    paraneters += "serviceKey=" + SERVICE_KEY
+
+    url = serviceURL + paraneters
+    res = getRequestURL(url)        #None or not None
+    if res == None:
+        return None
+    else:
+        return json.loads(res)
+        #json.loads()는 JSON 형식의 문자열(str)을 파이썬 애플리케이션에서 쉽게 사용할 수 있도록 변환함
+        #JSON 형식의 문자열(str) --> dic 객체
+
+------------------------------------------------------------------------
+def getTourismStateService(nat_cd, ed_cd, nStartYear, nEndYear):
+
+    jsonResult = []
+    result = []
+    natName = ''
+    isDataEnd = 0
+    dataEND = f'{str(nEndYear)}{str(12)}'
+    
+    for year in range(nStartYear, nEndYear +1):     #년
+        for month in range(1, 13):                  #월
+            if isDataEnd == 1:
+                break
+
+            yyyymm = f'{str(year)}{str(month):0>2}'      #202010
+            jsonData = getTourismStatesItem(yyyymm, nat_cd, ed_cd)
+            if jsonData['response']['header']['resultMsg'] == 'OK':
+
+                if jsonData['response']['body']['items'] == '':
+                    isDataEnd = 1   #데이터 끝 확인용 flag변수
+                    dataEND = f'{str(year)}{str(month -1):0>2}'
+                    print('DATA END')
+                    break
+
+                #json data 확인
+                natName = jsonData['response']['body']['items']['item']['natKorNm']
+                natName = natName.replace(' ', '')  #중  국 -> 중국
+                num = jsonData['response']['body']['items']['item']['num']  #방문한 사람 수
+                ed = jsonData['response']['body']['items']['item']['ed']    #방한외래관광객
+
+                jsonResult.append({
+                    'nat_Name': natName,
+                    'nat_cd': nat_cd,
+                    'yyyymm': yyyymm,
+                    'visit_cnt': num,
+                })
+    return (jsonResult, natName, ed, dataEND)
+
+------------------------------------------------------------------------
+def main():
+
+    jsonResult = []
+    natName = ''
+
+    print('==================================================')
+    print('============국내 입국한 외국인 통계 데이터============')
+    print('==================================================')
+
+    nat_cd = input('국가 코드 입력[중국(112), 일본(130), 미국(275)] :  ')
+    nStartYear = int(input('데이터 수집 시작 년도 :  '))
+    nEndYear = int(input('데이터 수집 끝 년도 :  '))
+    ed_cd = 'E' # E: 입국, D: 출국
+
+    jsonResult, natName, ed, dataEND = getTourismStateService(nat_cd, ed_cd, nStartYear, nEndYear)
+    # print(f'jsonResult: {jsonResult}')
+    # print(f'natName: {natName}')
+    # print(f'ed: {ed}')
+    # print(f'dateEND: {dataEND}')
+    # # jsonResult: 
+    # # [
+    # # {'nat_Name': '일본', 'nat_cd': '130', 'yyyymm': '202601', 'visit_cnt': 225351}, 
+    # # {'nat_Name': '일본', 'nat_cd': '130', 'yyyymm': '202602', 'visit_cnt': 232835}, 
+    # # {'nat_Name': '일본', 'nat_cd': '130', 'yyyymm': '202603', 'visit_cnt': 481789}, 
+    # # {'nat_Name': '일본', 'nat_cd': '130', 'yyyymm': '202604', 'visit_cnt': 304053}
+    # # ]
+    # # natName: 일본
+    # # ed: 방한외래관광객
+    # # dateEND: 202604
+
+    if natName == '':
+        print('데이터 수집 오류')
+    else:
+        print('데이터 수집 성공')
+        with open(f'./{natName}_{ed}_{nStartYear}_{dataEND}.json', 'w', encoding='utf-8') as f:
+            jsonFile = json.dumps(jsonResult, indent=4, sort_keys=True, ensure_ascii=False)
+            f.write(jsonFile)
+
+------------------------------------------------------------------------
+if __name__ == '__main__':
+    main()
+	
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# OpenCV(Open Source Computer Vision Library)
+: 실시간 컴퓨터 비전, 이미지 처리, 그리고 머신러닝을 위해 설계된 오픈 소스 라이브러리
+
+#Gemini)
+
+#주요 특징
+1.다양한 플랫폼 지원: Windows, Linux, macOS, Android, iOS 등 다양한 운영체제에서 
+실행 가능하다.
+
+2.다양한 언어 지원: C++, Python, Java, MATLAB 등 여러 프로그래밍 언어의 인터페이스를 
+제공한다. (특히 Python API가 사용하기 간편하여 가장 많이 쓰인다.)
+
+3.방대한 알고리즘: 이미지 필터링, 기하학적 변환, 객체 인식, 얼굴 검출, 영상 추적, 
+3D 재구성 등 수천 개의 최적화된 알고리즘을 포함하고 있다.
+
+4.고성능: 연산량이 많은 이미지 처리 작업에 최적화되어 있어 실시간 처리가 가능하다.
+
+#OpenCV는 컴퓨터가 인간처럼 이미지를 보고 이해할 수 있도록 돕는 '눈'과 '뇌'의 역할을 
+하는 강력한 도구
+
+------------------------------------------------------------------------
+# YOLO(You Only Look Once)
+: 실시간 객체 탐지(Object Detection) 분야에서 가장 유명하고 혁신적인 딥러닝 알고리즘
+
+#Gemini)
+
+#YOLO의 핵심 원리
+기존의 방식(예: R-CNN 계열)이 '영역을 먼저 제안하고(Region Proposal) 
+-> 분류(Classification)하는' 2단계 방식을 사용했다면, 
+YOLO는 이를 하나의 회귀(Regression) 문제로 통합했다
+
+1.통합된 네트워크: 이미지 전체를 한 번에 신경망에 통과시킨다.
+
+2.그리드(Grid) 시스템: 이미지를 $S \times S$ 크기의 격자로 나눈다.
+
+3.동시 예측: 각 격자 셀(Grid Cell)마다 물체의 존재 확률과 경계 상자(Bounding Box)의 
+좌표, 그리고 클래스(무엇인지)를 한 번에 예측한다.
+
+#YOLO가 가진 강력한 장점
+1.압도적인 속도 (Real-time): 연산 구조가 단순하여 초당 수십 프레임(FPS) 처리가 
+가능합니다. 실시간 카메라 영상 분석에 최적화되어 있다.
+
+2.전역적 정보 파악: 이미지 전체를 한 번에 보기 때문에, 물체의 배경 문맥(Context)을 
+더 잘 이해하여 실수(배경을 물체로 착각하는 일 등)가 적다.
+
+3.높은 범용성: 학습된 모델을 새로운 이미지에 적용했을 때 매우 견고한 성능을 보여준
+다.
+
+------------------------------------------------------------------------
+# Flask: 파이썬(Python)으로 작성된 경량 웹 프레임워크
+: 특정 기능을 강요하지 않고 개발자가 원하는 도구와 라이브러리를 자유롭게 선택해서 
+사용할 수 있도록 최소한의 기능만을 제공하기 때문
+
+#Gemini)
+
+#Flask의 주요 특징
+1.간결함과 유연성: 기본적인 웹 서버 구축에 필요한 핵심 기능만 갖추고 있습니다. 
+데이터베이스 연결, 폼 유효성 검사 등은 필요한 확장 라이브러리
+(Flask-SQLAlchemy, Flask-WTF 등)를 직접 선택해 추가하면 됩니다.
+
+2.학습 곡선이 낮음: 코드가 직관적이고 설정이 복잡하지 않아 초보자가 웹 개발의 원리를 
+배우기에 아주 적합합니다.
+
+3.강력한 확장성: 수많은 오픈 소스 확장 라이브러리가 존재하여, 필요한 기능을 거의 
+무엇이든 붙일 수 있습니다.
+
+4.Jinja2 템플릿 엔진: 파이썬 구문을 HTML 파일 내에서 쉽게 사용할 수 있도록 도와주는 
+템플릿 엔진을 기본으로 지원합니다.
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+#github 인증하는 방법
+
+1. id, pw로 브라우저 인증 -> 취미 생활
+
+2. HTTPS + Persnal access token -> 1번보다 약간 고급진 방법
+
+3. SSH key -> 가장 안전하고, 안정적인 방법(1대의 컴퓨터만 사용가능)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# SSH key 방법
+
+1. 제어판-> 사용자 계정-> window 자격 증명 관리자-> github 브라우저 인증 [제거]
+
+2. '돋보기'에 'cmd' 검색, 열어서 "mkdir %USERPROFILE%\.ssh\git_keys"입력 및 enter
+
+3. c드라이브-> 사용자(or, user)-> ".ssh" 및 기타 폴더 확인하기
+
+4. 'cmd'에서 "ssh-keygen -t ed25519 -C "ho8566z@gmail.com"
+ -f %USERPROFILE%\.ssh\git_keys\id_ed25519_main" 입력하기
+
+5. .ssh-> git_keys에서 개인키, 공개키 생성되었는지 확인하기
+
+6. github-> user.settings-> [SSH and GPG keys]에 새로운 SSH key 등록하기
+(cmd에서 "type %USERPROFILE%\.ssh\git_keys\id_ed25519_main.pub" 입력해서 
+ SSH key 확인)
+
+7. '돋보기'에 "services.msc"를 입력하고, 'openssh agent~'를 찾아서 '사용안함'을
+'자동'으로 [선택]하고, [적용], [시작], [확인]하기
+
+8. 'cmd'에서 "ssh-add %USERPROFILE%\.ssh\git_keys\id_ed25519_main" 입력하기
+
+9. 등록 완료 확인하고, "ssh -T git@github.com" 입력하고, "yes"입력 및 enter
+
+10. 연결 상태 확인하고 메세지 확인하기
+
+11. 각각의 'Local Repository'에서 'git bash' 실행해서 github에 인식시키기
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# Numpy(Numerical Python): 파이썬에서 과학적 계산과 데이터 분석을 수행하기 위한 가장 
+핵심적인 라이브러리
+
+# NumPy의 핵심 기능
+1. 다차원 배열(ndarray)
+- NumPy의 가장 중요한 특징은 ndarray라는 고성능 다차원 배열 객체이다.
+
+- 파이썬 리스트와 달리 모든 원소가 같은 데이터 타입을 가져야 한다. 
+이로 인해 메모리 사용이 최적화되고 연산 속도가 매우 빠르다.
+
+- 벡터(1차원), 행렬(2차원), 텐서(3차원 이상) 등 다양한 형태의 데이터를 다룰 수 있다.
+
+2. 강력한 브로드캐스팅(Broadcasting)
+- 서로 크기가 다른 배열 간에도 산술 연산을 가능하게 해주는 기능리다. 
+- 반복문을 직접 작성하지 않고도 배열 전체에 일괄적인 수학적 연산을 수행할 수 있어 
+코드가 매우 간결해진다.
+
+3. 풍부한 수학적 함수
+- 선형 대수, 푸리에 변환, 통계, 무작위 수 생성 등 고도화된 수학 계산을 위한 내장 
+함수를 제공한다.
+
+# NumPy의 중요도
+- 속도: NumPy의 핵심 연산은 C 언어로 구현되어 있어 파이썬 반복문보다 수십 배에서 
+수백 배 이상 빠르다.
+
+- 생태계의 중심: Pandas(데이터 분석), Matplotlib(시각화), Scikit-learn(머신러닝), 
+TensorFlow/PyTorch(딥러닝) 등 대부분의 데이터 라이브러리가 NumPy의 ndarray를 
+기본 데이터 구조로 사용한다.
+
+- 효율적인 메모리 관리: 대용량 데이터를 다룰 때 메모리를 훨씬 적게 사용한다.
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+import numpy as np
+
+# 1. numpy 배열 생성
+py_list = [1, 2, 3, 4, 5]
+print(f'py_list: {py_list}')
+
+
+np_arr = np.array(py_list)
+print(f'np_arr: {np_arr}')              #np_arr: [1 2 3 4 5]
+print(f'np_arr type: {type(np_arr)}')   #np_arr type: <class 'numpy.ndarray'>
+
+
+np_arr = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+print(f'np_arr: {np_arr}')              #np_arr: [ 1  2  3  4  5  6  7  8  9 10]
+
+------------------------------------------------------------------------
+# n차원 numpy 배열 생성
+# 2차원 numpy 배열
+np_arr = np.array(
+    [
+        [1, 2, 3, 4, 5], 
+        [6, 7, 8, 9, 0]
+    ])
+print(f'np_arr: \n{np_arr}')              
+#np_arr: 
+# [[ 1  2  3  4  5]
+#  [ 6  7  8  9 0]]
+print(np_arr[1][3])     #9
+
+for idx, arr in enumerate(np_arr):
+    print(f'idx: {idx}')
+    for num in arr:
+        print(f'num: {num}')
+# idx: 0
+# num: 1
+# num: 2
+# num: 3
+# num: 4
+# num: 5
+# idx: 1
+# num: 6
+# num: 7
+# num: 8
+# num: 9
+# num: 0
+
+------------------------------------------------------------------------
+# 3차원 배열
+np_arr = np.array(
+    [
+        [
+            [1, 2, 3, 4, 5],
+            [6, 7, 8, 9, 0]
+        ],
+        [
+            [10, 20, 30, 40, 50],
+            [60, 70, 80, 90, 100]
+        ],
+        [
+            [100, 200, 300, 400, 500],
+            [600, 700, 800, 900, 1000]
+        ]
+    ]
+)
+
+for arr1th in np_arr:
+    for arr2th in arr1th:
+        for arr3th in arr2th:
+            print(f'arr3th: {arr3th}')
+# arr3th: 1
+# arr3th: 2
+# arr3th: 3
+# arr3th: 4
+# arr3th: 5
+# arr3th: 6
+# arr3th: 7
+# arr3th: 8
+# arr3th: 9
+# arr3th: 0
+# arr3th: 10
+# arr3th: 20
+# arr3th: 30
+# arr3th: 40
+# arr3th: 50
+# arr3th: 60
+# arr3th: 70
+# arr3th: 80
+# arr3th: 90
+# arr3th: 100
+# arr3th: 100
+# arr3th: 200
+# arr3th: 300
+# arr3th: 400
+# arr3th: 500
+# arr3th: 600
+# arr3th: 700
+# arr3th: 800
+# arr3th: 900
+# arr3th: 1000
+
+------------------------------------------------------------------------
+# numpy 복사
+np_arr = np.array([1, 2, 3, 4, 5])
+print(f'np_arr: {np_arr}')          #np_arr: [1 2 3 4 5]
+
+np_arr_copy = np_arr.copy()
+print(np_arr is np_arr_copy)                    #메모리 주소 비교: False
+print(np.array_equal(np_arr, np_arr_copy))      #값 자체를 비교: True
+print(np_arr == np_arr_copy)
+# 원소(item) 마다 비교: [ True  True  True  True  True]
+
+------------------------------------------------------------------------
+# numpy 배열 연산
+np_arr = np.array([10, 20, 30, 40, 50])
+print(f'np_arr: {np_arr}')          #np_arr: [10 20 30 40 50]
+
+print(f'np_arr +10: {np_arr +10}')  #np_arr +10: [20 30 40 50 60]
+print(f'np_arr -10: {np_arr -10}')  #np_arr -10: [ 0 10 20 30 40]
+print(f'np_arr *10: {np_arr *10}')  #np_arr *10: [100 200 300 400 500]
+print(f'np_arr /10: {np_arr /10}')  #np_arr /10: [1. 2. 3. 4. 5.]
+#나누기의 결과는 정수가 아닌, 실수 형태로서 "N."으로 출력됨
+print(f'np_arr %10: {np_arr %10}')  #np_arr %10: [0 0 0 0 0]
+print(f'np_arr //10: {np_arr //10}')#np_arr //10: [1 2 3 4 5]
+
+------------------------------------------------------------------------
+# numpy 배열 속성 확인
+# 1. 배열 원소 데이터 타입(dtype) 설정
+np_arr = np.array([1, 2, 3], dtype=float)
+print(f'np_arr: {np_arr}')      #np_arr: [1. 2. 3.]
+
+np_arr = np_arr.astype(np.int64)
+print(f'np_arr: {np_arr}')      #np_arr: [1 2 3]
+print(f'np_arr type: {type(np_arr)}')
+#np_arr type: <class 'numpy.ndarray'>
+
+------------------------------------------------------------------------
+# 2. numpy 배열 속성(차원, 형태, 데이터타입) 확인
+np_arr = np.array(
+    [
+        [1., 2., 3., 4., 5.],
+        [10, 20, 30, 40, 50],
+        [100, 200, 300, 400, 500]
+    ]
+)
+
+------------------------------------------------------------------------
+# 배열 확인
+print(f'차원: {np_arr.ndim}')   #차원: 2
+
+------------------------------------------------------------------------
+# 배열 형태
+print(f'형태: {np_arr.all}')
+#형태: <built-in method all of numpy.ndarray object at 0x000002187F8B3630>
+
+------------------------------------------------------------------------
+# 배열 데이터타입
+print(f'데이터타입: {np_arr.dtype}')    #데이터타입: float6
+
+------------------------------------------------------------------------
+# 모든 원소가 X인 배열 만들기
+# 1. ones() & ones_like()
+np_arr = np.ones((3,5), dtype=int)
+print(f'np_arr: {np_arr}')
+# np_arr: [[1 1 1 1 1]
+#  [1 1 1 1 1]
+#  [1 1 1 1 1]]
+
+
+py_list = [1, 2, 3]
+np_arr = np.ones_like(py_list, dtype=float)
+print(f'np_arr: {np_arr}')
+'''
+np_arr: [1. 1. 1.]
+'''
+
+
+py_list = [[1, 2, 3], [4, 5, 6]]
+np_arr = np.ones_like(py_list, dtype=float)
+print(f'np_arr: \n{np_arr}')
+'''
+np_arr: 
+[[1. 1. 1.]
+ [1. 1. 1.]]
+'''
+
+------------------------------------------------------------------------
+# 2. zeros() & zeros_like()
+# 모든 원소가 0인 배열 만들기
+np_arr = np.zeros((3, 5), dtype=int)
+print(f'np_arr: \n{np_arr}')
+'''
+np_arr: 
+[[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+'''
+
+
+py_list = [1, 2, 3]
+np_arr = np.zeros_like(py_list, dtype=int)
+print(f'np_arr: \n{np_arr}')
+'''
+np_arr: 
+[0 0 0]
+'''
+
+
+py_list = [[1, 2, 3], [4, 5, 6]]
+np_arr = np.zeros_like(py_list, dtype=int)
+print(f'np_arr: \n{np_arr}')
+'''
+np_arr: 
+[[0 0 0]
+ [0 0 0]]
+'''
+
+------------------------------------------------------------------------
+# 3. empty() & empty_like()
+np_arr = np.empty((3, 5), dtype=int)
+print(f'np_arr: \n{np_arr}')
+'''
+np_arr: 
+[[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+'''
+
+
+py_list = [1, 2, 3]
+np_arr = np.empty_like(py_list, dtype=int)
+print(f'np_arr: \n{np_arr}')
+'''
+np_arr: 
+[1 2 3]
+'''
+
+
+py_list = [[1, 2, 3], [4, 5, 6]]
+np_arr = np.empty_like(py_list, dtype=int)
+print(f'np_arr: \n{np_arr}')
+'''
+np_arr: 
+[[1 2 3]
+ [4 5 6]]
+'''
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# Numpy에서 중요한 부분: 
+
+1. numpy 배열 생성
+2. ones() & ones_like()
+3. zeros() & zeros_like(), 
+4. empty() & empty_like()
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# OpenCV 모듈 가져오기
+import cv2
+
+# 버전 확인
+print(cv2.__version__)      #4.13.0
+
+# 이미지 불러와서 출력하기: 펙셀스(https://www.pexels.com/ko-kr/)
+formula_oneImg = cv2.imread('./res/img/formula_one.jpg')    #이미지 읽기
+print(f'formula_oneImg shape: {formula_oneImg.shape}')      #이미지 크기: (4121, 6179, 3)
+
+formula_oneImg = cv2.resize(formula_oneImg, (600, 360))     #이미지 크기 변경 (=가로, 세로, BGR)
+
+cv2.imshow('title-formula_oneImg', formula_oneImg)          #이미지 출력
+# cv2.waitKey(1000 * 3)                                     #'* n초' 동안 출력됨
+cv2.waitKey(0)                                              #어떤 키를 누를 때까지 기다려라
+cv2.destroyAllWindows()                                     #모든 창 닫기
+
+------------------------------------------------------------------------
+# 이미지 읽기 옵션
+formula_oneImgColor = cv2.imread('./res/img/formula_one.jpg', cv2.IMREAD_COLOR)
+formula_oneImgColor = cv2.resize(formula_oneImgColor, (600, 360))
+
+formula_oneImgGrey = cv2.imread('./res/img/formula_one.jpg', cv2.IMREAD_GRAYSCALE)
+formula_oneImgGrey = cv2.resize(formula_oneImgGrey, (600, 360))
+
+formula_oneImgUnchanged = cv2.imread('./res/img/formula_one.jpg', cv2.IMREAD_UNCHANGED)
+formula_oneImgUnchanged = cv2.resize(formula_oneImgUnchanged, (600, 360))
+
+cv2.imshow('title-formula_oneImgColor', formula_oneImgColor)            #BGR 유지
+cv2.imshow('title-formula_oneImgGrey', formula_oneImgGrey)              #GREYSCALE
+cv2.imshow('title-formula_oneImgUnchanged', formula_oneImgUnchanged)    #ALPHA 유지(투명 부분 유지)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+------------------------------------------------------------------------
+# 동영상 불러와서 출력하기: 펙셀스(https://www.pexels.com/ko-kr/)
+# OpenCV에서 동영상을 불러온다는 것은 '동영상 -> 프레임(frame) 추출 -> 이미지화 -> 출력'
+formula_oneMov = cv2.VideoCapture('./res/mov/formula_one.mp4')  #이미지 읽기
+while formula_oneMov.isOpened():            #동영상 파일이 연결되어 있다면,
+    result, frame = formula_oneMov.read()   #result: read 성공여부, frame: 받아온 이미지(프레임)
+    if not result:
+        print('END FRAME')
+        break
+
+    frame = cv2.resize(frame, (1060, 600))
+
+    print(f'frame: {frame}')
+    cv2.imshow('title-formula_oneFrame', frame)     #매우 빠르게 frame(이미지)가 출력됨
+
+    if cv2.waitKey(1) == ord('q'):      #1ms 동안 기다린다, 사용자가 'q'를 입력하면 중단한다
+        break
+
+formula_oneMov.release()        #외부 자원 해제
+cv2. destroyAllWindows()        #윈도우 창 닫기
+
+------------------------------------------------------------------------
+# 캠에서 동영상 실시간으로 불러오기
+webCamMov = cv2.VideoCapture(0)        #이미지 읽기
+while webCamMov.isOpened():            #동영상 파일이 연결되어 있다면,
+    result, frame = webCamMov.read()   #result: read 성공여부, frame: 받아온 이미지(프레임)
+    if not result:
+        print('END FRAME')
+        break
+
+    frame = cv2.resize(frame, (1060, 600))
+
+    print(f'frame: {frame}')
+    cv2.imshow('title-webCamFrame', frame)     #매우 빠르게 frame(이미지)가 출력됨
+
+    if cv2.waitKey(1) == ord('q'):      #1ms 동안 기다린다, 사용자가 'q'를 입력하면 중단한다
+        break
+
+webCamMov.release()        #외부 자원 해제
+cv2. destroyAllWindows()        #윈도우 창 닫기
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+import cv2
+import numpy as np
+
+# 스케치북 생성
+# 세로: 480, 가로: 640, 3채널: BGR
+sketchbookImg = np.zeros((480, 640, 3), dtype=np.uint8)
+cv2.imshow('title-sketchbookImg', sketchbookImg)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+------------------------------------------------------------------------
+# 흰색 스케치북
+sketchbookImg = np.zeros((480, 640, 3), dtype=np.uint8)
+sketchbookImg[:] = (255, 255, 255)      #BGR 값이라서 0은 빛을 '소등'한 것
+cv2.imshow('title-sketchbookImg', sketchbookImg)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+------------------------------------------------------------------------
+# 스케치북에 특정 영역을 색칠하기
+sketchbookImg = np.zeros((480, 640, 3), dtype=np.uint8)
+sketchbookImg[:] = (0, 40, 0)
+
+sketchbookImg[100:200, 300:400] = (255, 255, 255)
+            # 세로:세로, 가로:가로
+sketchbookImg[300:400, 100:200] = (40, 255, 255)
+
+cv2.imshow('title-sketchbookImg', sketchbookImg)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+------------------------------------------------------------------------
+# 직선 만들기
+sketchbookImg = np.zeros((480, 640, 3), dtype=np.uint8)
+sketchbookImg[:] = (0, 0, 0)
+
+COLOR_4 = (0, 0, 255)   #RED_LINE
+COLOR_8 = (0, 255, 0)   #GREEN_LINE
+COLOR_AA = (255, 0, 0)  #BLUE_LINE
+THINKNESS = 3           #선의 두께
+
+cv2.line(sketchbookImg, (10, 10), (400, 400), COLOR_4, THINKNESS, cv2.LINE_4)
+        #어디에 만들건지,  시작점,    끝점,      선의 색상, 선의 두께
+cv2.line(sketchbookImg, (10, 10), (500, 400), COLOR_8, THINKNESS, cv2.LINE_8)
+
+cv2.line(sketchbookImg, (10, 10), (600, 400), COLOR_AA, THINKNESS, cv2.LINE_AA)
+
+cv2.imshow('title-sketchbookImg', sketchbookImg)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
