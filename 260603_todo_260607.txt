@@ -1,6 +1,0 @@
-# C:\lyh\python\python_ex\re_digest_ex\teacher_myDashborad_Pjt
-# --> [at_home_myDashboradPjt] --> member 
-# --> [member_service.py] --> "def run()"를 보고,
-
-# [app.py], [bank_service.py], [memo_service.py], [todo_service.py]
-# 까지의 4개 파일, 모듈과 함수 등을 세분화해서 작게 만들기
