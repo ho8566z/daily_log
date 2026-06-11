@@ -5051,6 +5051,382 @@ div a.google {
 </html>
 
 ------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LETTER</title>
+    <link href="./common.css" rel="stylesheet" type="text/css">
+    <link href="./index.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div id="wrap">
+        <div class="to">
+            <a href="#none">
+                <h2>To. Hong Gildong.</h2>
+            </a>
+            
+        </div>
+
+        <div class="head">
+            <h3>
+                How are you doing?
+            </h3>
+        </div>
+
+        <div class="body">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. In adipisci repudiandae modi fugiat, sequi esse impedit reiciendis quis facilis quisquam rem possimus quibusdam repellat nam commodi distinctio ad veniam quas.</p>
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Placeat quasi eveniet molestias. Maiores commodi odio dignissimos repellendus modi dolorem qui magnam sit voluptatibus doloribus numquam et neque, quibusdam illum consectetur.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta minus repellat modi ex pariatur perspiciatis, repellendus numquam eaque corporis beatae, consequatur, quam aspernatur quod illum ducimus ab doloremque iure id!</p>
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Beatae saepe nam cumque, repellat quo iste maxime vitae autem itaque quae eius iure, in laboriosam placeat at ullam asperiores aliquam nobis.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit exercitationem blanditiis voluptates facilis quam. Labore quae quaerat cumque reprehenderit laboriosam tenetur corrupti, sequi, accusamus, voluptatibus dolores id amet facilis ut?</p>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Natus sed harum enim vitae doloribus debitis minima similique. Adipisci veritatis quae error quisquam voluptatem delectus, quam dolorem et a molestias eius.</p>
+        </div>
+
+        <div class="from">
+            <a href="#none">
+                <h2>
+                    From. Park Chanho
+                </h2>
+            </a>
+
+        </div>
+    </div>
+    
+</body>
+</html>
+
+<!-- /* *: 전체 태그 선택자 */
+/* 외부 여백: margin, 안쪽 여백: padding */
+/* margin, padding의 경우: 0 0 0 0;일때, [위->오른쪽->아래->왼쪽] 순서 */
+
+#wrap {
+    width: 800px;
+    border: 1px solid #cccccc;
+    border-radius: 10px;
+    margin: 50px auto;
+    /* =>margin: 0 auto 0 auto; */
+    box-shadow: 3px 3px 3px rgba(200, 200, 200, .5);
+    padding: 80px 50px;
+    /* padding: 80px 50px 80px 50px; */
+}
+
+#wrap div.to {
+    font-style: italic;
+    margin-bottom: 50px;
+}
+
+#wrap div.head {
+    width: 90%;
+    margin:  0 auto;
+    padding-bottom: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: double #dadada;
+}
+
+#wrap div.body {
+    width: 90%;
+    margin: 30px auto;
+}
+
+#wrap div.body p {
+    margin: 20px 0;
+}
+
+#wrap div.from {
+    font-style: italic;
+    margin-top: 50px;
+    text-align: right;
+}
+ -->
+
+<!-- * {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+
+a {
+    color: #000000;
+    text-decoration: none;
+
+}
+
+a:hover {
+    text-decoration: underline;
+} -->
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[20260611]
+
+
+20260611
+
+
+# index.html
+-----------------------------------------------####
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NAVER LOGIN</title>
+
+    <link href="./index.css" rel="stylesheet" type="text/css">
+    <link href="./common.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+    <div id="wrap">
+
+        <div class="language">
+            <select>
+                <option value="kor">한국어</option>
+                <option value="eng">ENGLISH</option>
+                <option value="chi">中國語</option>
+                <option value="jpn">日本語</option>
+            </select>
+        </div>
+
+        <div class="logo">
+            <img src="./imgs/img02.png">
+        </div>
+
+        <div class="login_form">
+            <ul>
+                <li>ID 로그인</li>
+                <li>일회용 번호</li>
+                <li>QR코드</li>
+            </ul>
+            <input type="text" name="m_id" placeholder="아이디">
+            <br>
+            <input type="password" name="m_pw" placeholder="비밀번호">
+            <div>
+                <input type="checkbox" name="status_login"> 로그인 상태 유지
+                <br>
+                <button>로그인</button>
+            </div>
+        </div>
+
+        <div class="find_member">
+            <a href="#none">비밀번호 찾기</a>
+            |
+            <a href="#none">아이디 찾기</a>
+            |
+            <a href="#none">회원가입</a>
+        </div>
+
+        <div class="ad">
+            <img src="./imgs/img01.png">
+        </div>
+
+        <div class="office">
+            <p>
+                <a href="#none">이용약관</a>
+                |
+                <a href="#none">개인정보처리방침</a>
+                |
+                <a href="#none">책임의 한계와 법적고지</a>
+                |
+                <a href="#none">회원정보 고객센터</a>
+            </p>
+            <p>
+                <img src="./imgs/img02.png"><span>Copyright © OFFICE Corp. All Right Reserved.</spen>
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# index.css
+-----------------------------------------------####
+#wrap {
+    width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* 멀티 랭귀지 start */
+#wrap div.language {
+    text-align: right;
+}
+
+#wrap div.language select {
+    padding: 5px 8px;
+    border: 1px solid rgba(200, 200, 200, 1);
+    border-radius: 3px;
+}
+/* 멀티 랭귀지 end */
+
+/* 로고 start */
+#wrap div.logo {
+    margin: 60px 0 35px 0;
+}
+/* 로고 end */
+
+/* 로그인 양식 start */
+#wrap div.login_form {
+    width: 492px;
+    margin: 0 auto;
+    border: 1px solid #dadada;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+#wrap div.login_form ul {
+    width: 450px;
+    margin: 0 auto;
+}
+
+#wrap div.login_form ul > li {
+    width: 150px;
+    border: 1px solid #dadada;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+#wrap div.login_form ul > li:nth-child(1) {
+    border-radius: 5px 0 0 5px;
+}
+
+#wrap div.login_form ul > li:nth-child(3) {
+    border-radius: 0 5px 5px 0;
+}
+
+#wrap div.login_form ul > li:hover {
+    background-color: rgba(200, 200, 200, .2);
+    cursor: pointer;
+}
+
+#wrap div.login_form > input {
+    width: 410px;
+    border: 1px solid #dadada;
+    padding: 15px 20px;
+    font-size: 1.1em;
+    outline: none;
+}
+
+#wrap div.login_form > input[name='m_id'] {
+    border-radius: 5px 5px 0 0;
+    margin-top: 15px;
+}
+
+#wrap div.login_form > input[name='m_pw'] {
+    border-radius: 0 0 5px 5px;
+    margin-bottom: 15px;
+}
+
+#wrap div.login_form > div {
+    width: 450px;
+    margin: 15px auto;
+    text-align: left;
+    font-size: .9em;
+    color: #5a5a5a;
+    /* 웹문서 스타일링-> 기본적으로, 'Text'를 지칭함 */
+}
+
+#wrap div.login_form > div > button {
+    width: 450px;
+    margin-top: 22px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #03c75a;
+    border: 0;
+    font-size: 1.5em;
+    border-radius: 6px;
+    padding: 10px 0;
+    cursor: pointer;
+}
+/* 로그인 양식 end */
+
+/* ID, PW 찾기 start */
+#wrap div.find_member {
+    width: 450px;
+    margin: 20px auto 40px;
+    font-size: .9em;
+    color: rgba(0, 0, 0, .3);
+}
+
+#wrap div.find_member > a {
+    margin: 0 5px;
+}
+/* ID, PW 찾기 end */
+
+/* 배너 start */
+#wrap div.ad {
+    width: 460px;
+    margin: 0 auto 60px;
+}
+/* 배너 end */
+
+/* 오피스 start */
+#wrap div.office {
+    width: 500px;
+    margin: 0 auto 60px;
+    color: rgba(100, 100, 100, .8);
+}
+
+#wrap div.office > p {
+    margin-top: 10px;
+}
+
+#wrap div.office > p:nth-child(1) {
+    font-size: .9em;
+    color: rgba(100, 100, 100, .2);
+}
+
+#wrap div.office > p:nth-child(2) {
+    font-size: .9em;
+}
+
+#wrap div.office > p:nth-child(2) > img {
+    min-width: 90px;
+    max-width: 90px;
+    vertical-align: middle;
+}
+
+#wrap div.office > p:nth-child(2) > span {
+    margin-left: 10px;
+}
+/* 오피스 end */
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# common.css
+-----------------------------------------------####
+* {
+    margin: 0;
+    padding: 0;
+    color: #242424;
+}
+
+a {
+    text-decoration: none;
+    color: #242424;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    overflow: hidden;
+}
+
+li {
+    list-style: none;
+    float: left;
+}
+
+------------------------------------------------------------------------
 ------------------------------------------------------------------------
 [20260611]
 

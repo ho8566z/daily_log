@@ -357,7 +357,7 @@ div a.google {
 
 <!-- /* *: 전체 태그 선택자 */
 /* 외부 여백: margin, 안쪽 여백: padding */
-
+/* margin, padding의 경우: 0 0 0 0;일때, [위->오른쪽->아래->왼쪽] 순서 */
 
 #wrap {
     width: 800px;
