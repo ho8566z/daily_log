@@ -5799,3 +5799,581 @@ console.log('num: ' + num)
 [20260615]
 
 
+# 암묵적 전역 변수
+(변수 키워드: var, let, const 없이 변수 선언 및 대입시, 전역으로 생성된 변수)
+
+------------------------------------------------------------------------
+# 변수선언에서 ";"
+python과 달리 ';'를 통해 변수를 끝맺음하는 기호
+
+------------------------------------------------------------------------
+# 데이터 타입
+데이터 타입(Data Type)이란 변수에 저장되는 값의 종류(형식)
+프로그래밍 언어는 숫자, 문자, 논리값 등 다양한 종류의 데이터를 다루기 때문에,
+각 데이터가 어떤 “형태”를 띠는지를 구분해야 한다.
+
+JavaScript는 동적 타입 언어(Dynamically Typed Language)
+-> 변수를 선언할 때 타입을 미리 지정하지 않고, 저장되는 값에 따라 타입이 자동으로 결정된다.
+
+------------------------------------------------------------------------
+# 기본 문법
+JavaScript의 데이터 타입: 원시 타입(Primitive Type), 참조 타입(Reference Type)
+
+- 원시(기본) 타입: 값 그 자체가 메모리에 저장되는 타입
+	Number: 숫자 (정수, 실수 구분 없음)
+	String: 문자열
+	Boolean: 논리값 (true 또는 false)
+	Undefined: 값이 할당되지 않은 변수의 기본 상태
+		(var num;)
+		(// javascript에만, 변수 선언만 되고, 초기화가 되지 않은 상태)
+	Null: 값이 ‘없음’을 명시적으로 표현
+	BigInt: 아주 큰 정수를 표현할 때 사용
+	Symbol: 고유한 식별자를 만들 때 사용
+
+- 참조 타입: 값이 아니라 객체의 참조(주소)를 저장하는 타입
+(Object)
+	객체(Object)
+	배열(Array)
+	함수(Function)
+	
+------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <script src="./index.js"></script>
+
+</head>
+<body>
+    
+</body>
+</html>
+
+<!-- 
+// alert('hello')
+
+var num;
+// javascript에만, 변수 선언만 되고, 초기화가 되지 않은 상태
+
+var num = 42;
+var pi =3.14;
+
+var name = '홍길동'
+var name = "홍길동"
+// var name = "홍길동'
+
+var isStudent = true;
+// python만 boolean을 True/Fasle로 표기하고, 다른 언어들은
+// true/false로 표기한다
+
+var nothing;    //Undefined
+
+console.log('num: ', num);
+console.log('num type: ', typeof(num));
+
+console.log('pi', pi);
+console.log('pi type: ', typeof(pi));
+
+console.log('name: ', name);
+console.log('name type: ', typeof(name));
+
+console.log('isStudent: ', isStudent);
+console.log('isStudent type: ', typeof(isStudent));
+
+console.log('nothing: ', nothing);
+console.log('nothing type: ', typeof(nothing));
+
+var fruits = ['사과', '바나나', '포도']
+console.log('fruits: ', fruits);
+console.log('fruits type: ', typeof(fruits));
+
+var person = {
+    'name': '홍길동',
+    'age': 20,
+    'mail': 'gildong@gmail.com'
+};  // Object
+
+console.log('person: ', person);
+console.log('person type: ', typeof(person));
+
+var myfun =  function() {
+    // 함수 기능
+}
+// 함수를 사용하기 위해, 변수에 데이터처럼 담아서 사용한다
+
+var myFun =  function() {
+    console.log('myFun: CALLED');
+}
+
+var myFun =  function() {
+    console.log('myFun: CALLED');
+}(); // 함수를 한번만 사용할때, 즉시 실행하기 위해서
+
+console.log('myFun: ', myFun);
+console.log('myFun type: ', typeof(myFun));
+// myFun
+ -->
+ 
+------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <script src="./index01.js"></script>
+
+</head>
+<body>
+    
+</body>
+</html>
+
+<!-- 
+// 호이스팅(Hoisting) 현상
+
+console.log(num)
+// Uncaught ReferenceError: num is not defined
+
+var num = 10;
+// undefined
+
+// '출력'을 먼저, '변수 선언'을 나중에 하는 경우, 
+// 데이터를 제외한 변수만을 최상단으로 끌어올리는 버그의 일종
+// 결과적으로 위와 같이 'undefined'가 출력된다
+
+// -> 때문에, 'var' 대신에 2015년 'ES6' 이후부터는, 
+// "let"을 대신해 사용한다
+let name = 'gildong';
+
+
+// 상수 선언 키워드
+const PI = 3.14;
+// PI = 100;
+// //Uncaught TypeError: Assignment to constant variable.
+ -->
+
+
+<!-- 
+// 연산자
+// 산술연산자
+console.log(10 + 20);   // 30
+console.log(10 - 20);   // -10
+console.log(10 * 20);   // 200
+console.log(10 / 20);   // 0.5
+console.log(10 % 20);   // 10
+
+------------------------------------------------------------------------
+// 대입 연산자, 복합대입연산자
+num = 10;
+num += 10;
+num -= 10;
+num *= 10;
+num /= 10;
+num %= 10;
+
+------------------------------------------------------------------------
+// 비교연산자
+console.log(10 > 20);   // false
+console.log(10 >= 20);  // false
+console.log(10 < 20);   // true
+console.log(10 <= 20);  // true
+console.log(10 == 20);  // false
+console.log(10 != 20);  // true
+
+let num1 = 10;
+let num2 = '10';
+console.log('num1 == num2: ' ,num1 == num2)
+// num1 == num2:  true
+
+console.log('num1 != num2: ' ,num1 != num2)
+// num1 != num2:  false
+
+console.log('num1 === num2: ' ,num1 === num2)
+// num1 === num2:  false
+
+console.log('num1 !== num2: ' ,num1 !== num2)
+// num1 !== num2:  true
+
+------------------------------------------------------------------------
+// 논리연산자
+// & -> and
+console.log(true && true);      // true
+console.log(true && false);     // false
+console.log(false && true);     // false
+console.log(false && false);    // false
+
+// || -> or
+console.log(true || true);      // true
+console.log(true || false);     // true
+console.log(false || true);     // true
+console.log(false || false);    // false
+
+// ! -> not
+console.log(!true);      // false
+console.log(!false);     // true
+
+------------------------------------------------------------------------
+// 증감연산자
+let myScore = 80;
+console.log('myScore: ', myScore);  // myScore:  80
+
+// myScore += 1;
+myScore++;
+console.log('myScore: ', myScore);  // myScore:  81
+
+myScore--;
+console.log('myScore: ', myScore);  // myScore:  80
+
+
+var temp = myScore--;
+console.log('temp: ', temp);    // temp:  80
+// 할당연산자가 증감연산자보다 우선하기 때문에, 
+// 먼저 temp에 myScore를 할당한 다음에, myScore에 증감이 일어남
+
+myScore = 80;
+temp = --myScore;
+console.log('temp: ', temp);    // temp:  79
+// 위와 같이 증감연산자의 위치를 바꾸면, 할당연산자 보다 우선순위를 
+// 가지기 때문에 temp의 값이 증감이 일어난 다음의 값을 할당한다
+
+// -> myScore--: 후위 증감연산자 / ++myScore: 전위 증감연산자
+
+------------------------------------------------------------------------
+// 삼항(조건식) 연산자
+// status = 'success' if myScore > 80 else 'fail'
+
+let score = 85;
+let grade = score >= 90 ? 'A' : 'B';
+console.log('grade: ', grade)   // grade:  B
+
+let score = 95;
+let grade = score >= 90 ? 'A' : 'B';
+console.log('grade: ', grade)   // grade:  A
+  -->
+  
+------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <script src="./index02.js"></script>
+
+</head>
+<body>
+    
+</body>
+</html>
+
+<!-- 
+// 제어문 - 조건문(if문 switch ~ case문)
+/*
+if문
+if (조건식) {
+    실행문
+}
+*/
+let age = 20
+if (age >= 18) {
+    console.log('is adult');
+}
+
+
+/*
+if ~ else문 -> 양자택일
+*/
+let isLogin = false;
+if (isLogin) {
+    console.log('is log-in')
+} else {
+    console.log('is log-out')
+}
+
+
+/*
+if ~ else if ~ else if ... -> 다중비교
+*/
+let score = 85;
+if (score >= 90) {
+    console.log('is A');
+
+} else if (score >= 80) {
+    console.log('is B');
+
+} else if (score >= 70) {
+    console.log('is C');
+
+} else if (score >= 60) {
+    console.log('is D');
+
+} else {
+    console.log('is F');
+}   // is B
+
+// let score = 85;
+// if (score >= 90) {
+//     console.log('is A');
+
+// } else if (score >= 70) {
+//     console.log('is C');
+
+// } else if (score >= 80) {
+//     console.log('is b');
+
+// } else if (score >= 60) {
+//     console.log('is D');
+    
+// } else {
+//     console.log('is F');
+// }    // is C로 결과 오류
+
+
+/*
+switch문 -> 하나를 선택해서 실행
+*/
+let day = 0
+switch(day) {
+    case 1:
+        console.log('월요일')
+        break;
+
+    case 2:
+        console.log('화요일')
+        break;
+    
+    case 3:
+        console.log('수요일')
+        break;
+
+    case 4:
+        console.log('목요일')
+        break;
+
+    default:
+        console.log("I don't know")
+        break;
+}
+// python에서 elif와 같아 보이지만, 다름
+// 위에서 부터 순차적이 아닌, 입력된 데이터에 해당하는 
+// 값의 기능을 수행함
+
+// break로 다른 기능의 실행을 막음
+// default의 경우, 선택사항이기 때문에, 위치 상관없음
+// But, default는 맨 뒤에 두는게 관례
+// 또한, default가 마지막이기 때문에 break를 쓰지
+// 않아도 상관 없음
+
+//===============================================//
+
+// 제어문 - 반복문(for문, while문)
+
+// for문 -> 횟수에 의한 반복 실행
+/*
+1에서 부터 10까지의 정수의 합
+
+for (초기식(: 1); 조건식(: 10); 증감식(: 1씩 증가)) {
+    반복 실행문
+}
+*/
+let sum = 0;
+for (let n = 1; n < 11; n++) { // 1부터 10끼지 1씩 증가
+    console.log('n: ', n)
+    sum += n;
+}
+console.log('sum: ', sum)   // sum:  55
+
+// let sum = 0;
+// let n = 1   // 초기식을 전역변수로서 사용 가능함
+// for (; n < 11; n++) { // 1부터 10끼지 1씩 증가
+//     console.log('n: ', n)
+//     sum += n;
+// }
+// console.log('sum: ', sum)   // sum:  55
+
+for (i = 10, j = 0; i > 0, j < 10; i--, j++) {
+    console.log('i: ', i) 
+    console.log('j: ', j) 
+}
+
+
+// while문 -> 조건에 의한 반복 실행
+/*
+while문 (조건식) {
+    실행문
+}
+*/
+
+let k = 3;
+while (k < 10) {
+    console.log('k: ', k);
+    if (k >= 7)
+    break;
+    k++;
+}
+
+// do ~ while문
+let count = 5;
+do {
+    console.log('count: ', count);
+    count--;
+} while(count > 0);
+// 조건식에 의한 반복을 하기 전에, 무조건 1번은 실행을 하는 반복문
+
+//===============================================//
+
+let pt = prompt('What your Name: ');
+console.log('pt: ', pt)
+// alert와 같은 창에, 데이터를 입력해야 함
+-->
+
+------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <script src="./index03.js"></script>
+
+</head>
+<body>
+    
+</body>
+</html>
+
+
+<!-- 
+// 컨테이너 자료형
+/*
+여러 개의 데이터를 하나의 변수에 담아 관리할 수 있는 자료형
+즉, 하나의 값이 아닌 값들의 집합(묶음)을 표현할 수 있다
+
+JavaScript의 대표적인 컨테이너 자료형은 다음과 같다
+- 배열(Array): 순서가 있는 데이터의 집합(by index)
+- 객체(Object): 이름(key)과 값(value)으로 구성된 데이터의 집합
+*/
+
+// 배열
+/*
+-대괄호 []로 묶어 표현하며, 순서(index)를 기반으로 각 요소에 접근한다
+- 인덱스는 0부터 시작한다
+*/
+
+let fruits = ['사과', '바나나', '포도'];
+console.log('fruits: ', fruits);
+console.log('fruits[0]: ', fruits[0]);
+console.log('fruits[1]: ', fruits[1]);
+// for (let i = 0; i < fruits.length; i++) {
+//     console.log(fruits[i]);
+// }
+
+for (fruit of fruits) {
+    console.log('fruit: -> ', fruit);
+}
+
+
+// 마지막 값 구하기
+let lastData = fruits[fruits.length-1]
+console.log(lastData);      // 포도
+// fruits의 마지막 데이터인 '포도'가 출력됨
+
+console.log(fruits[10]);    // undefined
+
+
+// 객체(object) -> python의 dictionary
+let man = {
+    'name': '홍길동',
+    'age': 20,
+    'mail': 'gildong@gmail.com',
+    'hobby': ['축구', '농구', '야구'], 
+    'fun': function() {
+        console.log('DOGGG')
+    }
+}
+
+console.log('man: ', man);
+// man:  {name: '홍길동', age: 20, 
+// mail: 'gildong@gmail.com', hobby: Array(3)}
+console.log('man name: ', man['name']);
+// man name:  홍길동
+console.log('man hobby: ', man['hobby']);
+// man hobby:  (3) ['축구', '농구', '야구']
+
+console.log('man hobby 마지막 데이터: ', man['hobby'][man['hobby'].length -1]);
+// man hobby 마지막 데이터:  야구
+
+man['fun']();   // DOGGG
+
+
+// 함수('function')
+/*
+특정 작업(로직)을 수행하는 코드 블록에 이름을 붙여 재사용할 수 있도록 만든 것
+-> 즉, 여러 줄의 코드를 하나의 “기능 단위”로 묶어두는 것
+
+
+1. function 함수이름(매개변수, ...) {
+    함수 실행 구문
+}
+*/
+function intro00() {  // 함수 선언부
+    alert('Hello');
+}
+
+intro00();        // 함수 호출부
+
+//============================================================//
+
+// 2. 함수 표현식
+/*
+const 함수이름 = function(매개변수, ...) {
+    함수 실행부
+}
+*/
+const intro10 = function() {    // 함수 선언부
+    alert('Hello / Hello');
+}
+
+intro10();      // 함수 호출부
+
+//============================================================//
+
+// 3. 화살표 함수(Arrow function) at, ES6
+/*
+const 함수이름 = (매개변수, ...) => {
+    함수 실행부
+    }
+*/
+const intro20 = () => {
+    alert('Hello / Hello / Hello');
+}
+
+// const intro20 = () => alert('Hello / Hello / Hello');
+// {} 중괄호 제거 버전
+
+intro20();
+
+
+const add = (n1, n2) => {
+    return n1 + n2;
+}
+
+// return 단축 버전
+const add = (n1, n2) => n1 + n2;
+
+let result = add(10, 20);
+console.log('result: ', result);    // result:  30
+
+//============================================================//
+
+
+-->
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[20260616]
+
+
