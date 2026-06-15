@@ -1,0 +1,53 @@
+git
+
+# git을 통해 정리하고 싶은 '디렉토리'에서 "git bash"을 선택해 실행 시작할 것
+
+------------------------------------------------------------------------
+git bash실행
+
+git init
+(해당 폴더를 git으로 관리하기 위한 준비)
+
+git config --global user.email "ho8566z@gmail.com"
+(해당 폴더의 관리자 email을 입력하는)
+
+git config --global user.name "ho8566z"
+(해당 폴더의 관리자 name을 입력하는)
+
+git config --list
+#email, name 확인
+(입력한 email과 name 등의 관리자 정보를 확인하기 위한)
+------------------------------------------------------------------------
+git status
+(해당 폴더의 현재 상태를 확인하기 위한)
+
+git add .
+(git으로 관리되지 않고 있는 파일이나, 폴더를 git으로 관리하기 위한)
+(관리되지 않던 파일/폴더 = 새롭게 생성되거나, 수정된, 삭제된 파일/폴더)
+(전체 추가: "." / 개별 추가: git add doc.txt)
+
+git commit -m "(ex)20260508 task complete"
+(생성, 수정, 삭제 등의 변동이 일어난 해당폴더를 기록하는)
+
+------------------------------------------------------------------------
+git log
+(그 동안의 git commit 확인하는)
+
+github에 'sign in'하고 'repositories'개설할 것
+(로컬의 폴더)
+
+git remote add origin https://~(github: repositories 코드)
+
+git remote -v
+#fetch, push 확인
+
+git branch -M main
+#master -> main 변경
+
+git push origin main
+#github에 업로드
+
+==============================================
+==============================================
+github
+
