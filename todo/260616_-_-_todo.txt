@@ -1,9 +1,11 @@
-260612_todo
+260616~~~~~_todo
 
 01. notion 정리(python, git, html, css, javascript // )
 	-기한: ~26.07.31 금(1차 프로젝트 끝나고, 1주일 더,)
 
-04. python / opencv_python / soloPjt 구현
+02. python / opencv_python / soloPjt 구현
 	-기한: ~26.06.14 일(this week,)
 
-05. ???
+03. 다이소, 모니터 받침 구매하기
+
+04. ~~~

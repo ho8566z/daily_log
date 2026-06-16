@@ -1,0 +1,26 @@
+1. 깃이란?
+
+2. 깃의 여러 개념 모음
+ex: Repository, commit, branch, clone, pull, push, head, master, main 등등
+
+3. 깃 명령(commands)
+	01 git init
+	02 git config --global user.email " ~ @gmail.com"
+	03 git status
+	04 git add .
+	05 git push origin main
+=======================================
+=======================================
+	30 ~~~~~~~~~~~~
+
+4. .gitignore
+
+5. MS VScode에서의 git bash실행
+	01 MS VScode에서의 git bash : add + commit 동시에 하는법
+	02 MS VScode에서의 git bash : add + commit + push 동시에 하는법
+
+6. github 인증하는 방법
+
+7. SSH key 방법
+
+8. 
