@@ -6412,3 +6412,263 @@ jQuery의 사용량이 감소함
 [20260616]
 
 
+# frame work(프레임워크)
+
+소프트웨어 패키지, 워드 프로세싱, 데이터 베이스 관리, 스프레드시트, 통신, 사무용 
+그래픽 등을 제공한다. 또 프레임워크는 프레임을 제공하는데, 이것은 사용자가 동시에 
+하나 이상의 프로그램 모듈을 사용할 수 있도록 한다. 
+
+즉, 사용자는 하나의 프레임으로 워드 프로세싱, 또 하나의 프레임으로 데이터 베이스를 
+보는 동안 스프레드시트로 작업을 하기 위해 세 번째의 프레임을 열 수 있다.
+
+------------------------------------------------------------------------
+특정 소프트웨어 or 프로그램을 개발하기 위한 추상화된 틀
+
+ex) 카카오톡의 경우, 
+java 언어 --> android framework
+
+'채팅'이 목적으로 --> 네트워크(소켓통신)을 이용할 수 있어야 한다
+
+------------------------------------------------------------------------
+카카오톡의 경우: 
+사용자a가 서버에 request를 보내면, 서버에서 사용자b에게 response를 주는가?
+
+[ 사용자a -(request)-> 서버 -(response)-> 사용자b ]
+
+
+아니라면, 카카오톡의 request와 response는 무엇이라고 볼 수 있는가?
+
+[ 사용자a -(???)-> 서버 -(???)-> 사용자b ]
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+framework 예시
+
+# python --> flask, django
+
+# javascript --> node.js & express
+
+# java --> "spring"
+
+------------------------------------------------------------------------
+1차 프로젝트에서 flask 사용
+
+cam --> [ flask: '분석', 'view', 'business' 등 ]
+
+------------------------------------------------------------------------
+2차 프로젝트에서 flask 사용
+
+cam --> [ flask: "분석" ] --> web(spring): view, business, db 등
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 브라우저 → Flask 서버 → 응답 → 브라우저 화면 출력
+ 
+Flask는 사용자의 요청(Request)을 받아서 응답(Response)을 만들어주는 프로그램
+(python 버전 확인 --> 가상환경 생성/활성화 --> Flask 설치 --> flask 실행)
+
+01️ Flask는 웹 서버를 만드는 도구
+02️ URL 요청은 함수 실행으로 연결
+03️ 결과적으로는, 백엔드 프로그램 만들기
+
+------------------------------------------------------------------------
+# 라우팅(Routing)
+
+URL 요청을 특정 함수로 연결하는 것
+(브라우저 → '/' 요청 → Flask → index() 함수 실행)
+
+ex)
+# flask_ex --> 20260617ex --> ex001 --> app.py
+
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Hello, Flask"
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')
+	
+------------------------------------------------------------------------
+동적 URL 처리 (Path Parameter)
+
+int:(id)		정수
+string:(name)	문자열
+float:(num)		실수
+path:(data)		전체 경로 (중간에 /가 있어도 문자열 끝까지 모두 받음)
+
+				코드: @app.route("/files/<path:filepath>")
+					def files(filepath):
+						return f"File Path : {filepath}"
+				접속: http://localhost:5000/files/images/cat.jpg
+				
+				결과: File Path : images/cat.jpg
+
+------------------------------------------------------------------------
+HTTP Method(요청 방식)
+
+CRUD	= HTTP Method
+Create	= Post(생성) : BODY 안에 숨겨서 전달
+Read	= Get(조회) : URL 뒤에 붙여서 전달
+Update	= Put(수정)
+Delete	= Delete(삭제)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+from flask import Flask
+from flask import request
+
+app = Flask(__name__)
+
+@app.route('/')     # @app.route('/mail') = mail 서비스로 전환
+def home():
+    return "<h1>Hello, Flask</h1>"
+
+# http://127.0.0.1:5000/hello
+@app.route('/hello')
+def hello():
+    return "Hello, WWW"
+
+# http://127.0.0.1:5000/me
+@app.route('/me')
+def me():
+    return "It's me, flask engineer"
+
+# http://127.0.0.1:5000/about
+@app.route('/about')
+def about():
+    return 'First List Page'
+
+# http://127.0.0.1:5000/users
+# @app.route('/users')
+# def get_user():
+#     return 'user search'
+
+------------------------------------------------------------------------
+# http://127.0.0.1:5000/users/10
+# 동적 URL 처리(Path Parameter)
+# int : 정수
+@app.route('/users/<int:user_id>')
+def get_user(user_id):
+    if user_id == 1:
+        # print(f'user_id: {user_id}st')
+        return f'{user_id}st : user search'
+
+    elif user_id == 2:
+        return f'{user_id}nd : user search'
+
+    elif user_id == 3:
+        return f'{user_id}rd : user search'
+
+    else:
+        return f'{user_id}th : user search'
+
+##------------------------------------------------###
+
+# http://127.0.0.1:5000/users/gildong
+# 동적 URL 처리(Path Parameter)
+# string : 문자열
+@app.route('/users/<string:name>')
+def get_name(name):
+    return f'{name}님의 요청'
+	
+##------------------------------------------------###
+
+# http://127.0.0.1:5000/pi/3.14
+# 동적 URL 처리(Path Parameter)
+# float : 실수
+@app.route('/pi/<float:pi>')
+def get_pi(pi):
+    return f'pi : {pi}'
+	
+##------------------------------------------------###
+
+# http://127.0.0.1:5000/files/res/imges/cat.jpg
+# 동적 URL 처리(Path Parameter)
+# path : 전체 경로를 지정(중간에 /가 있어도 문자열 끝까지 받는다)
+@app.route('/files/<path:filepath>')
+def files(filepath):
+    return f'filepath : {filepath}'
+
+------------------------------------------------------------------------
+# HTTP Method(요청 방식)
+
+# GET 방식
+ 
+# # 경로 변수 (path variable)
+# # http://127.0.0.1:5000/search/weather
+# @app.route('/search/<string:keyword>')
+# def search(keyword):
+#     return f'keyword : {keyword}'
+
+# # http://127.0.0.1:5000/search/10
+# @app.route('/search/<int:no>', methods=['GET'])
+# def search(no):
+#     return f'{no} 사용자'
+
+##------------------------------------------------###
+
+# 쿼리 스트링 (query string)
+# http://127.0.0.1:5000/search?keyword=weather&datetime=2026
+@app.route('/search')
+def search():
+    keyword = request.args.get('keyword')
+    datetime = request.args.get('datetime')
+    return f'keyword? : {keyword}, datetime : {datetime}'
+
+# # http://127.0.0.1:5000/search?uNo=10
+# @app.route('/search', methods=['GET'])
+# def search():
+#     uNo = request.args.get('uNo')
+#     return f'{uNo} 번째 사용자'
+
+------------------------------------------------------------------------
+
+# POST 
+# http://127.0.0.1:5000/login_form
+@app.route("/login_form")
+def login_form():
+    # str = ''
+    # str += '<form action="/login_confirm" method="post">'
+    # str += '    <input type="text" name="u_id" placeholder="Input user ID">'
+    # str += '<br>'
+    # str += '    <input type="password" name="u_pw" placeholder="Input user PW">'
+    # str += '<br>'
+    # str += '    <input type="submit" value="LOG_IN">'
+    # str += '</form>'
+
+    # return str
+
+    return'''
+    <form action="/login_confirm" method="post">
+        <input type="text" name="u_id" placeholder="Input user ID">
+    <br>
+        <input type="password" name="u_pw" placeholder="Input user PW">
+    <br>
+        <input type="submit" value="LOG_IN">
+    </form>
+    '''
+
+@app.route('/login_confirm', methods=["POST"])      # methods=["POST", "PUT", "DELETE", "GET"]
+def login_confirm():
+
+    u_id = request.form.get('u_id')
+    u_pw = request.form.get('u_pw')
+
+    if u_id == 'gildong' and u_pw == '1234':
+        return f"Good <br> {u_id} - LOG_IN : COMPLETE"
+    else:
+        return f"{u_id} : It's Bad, because ... "
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[20260618]
+
+
