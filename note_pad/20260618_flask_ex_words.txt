@@ -1,0 +1,32 @@
+20260619
+
+
+(from) flask: 패키지(모듈) -> Flask 라이브러리 전체
+
+(import) Flask: 클래스 -> Flask 웹 애플리케이션 객체 생성
+
+render_template: Flask에서 HTML 파일을 읽어서 브라우저에 보여줄 최종 HTML을 생성하는 함수
+
+request: Flask에서 클라이언트(브라우저)가 보낸 HTTP 요청(Request) 정보를 담고 있는 객체(Object)
+
+secret_key: 세션(Session) 데이터가 위조되거나 변조되지 않았는지 검증하기 위한 비밀 키
+
+register_blueprint: Blueprint에 정의된 라우트(URL)들을 Flask 앱에 등록하는 메서드
+
+route: Flask에서 URL(주소)과 Python 함수를 연결(매핑)하는 데코레이터(Decorator)
+
+debug=True: 'Flask를 디버그 모드(Debug Mode)로 실행하라'는 의미
+
+host='0.0.0.0': '모든 네트워크 인터페이스(IP 주소)에서 접속을 허용하라'는 의미
+
+------------------------------------------------------------------------
+import Blueprint: 클래스 -> 모듈(기능) 분리
+
+import redirect: 함수 -> 다른 URL로 이동
+
+import session: 객체 -> 사용자별 세션 데이터 저장
+
+url_prefix: Blueprint에 속한 모든 URL 앞에 공통 경로(prefix)를 자동으로 붙여주는 옵션
+
+methods: 해당 URL이 허용할 HTTP 요청 방식(GET, POST, PUT, DELETE 등)을 지정하는 옵션명(매개변수명)
+
