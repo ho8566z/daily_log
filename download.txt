@@ -1,0 +1,31 @@
+notepad++
+
+notion
+
+git
+
+vs code
+	-notepad++keymap
+	-open in browser
+	-pylance
+	-python
+	-python debugger
+	-python enviroments
+
+python
+
+slack
+
+altools - aicapture
+
+arduino ide
+	-ai thinker ezp32-cam
+
+kakaotalk
+
+bandizip
+
+kakaotalk참조
+	-pyenv
+	-python 3.10.11
+	-github ssh_key

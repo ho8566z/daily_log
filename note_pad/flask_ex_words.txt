@@ -1,0 +1,165 @@
+
+
+(from) flask: 패키지(모듈) -> Flask 라이브러리 전체
+
+(import) Flask: 클래스 -> Flask 웹 애플리케이션 객체 생성
+
+(import) render_template: Flask에서 HTML 파일을 읽어서 브라우저에 보여줄 최종 HTML을 생성하는 함수
+
+(import) request: Flask에서 클라이언트(브라우저)가 보낸 HTTP 요청(Request) 정보를 담고 있는 객체(Object)
+
+secret_key: 세션(Session) 데이터가 위조되거나 변조되지 않았는지 검증하기 위한 비밀 키
+
+register_blueprint: Blueprint에 정의된 라우트(URL)들을 Flask 앱에 등록하는 메서드
+
+route: Flask에서 URL(주소)과 Python 함수를 연결(매핑)하는 데코레이터(Decorator)
+
+debug=True: 'Flask를 디버그 모드(Debug Mode)로 실행하라'는 의미
+
+host='0.0.0.0': '모든 네트워크 인터페이스(IP 주소)에서 접속을 허용하라'는 의미
+
+------------------------------------------------------------------------
+(import) Blueprint: 클래스 -> 모듈(기능) 분리
+
+(import) redirect: 함수 -> 다른 URL로 이동
+
+(import) session: 객체 -> 사용자별 세션 데이터 저장
+
+url_prefix: Blueprint에 속한 모든 URL 앞에 공통 경로(prefix)를 자동으로 붙여주는 옵션
+
+methods: 해당 URL이 허용할 HTTP 요청 방식(GET, POST, PUT, DELETE 등)을 지정하는 옵션명(매개변수명)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+(from) blueprints.member.routes: blueprints폴더의 member폴더의 routes파일을 가져온다는 뜻
+(import) member_bp: member_bp라는 객체를 가져온다는 뜻
+
+(from) blueprints.dashboard.routes: blueprints폴더의 dashboard폴더의 routes파일을 가져온다는 뜻
+(import) dashboard_bp: dashboard_bp라는 객체를 가져온다는 뜻
+
+------------------------------------------------------------------------
+host='0.0.0.0': 서버가 모든 네트워크 인터페이스(IP 주소) 에서 접속을 허용한다는 의미
+
+port=5000: 서버가 사용할 포트 번호
+
+debug=False: 디버그 모드 비활성화
+
+threaded=True: 멀티 스레드 방식으로 요청 처리
+threaded=False: 한 번에 하나의 요청만 처리
+
+result = request.args.get('result')
+--> 'args': URL의 Query Arguments(Query Parameters)를 의미하는 Flask 객체 이름
+
+request.form: Flask에서 HTML Form의 POST 데이터를 가져오는 객체
+
+methods: 해당 URL이 허용할 HTTP 요청 방식(Method) 을 지정한다
+
+methods=['GET']: 데이터를 조회할 때 사용
+methods=['POST']: 새로운 데이터를 생성할 때 사용
+methods=['PUT']: 기존 데이터를 전체 수정할 때 사용
+methods=['DELETE']: 데이터 삭제할 때 사용
+
+session.clear(): Flask 세션(Session)에 저장된 모든 데이터를 삭제하는 메서드
+
+------------------------------------------------------------------------
+(import) Response: Flask의 HTTP 응답(Response) 객체 클래스를 가져오는 것
+
+(import) cv2: OpenCV(Open Source Computer Vision Library) 라이브러리를 가져오는(import) 코드
+
+is None: 파이썬에서 변수가 None 객체인지 확인하는 연산
+
+None: "값이 없음", "아직 정해지지 않음", "객체가 존재하지 않음" 을 나타내는 파이썬의 특별한 객체
+
+mimetype: MIME Type(Media Type) 의 줄임말로, "지금 서버가 보내는 데이터의 종류가 무엇인지 브라우저에게 알려주는 정보"
+
+multipart: "응답 안에 여러 개의 데이터가 들어있다"는 의미
+
+x-mixed-replace: "새 데이터가 오면 이전 데이터를 교체(replace)하라"는 의미
+
+boundary: "각 데이터의 경계선(구분자)"
+boundary=frame: "각 데이터의 경계선(구분자)으로 'frame'이라는 문자열을 사용한다"
+
+time.sleep(0.1): 현재 실행 중인 프로그램(스레드)을 0.1초(100ms) 동안 일시 정지시키는 코드
+
+cv2.imencode(): OpenCV 이미지(NumPy 배열)를 특정 이미지 파일 형식(JPG, PNG 등)의 바이너리 데이터로 인코딩하는 함수
+
+yield: 파이썬에서 값을 하나씩 반환하면서 함수의 실행 상태를 유지하는 키워드
+
+b'--frame\r\n': HTTP MJPEG 스트리밍에서 새 이미지의 시작을 알리는 바이트 구분자(boundary) 이며, 
+				\r\n은 HTTP 규약의 줄바꿈 문자
+
+b'Content-Type: image/jpeg\r\n\r\n': 
+
++ frame_bytes +: JPEG 이미지 데이터를 앞뒤 바이트 문자열과 연결(concatenate) 하는 부분
+
+b'\r\n': 바이트(bytes) 형태의 줄바꿈 문자, 핵심은 두 문자 조합이라는 점
+
+------------------------------------------------------------------------
+(import) threading: 파이썬에서 멀티스레딩(Multithreading)을 구현하기 위해 사용하는 표준 라이브러리
+
+(from) datetime: 파이썬에서 날짜와 시간을 다루기 위한 모듈
+
+(import) datetime: "특정 날짜와 특정 시각"을 나타낸다. 달력과 시계를 합쳐놓은 것이다
+
+(import) timedelta: "두 시각 사이의 거리(기간)"를 나타낸다. 양 끝이 없는 순수한 '시간의 양'이다
+
+threading: 파이썬에서 여러 작업을 동시에 실행하는 “스레드 기반 동시성 처리” 기능을 제공하는 표준 라이브러리
+
+Lock: “동기화 객체(잠금 장치)” 자체를 의미하는 클래스 이름
+
+ESP32_STREAM_URL: ESP32 카메라가 영상(MJPEG 스트림)을 제공하는 HTTP 주소를 담는 변수(또는 상수)
+
+VideoCapture: OpenCV가 제공하는 “영상 입력 장치/소스 접근 클래스
+
+release(): 컴퓨터 시스템에게 "내가 점유하고 있던 자원(Resource)에 대한 권한을 포기(반납)하겠다"고 선언하는 행위
+
+now(): 현재 시각을 가져오는 함수
+
+strftime(): datetime 객체를 사람이 읽을 수 있는 문자열로 “포맷팅(formatting)”하는 함수
+
+isOpened(): OpenCV의 cv2.VideoCapture 또는 cv2.VideoWriter 객체가 정상적으로 열렸는지 확인하는 함수
+
+cvtColor(): OpenCV에서 이미지의 색상 공간(color space)을 변환하는 함수
+
+COLOR_BGR2GRAY: OpenCV에서 사용하는 “색상 변환 코드(flag)” 중 하나로, BGR 컬러 이미지를 흑백(Grayscale) 이미지로 
+				바꾸는 규칙을 의미한다
+				
+GaussianBlur(): OpenCV에서 이미지를 부드럽게(흐리게) 만들어 노이즈를 줄이는 필터 함수
+
+absdiff(): OpenCV에서 두 이미지(또는 두 배열)의 차이를 “절대값 기준으로 계산”하는 함수
+
+_, thresh = cv2.threshold(
+                diff,
+                25,
+                255,
+                cv2.THRESH_BINARY
+            )
+			
+첫 번째 값: threshold 적용된 기준값 (거의 안 씀) / 두 번째 값: 결과 이미지 //-> 때문에 '_'로 무시
+
+thresh: threshold 처리 결과 이미지 (이진화된 이미지)
+
+threshold: OpenCV에서 이미지를 기준값을 기준으로 “검사해서 0 또는 최대값으로 나누는 처리(이진화)”를 의미
+
+THRESH_BINARY: OpenCV threshold() 함수에서 사용하는 이진화 방식의 종류(플래그)
+
+findContours(): OpenCV에서 이진 이미지(0/255)에서 “물체의 경계선(윤곽선)”을 찾는 함수
+
+RETR_EXTERNAL(): OpenCV findContours()에서 사용하는 윤곽선 검출 방식(mode) 중 하나로, 가장 바깥쪽 윤곽선만 추출하는 옵션
+
+CHAIN_APPROX_SIMPLE(): OpenCV findContours()에서 사용하는 윤곽선 점을 저장하는 방식(method) 중 하나
+
+contourArea(): OpenCV에서 윤곽선(contour)이 감싸는 “면적(넓이)”을 계산하는 함수
+
+boundingRect(): OpenCV에서 윤곽선(contour)을 감싸는 가장 작은 “직사각형 영역”을 계산하는 함수
+
+rectangle(): OpenCV에서 이미지 위에 사각형을 그리는 함수
+
+circle(): OpenCV에서 이미지 위에 원(circle)을 그리는 함수
+
+putText(): OpenCV에서 이미지 위에 문자열(텍스트)을 표시하는 함수
+
+FONT_HERSHEY_SIMPLEX(): OpenCV에서 putText()에 사용하는 기본 글꼴(Font 종류 상수)
+
+------------------------------------------------------------------------

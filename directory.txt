@@ -1,25 +1,25 @@
 + lyh
-   + daily_log
+   + daily_log		<--github
 
    + flask
-      + flask_ex
-      + flask_dashboard_toy
+      + flask_ex		<--github
+      + flask_dashboard_toy	<--github
 
    + hohasic
-      + hohasic_flask_ex
-      + hohasic_python_ex
-      + hohasic_web
+      + hohasic_flask_ex	<--github
+      + hohasic_python_ex	<--github
+      + hohasic_web	<--github
 
    + python
       + dashboard-toy
       + download
-      + opencv_python
-      + python_ex
+      + opencv_python	<--github
+      + python_ex		<--github
       + total_other
       + toy-project
 
    + web
-      + basic_common
+      + basic_common	<--github
       + css
       + hrml
       + javascript
