@@ -1,0 +1,17 @@
+20260624
+
+
+Git 브랜치 전략
+
+main : 배포용 브랜치 (항상 안정 상태 유지)
+dev : 개발 통합 브랜치
+feature/* : 기능 단위 작업 브랜치
+(feature/*_ex: feature/member, feature/bank, feature/memo 등등)
+
+------------------------------------------------------------------------
+(각각)개발자들 --> main --> server
+
+(각각)개발자들 --> dev --> main --> server
+
+(각각)개발자들 --> feature/* --> PR과정(검증단계) --> dev --> PR과정(검증단계) 
+--> main --> server
