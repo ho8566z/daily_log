@@ -1,3 +1,6 @@
+version: 2026/07/01, 15:50:40
+
+
 기능명: 이벤트 로그	
 세부기능 명세: "로그 확인용 페이지 제공(LST-001과 상세 사양 동일)
 	표시 정보: 발생 장소, 시간, 탐지 대상 프로필
@@ -9,7 +12,7 @@
 
 
 
-[ event_logs.py ]
+[ app/domains/logger/event_logs/event_logs.py ]
 
 from app.utils.time_stamper import (
     get_current_time_stamp_formated)
@@ -72,7 +75,8 @@ if __name__ == "__main__":
 
 
 
-[ routes.py ] #event_log
+================================================================================================
+[ app/domains/logger/event_logs/routes.py ]
 
 from flask import Blueprint, render_template, request
 from app.domains.logger.event_logs.event_logs import (
@@ -132,7 +136,8 @@ def add_event_log():
 
 
 
-[ user_logs.py ]
+================================================================================================
+[ app/domains/logger/user_logs/user_logs.py ]
 
 from app.utils.json_manager import (
     load_json, save_json, USER_LOGS_FILE)
@@ -151,18 +156,38 @@ def add_user(data):
     logs[data["ID"]] = {
         "EVENT_LOG_ID" : data["EVENT_LOG_ID"],
         "VIEWER_ID" : data["VIEWER_ID"],
-        "IS_CHECKED" : data["IS_CHECKED"]
+        "IS_READ" : data["IS_READ"]
     }
 
     save_json(USER_LOGS_FILE, logs)
 
 
-def check_user_log(user_log_id):
+def checked_user_log(user_log_id):
     logs = load_json(USER_LOGS_FILE)
 
     if user_log_id in logs:
-        logs[user_log_id]["IS_CHECKED"] = True
+        logs[user_log_id]["IS_READ"] = True
         save_json(USER_LOGS_FILE, logs)
+
+
+def get_checked_user_logs(user_log_ids):
+    logs = load_json(USER_LOGS_FILE)
+
+    for user_log_id in user_log_ids:
+        if user_log_id in logs:
+            logs[user_log_id]["IS_READ"] = True
+
+    save_json(USER_LOGS_FILE, logs)
+
+
+def checked_all_user_log():
+    logs = load_json(USER_LOGS_FILE)
+
+    for log in logs.values():
+        log["IS_READ"] = True
+
+    save_json(USER_LOGS_FILE, logs)
+
 
 
 def format_user_logs(user_logs):
@@ -173,7 +198,7 @@ def format_user_logs(user_logs):
             {
                 "이벤트ID": user_log.get("EVENT_LOG_ID"),
                 "사용자": user_log.get("VIEWER_ID"),
-                "확인여부": user_log.get("IS_CHECKED")
+                "확인여부": user_log.get("IS_READ")
             }
         )
 
@@ -188,12 +213,13 @@ if __name__ == "__main__":
 
 
 
-[ routes.py ] #user_log
+================================================================================================
+[ app/domains/logger/user_logs/routes.py ]
 
 from flask import Blueprint, render_template, request
 from app.domains.logger.user_logs.user_logs import (
-    get_user_log_list, add_user, 
-    check_user_log, format_user_logs)
+    get_user_log_list, add_user, checked_user_log, 
+    get_checked_user_logs, checked_all_user_log, format_user_logs)
 from app.domains.logger.logger_utils.log_utils import (
     create_excel_file, download_excel_file)
 
@@ -251,13 +277,32 @@ def add_user_log():
 @user_log_bp.route("/check/<user_log_id>", methods=["POST"])
 def check(user_log_id):
 
-    check_user_log(user_log_id)
+    checked_user_log(user_log_id)
+
+    return {"result": "success"}, 200
+
+
+@user_log_bp.route("/get_checked", methods=["POST"])
+def get_checked():
+
+    data = request.get_json()
+
+    get_checked_user_logs(data["ids"])
+
+    return {"result": "success"}, 200
+
+
+@user_log_bp.route("/checked_all", methods=["POST"])
+def checked_all():
+
+    checked_all_user_log()
 
     return {"result": "success"}, 200
 
 
 
-[ log_utils.py ]
+================================================================================================
+[ app/domains/logger/logger_utils/log_utils.py ]
 
 from flask import send_file
 import pandas as pd
@@ -293,7 +338,8 @@ def download_excel_file(output, file_name):
 
 
 
-[ event_logs.json ]
+================================================================================================
+[ app/domains/jsons/event_logs.json ]
 
 {
   "log_id001": {
@@ -440,114 +486,116 @@ def download_excel_file(output, file_name):
 
 
 
-[ user_logs.json ]
+================================================================================================
+[ app/domains/jsons/user_logs.json ]
 
 {
   "user_001" : {
     "EVENT_LOG_ID" : "log_id001",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_002" : {
     "EVENT_LOG_ID" : "log_id002",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_003" : {
     "EVENT_LOG_ID" : "log_id003",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_004" : {
     "EVENT_LOG_ID" : "log_id004",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_005" : {
     "EVENT_LOG_ID" : "log_id005",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_006" : {
     "EVENT_LOG_ID" : "log_id006",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_007" : {
     "EVENT_LOG_ID" : "log_id007",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_008" : {
     "EVENT_LOG_ID" : "log_id008",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_009" : {
     "EVENT_LOG_ID" : "log_id009",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_010" : {
     "EVENT_LOG_ID" : "log_id010",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_011" : {
     "EVENT_LOG_ID" : "log_id011",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_012" : {
     "EVENT_LOG_ID" : "log_id012",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_013" : {
     "EVENT_LOG_ID" : "log_id013",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_014" : {
     "EVENT_LOG_ID" : "log_id014",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_015" : {
     "EVENT_LOG_ID" : "log_id015",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_016" : {
     "EVENT_LOG_ID" : "log_id016",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_017" : {
     "EVENT_LOG_ID" : "log_id017",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_018" : {
     "EVENT_LOG_ID" : "log_id018",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_019" : {
     "EVENT_LOG_ID" : "log_id019",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   },
   "user_020" : {
     "EVENT_LOG_ID" : "log_id020",
     "VIEWER_ID" : "user1",
-    "IS_CHECKED" : false
+    "IS_READ" : false
   }
 }
 
 
 
-[ templates/event_log_list.html ]
+================================================================================================
+[ app/domains/logger/templates/event_log_list.html ]
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -621,8 +669,8 @@ def download_excel_file(output, file_name):
 </html>
 
 
-
-[ templates/user_log_list.html ]
+================================================================================================
+[ app/domains/logger/templates/user_log_list.html ]
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -639,11 +687,23 @@ def download_excel_file(output, file_name):
 <div class="container">
 
     <header class="page_header">
+
         <h2>사용자 로그</h2>
 
-        <a class="btn_download" href="{{ url_for('user_log.export_user_data') }}">
-            엑셀 다운로드
-        </a>
+        <div class="button_group">
+
+            <button
+                id="btn_check_all"
+                class="btn_read">
+                현재 페이지 모두 읽음
+            </button>
+
+            <a class="btn_download"
+                href="{{ url_for('user_log.export_user_data') }}">
+                엑셀 다운로드
+            </a>
+
+        </div>
     </header>
 
     <article class="table_wrap">
@@ -652,6 +712,10 @@ def download_excel_file(output, file_name):
 
             <thead>
                 <tr>
+                    <th>
+                        <input type="checkbox" id="check_all">
+                    </th>
+
                     <th>No.</th>
                     <th>이벤트 ID</th>
                     <th>사용자 ID</th>
@@ -664,16 +728,26 @@ def download_excel_file(output, file_name):
                 {% for log in logs %}
 
                 <tr>
+                    <td>
+                        <input type="checkbox" class="log_check" value="{{ log.ID }}">
+                    </td>
+
                     <td>{{ loop.index }}</td>
                     <td>{{ log.EVENT_LOG_ID }}</td>
                     <td>{{ log.VIEWER_ID }}</td>
 
                     <td>
-                        {% if log.IS_CHECKED %}
+
+                        {% if log.IS_READ %}
+
                             <span class="checked">확인</span>
+
                         {% else %}
+
                             <span class="unchecked">미확인</span>
+
                         {% endif %}
+
                     </td>
                 </tr>
 
@@ -691,6 +765,10 @@ def download_excel_file(output, file_name):
 
         </table>
 
+        <div class="table_bottom">
+            <button id="btn_selected" class="btn_read">선택 항목 읽음 처리</button>
+        </div>
+
     </article>
 
 </div>
@@ -700,7 +778,8 @@ def download_excel_file(output, file_name):
 
 
 
-[ static/css/logger.css ]
+================================================================================================
+[ app/domains/logger/static/css/logger.css ]
 
 /* ===== 전체 ===== */
 
@@ -743,18 +822,59 @@ body {
 
 /* ===== 다운로드 버튼 ===== */
 
-.download_btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background: #007bff;
+.btn_download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #4f8cff, #2563eb);
     color: white;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 8px;
     text-decoration: none;
-    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn_download:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.btn_download:active {
+    transform: translateY(0px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.btn_read {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    background: #198754;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
     transition: .2s;
 }
 
-.download_btn:hover {
-    background: #0056b3;
+.btn_read:hover {
+    background: #157347;
+}
+
+.btn_read:active {
+    transform: translateY(0);
+}
+
+.button_group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 
@@ -792,6 +912,12 @@ body {
     background: #eef5ff;
 }
 
+.table_bottom {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
 
 /* ===== 상태 ===== */
 
@@ -803,6 +929,13 @@ body {
 .unchecked {
     color: #dc3545;
     font-weight: bold;
+}
+
+.log_check,
+#check_all {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
 }
 
 
@@ -837,4 +970,52 @@ body {
         min-width: 700px;
     }
 
+    .button_group {
+        display:flex;
+        flex-direction:column;
+    }
+
 }
+
+
+================================================================================================
+================================================================================================
+
+## IS_READ 처리: ?
+
+
+- 읽지 않은 로그의 경우, 하나씩 클릭하지 않으면, 
+
+-> 계속 읽지 않은 상태(is_read = False)
+--> 읽은 상태(is_read = True)
+
+체크박스
+
+------------------------------------------------------------------------------------------------
+
+1. 체크박스를 활용한 '선택 항목 읽음 처리' (가장 표준적인 방법)
+- 테이블 왼쪽 가장자리에 체크박스 열을 추가하는 방식
+
+
+동작 방식: * 개별 선택: 사용자가 원하는 로그만 체크박스로 선택한 후, 상단에 생기는 [선택 항목 확인 완료] 버튼을 
+눌러 is_read = True로 일괄 변경한다
+
+전체 선택: 헤더(맨 위 행)의 체크박스를 클릭하면 현재 페이지의 15개 항목이 모두 선택되며, 한 번에 읽음 처리할 수 있다
+
+추천 UI 배치: No. 열 왼쪽에 체크박스 열 배치
+
+------------------------------------------------------------------------------------------------
+
+2. '현재 페이지 / 전체 읽음 처리' 버튼 제공
+- 체크박스 선택 과정마저 귀찮은 사용자를 위해, 단 한 번의 클릭으로 상태를 전환하는 버튼을 제공하는 방식
+
+
+동작 방식: 테이블 상단(예: '엑셀 다운로드' 버튼 옆)에 [현재 페이지 모두 읽음] 또는 [모든 로그 읽음 처리] 버튼을 배치한다
+
+장점: 개발 공수가 비교적 적고, 사용자가 쌓인 로그를 빠르게 털어내고 싶을 때 가장 유용한 기능이다
+
+------------------------------------------------------------------------------------------------
+
+## 결론
+
+

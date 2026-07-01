@@ -1,0 +1,83 @@
+20260701
+
+
+페이지네이션(Pagination)
+
+================================================================================================
+# python
+
+
+## 함수형 뷰 (Function-Based View): Paginator를 사용하여 전체 데이터 중 현재 페이지의 데이터만 분할합니다.
+
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from .models import Post
+
+def post_list(request):
+    post_list = Post.objects.all()
+    paginator = Paginator(post_list, 10) # 한 페이지에 10개씩 보여주기
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'post_list.html', {'page_obj': page_obj})
+	
+------------------------------------------------------------------------------------------------
+
+## 클래스형 뷰 (Class-Based View): ListView를 사용할 경우 paginate_by 속성만 추가하면 자동으로 구현됩니다.
+
+from django.views.generic import ListView
+from .models import Post
+
+class PostListView(ListView):
+    model = Post
+    paginate_by = 10 # 한 페이지에 10개씩 보여주기
+    template_name = 'post_list.html'
+
+================================================================================================
+# FastAPI 페이지네이션
+
+FastAPI는 fastapi-pagination 라이브러리를 사용하여 간단하게 엔드포인트에 페이지네이션을 적용할 수 있습니다.
+
+설치: pip install fastapi-pagination
+
+------------------------------------------------------------------------------------------------
+python
+
+from fastapi import FastAPI
+from fastapi_pagination import Page, Params, paginate
+from fastapi_pagination.ext.sqlalchemy import paginate
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class Item(BaseModel):
+    id: int
+    name: str
+
+# 예시 데이터
+items = [Item(id=i, name=f"Item {i}") for i in range(100)]
+
+@app.get("/items", response_model=Page[Item])
+def get_items(params: Params = Params()):
+    return paginate(items, params)
+	
+================================================================================================
+
+3. 웹 크롤링 시 페이지네이션 처리
+
+여러 페이지에 나뉘어 있는 웹 데이터를 가져올 때는 URL의 쿼리 스트링(Query String) 규칙을 파악하여 반복문을 수행합니다.
+
+------------------------------------------------------------------------------------------------
+python
+
+import requests
+
+# URL의 ?page= 형식의 페이지네이션 처리 예시
+for page_num in range(1, 6): # 1페이지부터 5페이지까지
+    url = f"https://example.com{page_num}"
+    response = requests.get(url)
+    
+    # 응답받은 데이터 처리 로직 작성
+    if response.status_code == 200:
+        print(f"{page_num}페이지 데이터 수집 완료")
