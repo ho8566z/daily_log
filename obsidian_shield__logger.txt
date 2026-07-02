@@ -1,4 +1,4 @@
-version: 2026/07/01, 15:50:40
+version: 2026/07/02, 09:48:12
 
 
 기능명: 이벤트 로그	
@@ -147,7 +147,17 @@ def get_user_log_list():
 
     logs = load_json(USER_LOGS_FILE)
 
-    return list(logs.values())
+    result = []
+
+    for key, value in logs.items():
+
+        log = value.copy()
+        log["ID"] = key
+
+        result.append(log)
+
+    return result
+    # return list(logs.values())
 
 
 def add_user(data):
@@ -180,11 +190,15 @@ def get_checked_user_logs(user_log_ids):
     save_json(USER_LOGS_FILE, logs)
 
 
-def checked_all_user_log():
+def checked_select_user_log(user_log_ids):
     logs = load_json(USER_LOGS_FILE)
 
-    for log in logs.values():
-        log["IS_READ"] = True
+    # for log in logs.values():
+    #     log["IS_READ"] = True
+    for user_log_id in user_log_ids:
+
+        if user_log_id in logs:
+            logs[user_log_id]["IS_READ"] = True
 
     save_json(USER_LOGS_FILE, logs)
 
@@ -219,7 +233,7 @@ if __name__ == "__main__":
 from flask import Blueprint, render_template, request
 from app.domains.logger.user_logs.user_logs import (
     get_user_log_list, add_user, checked_user_log, 
-    get_checked_user_logs, checked_all_user_log, format_user_logs)
+    get_checked_user_logs, checked_select_user_log, format_user_logs)
 from app.domains.logger.logger_utils.log_utils import (
     create_excel_file, download_excel_file)
 
@@ -293,9 +307,11 @@ def get_checked():
 
 
 @user_log_bp.route("/checked_all", methods=["POST"])
-def checked_all():
+def checked_select():
 
-    checked_all_user_log()
+    data = request.get_json()
+
+    checked_select_user_log(data["ids"])
 
     return {"result": "success"}, 200
 
@@ -347,140 +363,160 @@ def download_excel_file(output, file_name):
     "REG_DATE": "2026/06/26, 09:05:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": true
   },
   "log_id002": {
     "ID": "log_id002",
     "REG_DATE": "2026/06/26, 10:05:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": true
   },
   "log_id003": {
     "ID": "log_id003",
     "REG_DATE": "2026/06/26, 11:22:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": true
   },
   "log_id004": {
     "ID": "log_id004",
     "REG_DATE": "2026/06/26, 13:53:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id005": {
     "ID": "log_id005",
     "REG_DATE": "2026/06/26, 14:08:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id006": {
     "ID": "log_id006",
     "REG_DATE": "2026/06/29, 09:00:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id007": {
     "ID": "log_id007",
     "REG_DATE": "2026/06/29, 09:12:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id008": {
     "ID": "log_id008",
     "REG_DATE": "2026/06/29, 09:14:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id009": {
     "ID": "log_id009",
     "REG_DATE": "2026/06/29, 09:18:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id010": {
     "ID": "log_id010",
     "REG_DATE": "2026/06/29, 09:26:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id011": {
     "ID": "log_id011",
     "REG_DATE": "2026/06/29, 09:33:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id012": {
     "ID": "log_id012",
     "REG_DATE": "2026/06/29, 09:41:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id013": {
     "ID": "log_id013",
     "REG_DATE": "2026/06/29, 09:53:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id014": {
     "ID": "log_id014",
     "REG_DATE": "2026/06/29, 10:01:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id015": {
     "ID": "log_id015",
     "REG_DATE": "2026/06/29, 10:07:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id016": {
     "ID": "log_id016",
     "REG_DATE": "2026/06/29, 10:14:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id017": {
     "ID": "log_id017",
     "REG_DATE": "2026/06/29, 10:16:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id018": {
     "ID": "log_id018",
     "REG_DATE": "2026/06/29, 10:22:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id019": {
     "ID": "log_id019",
     "REG_DATE": "2026/06/29, 10:45:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   },
   "log_id020": {
     "ID": "log_id020",
     "REG_DATE": "2026/06/29, 11:11:00",
     "latitude": 36.3287,
     "longitude": 127.423,
-    "TARGET_ID": "target_001"
+    "TARGET_ID": "target_001",
+    "IS_READ": false
   }
 }
 
@@ -490,108 +526,22 @@ def download_excel_file(output, file_name):
 [ app/domains/jsons/user_logs.json ]
 
 {
-  "user_001" : {
-    "EVENT_LOG_ID" : "log_id001",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
+  "user_001": {
+    "EVENT_LOG_ID": "log_id001",
+    "VIEWER_ID": "user1",
+    "READ_DATE": "2026/07/01, 15:15:20"
   },
-  "user_002" : {
-    "EVENT_LOG_ID" : "log_id002",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
+  "user_002": {
+    "EVENT_LOG_ID": "log_id002",
+    "VIEWER_ID": "user1",
+    "READ_DATE": "2026/07/01, 16:55:05"
   },
-  "user_003" : {
-    "EVENT_LOG_ID" : "log_id003",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_004" : {
-    "EVENT_LOG_ID" : "log_id004",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_005" : {
-    "EVENT_LOG_ID" : "log_id005",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_006" : {
-    "EVENT_LOG_ID" : "log_id006",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_007" : {
-    "EVENT_LOG_ID" : "log_id007",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_008" : {
-    "EVENT_LOG_ID" : "log_id008",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_009" : {
-    "EVENT_LOG_ID" : "log_id009",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_010" : {
-    "EVENT_LOG_ID" : "log_id010",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_011" : {
-    "EVENT_LOG_ID" : "log_id011",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_012" : {
-    "EVENT_LOG_ID" : "log_id012",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_013" : {
-    "EVENT_LOG_ID" : "log_id013",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_014" : {
-    "EVENT_LOG_ID" : "log_id014",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_015" : {
-    "EVENT_LOG_ID" : "log_id015",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_016" : {
-    "EVENT_LOG_ID" : "log_id016",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_017" : {
-    "EVENT_LOG_ID" : "log_id017",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_018" : {
-    "EVENT_LOG_ID" : "log_id018",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_019" : {
-    "EVENT_LOG_ID" : "log_id019",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
-  },
-  "user_020" : {
-    "EVENT_LOG_ID" : "log_id020",
-    "VIEWER_ID" : "user1",
-    "IS_READ" : false
+  "user_003": {
+    "EVENT_LOG_ID": "log_id003",
+    "VIEWER_ID": "user1",
+    "READ_DATE": "2026/07/02, 09:15:20"
   }
 }
-
 
 
 ================================================================================================
@@ -692,14 +642,11 @@ def download_excel_file(output, file_name):
 
         <div class="button_group">
 
-            <button
-                id="btn_check_all"
-                class="btn_read">
-                현재 페이지 모두 읽음
+            <button id="btn_selected" class="btn_read">
+                선택 항목 읽음 처리
             </button>
 
-            <a class="btn_download"
-                href="{{ url_for('user_log.export_user_data') }}">
+            <a class="btn_download" href="{{ url_for('user_log.export_user_data') }}">
                 엑셀 다운로드
             </a>
 
@@ -712,10 +659,7 @@ def download_excel_file(output, file_name):
 
             <thead>
                 <tr>
-                    <th>
-                        <input type="checkbox" id="check_all">
-                    </th>
-
+                    <th width="50"></th>
                     <th>No.</th>
                     <th>이벤트 ID</th>
                     <th>사용자 ID</th>
@@ -765,13 +709,117 @@ def download_excel_file(output, file_name):
 
         </table>
 
-        <div class="table_bottom">
-            <button id="btn_selected" class="btn_read">선택 항목 읽음 처리</button>
-        </div>
-
     </article>
 
 </div>
+<script>const checkAll = document.getElementById("checked_all");
+
+if (checkAll) {
+    checkAll.addEventListener("change", function () {
+
+        document.querySelectorAll(".log_check").forEach(function (checkbox) {
+            checkbox.checked = checkAll.checked;
+        });
+
+    });
+}
+</script>
+
+<script>
+const btnCheckAll = document.getElementById("btn_check_all");
+
+if (btnCheckAll) {
+    btnCheckAll.addEventListener("click", async function () {
+
+        if (!confirm("현재 페이지의 로그를 모두 읽음 처리하시겠습니까?")) {
+            return;
+        }
+
+        const ids = [];
+
+        document.querySelectorAll(".log_check").forEach(function (checkbox) {
+            ids.push(checkbox.value);
+        });
+
+        const response = await fetch("/user_log/checked_all", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                ids: ids
+            })
+
+        });
+
+        if (response.ok) {
+            location.reload();
+        }
+    });
+}
+</script>
+
+<script>
+// const btnSelected = document.getElementById("btn_selected");
+
+// if (btnSelected) {
+//     btnSelected.addEventListener("click", async function () {
+
+//         const ids = [];
+
+//         document.querySelectorAll(".log_check:checked").forEach(function (checkbox) {
+//             ids.push(checkbox.value);
+//         });
+
+//         if (ids.length === 0) {
+//             alert("선택된 로그가 없습니다.");
+//             return;
+//         }
+
+//         const response = await fetch("/user_log/get-checked", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify({
+//                 ids: ids
+//             })
+
+//         });
+
+//         if (response.ok) {
+//             location.reload();
+//         }
+//     });
+// }
+document.getElementById("btn_selected").addEventListener("click", async function () {
+
+    const ids = [];
+
+    document.querySelectorAll(".log_check:checked").forEach(function (checkbox) {
+        ids.push(checkbox.value);
+    });
+
+    if (ids.length === 0) {
+        alert("선택된 로그가 없습니다.");
+        return;
+    }
+
+    const response = await fetch("/user_log/get_checked", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            ids: ids
+        })
+    });
+
+    if (response.ok) {
+        location.reload();
+    }
+});
+</script>
 
 </body>
 </html>
@@ -979,43 +1027,81 @@ body {
 
 
 ================================================================================================
+
+# 파일 구조
+
+app/
+├── domains/
+    ├── jsons/
+    │  ├── event_logs.json
+    │  └── user_logs.json
+    └── logger/
+        ├── templates/
+        │   ├── event_log_list.html
+        │   └── user_log_list.html
+        ├── static/
+        │   └── css/
+        │       └── logger.css
+        ├── event_logs/
+        │   ├── event_logs.py
+        │   └── routes.py
+        ├── user_logs/
+        │   ├── user_logs.py
+        │   └── routes.py
+        └── logger_utils/
+             └── log_utils.py
+
+---------------------------------------------------------------
+# 이벤트 로그
+{
+  "log_id001": {
+    "ID": "log_id001",
+    "REG_DATE": "2026/06/26, 09:05:00",
+    "latitude": 36.3287,
+    "longitude": 127.423,
+    "TARGET_ID": "target_001"
+    "IS_READ": true
+  },
+  "log_id002": {
+    "ID": "log_id002",
+    "REG_DATE": "2026/06/26, 10:05:00",
+    "latitude": 36.3287,
+    "longitude": 127.423,
+    "TARGET_ID": "target_001"
+    "IS_READ": true
+  },
+  "log_id003": {
+    "ID": "log_id003",
+    "REG_DATE": "2026/06/26, 11:22:00",
+    "latitude": 36.3287,
+    "longitude": 127.423,
+    "TARGET_ID": "target_001"
+    "IS_READ": false
+  }
+}
+
+---------------------------------------------------------------
+# 사용자 로그
+{
+  "user_001": {
+    "EVENT_LOG_ID": "log_id001",
+    "VIEWER_ID": "user1",
+    "READ_DATE": "2026/07/01, 15:15:20"
+  },
+  "user_002": {
+    "EVENT_LOG_ID": "log_id002",
+    "VIEWER_ID": "user1",
+    "READ_DATE": "2026/07/02, 09:15:20"
+  }
+}
+
+
 ================================================================================================
 
-## IS_READ 처리: ?
+이벤트 로그는 처음 알림되면, 'IS_READ'가 fasle상태이고, 웹문서에서 체크박스를 선택해서 '읽음' 처리하면, 
+'IS_READ'가 true로 변하면서 사용자 로그에 기록 및 생성되고, 그때 사용자 로그의 'READ-DATE'가 입력되는 식으로 
+python, html, css의 코드와 태그를 위에 맞게 바꿔줘
 
-
-- 읽지 않은 로그의 경우, 하나씩 클릭하지 않으면, 
-
--> 계속 읽지 않은 상태(is_read = False)
---> 읽은 상태(is_read = True)
-
-체크박스
-
-------------------------------------------------------------------------------------------------
-
-1. 체크박스를 활용한 '선택 항목 읽음 처리' (가장 표준적인 방법)
-- 테이블 왼쪽 가장자리에 체크박스 열을 추가하는 방식
-
-
-동작 방식: * 개별 선택: 사용자가 원하는 로그만 체크박스로 선택한 후, 상단에 생기는 [선택 항목 확인 완료] 버튼을 
-눌러 is_read = True로 일괄 변경한다
-
-전체 선택: 헤더(맨 위 행)의 체크박스를 클릭하면 현재 페이지의 15개 항목이 모두 선택되며, 한 번에 읽음 처리할 수 있다
-
-추천 UI 배치: No. 열 왼쪽에 체크박스 열 배치
-
-------------------------------------------------------------------------------------------------
-
-2. '현재 페이지 / 전체 읽음 처리' 버튼 제공
-- 체크박스 선택 과정마저 귀찮은 사용자를 위해, 단 한 번의 클릭으로 상태를 전환하는 버튼을 제공하는 방식
-
-
-동작 방식: 테이블 상단(예: '엑셀 다운로드' 버튼 옆)에 [현재 페이지 모두 읽음] 또는 [모든 로그 읽음 처리] 버튼을 배치한다
-
-장점: 개발 공수가 비교적 적고, 사용자가 쌓인 로그를 빠르게 털어내고 싶을 때 가장 유용한 기능이다
-
-------------------------------------------------------------------------------------------------
-
-## 결론
-
+(추가 첨부 : 위의 코드는 user_log에서 is_read 처리하는 데, 그것을 event_log에서 하도록 하고, 
+user_log는 event_log를 읽음 처리하면 생성되는 식으로)
 
