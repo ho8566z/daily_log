@@ -1,0 +1,7 @@
+todo - 20260727_1708 기준
+
+1. 티켓 만들기: HTML + CSS
+
+2. 네이버 메인화면 만들기: HTML + CSS
+
+3. NOTION or TISTORY에 notepad++ 정리하기
