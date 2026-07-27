@@ -1,4 +1,50 @@
-client - Web Application Server - DB Server
+20260724
 
-DB Server : Oracle, MySQL, MariaDB, MSSQL
+
+# 구성 요소
+
+[ Client ]
+	웹 브라우저(Chrome, Edge, Safari)
+	모바일 앱
+	API Client
+	
+[ Web Server ]
+	정적 파일(HTML, CSS, JavaScript, 이미지) 제공
+	HTTP/HTTPS 요청 처리
+	Reverse Proxy 역할
+	예: Apache HTTP Server, Nginx, IIS
+	
+[ Web Application Server (WAS) ]
+	비즈니스 로직 처리
+	사용자 인증 및 권한 관리
+	데이터 가공 및 API 제공
+	예: Tomcat, Spring Boot, Flask, Django, Node.js(Express), ASP.NET
+
+[ DB Server ]
+	데이터 저장 및 관리
+	SQL 실행 및 트랜잭션 처리
+	예:
+		Oracle Database
+		MySQL
+		MariaDB
+		Microsoft SQL Server (MSSQL)
+		PostgreSQL
+		
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# 데이터 흐름
+
+Client
+   │
+HTTP/HTTPS
+   │
+Web Server
+   │
+Forward
+   │
+Web Application Server
+   │
+SQL
+   │
+DB Server
 
