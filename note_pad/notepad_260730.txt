@@ -1,0 +1,185 @@
+20260730
+
+
+# MVC 패턴(디자인 패턴)
+
+View: 화면(사용자가 보는 UI 영역)
+Controller: 제어(사용자의 요청을 받아 어떤 로직을 실행할지 전달하고, 분석하는 역할)
+Service: 비즈니스 로직(실제 서비스의 핵심 기능(업무 로직)을 처리하는 구간)
+Model: 데이터 영역(데이터베이스와 직접 통신하며 데이터를 가공하거나 다루는 객체)
+DB: 데이터베이스(실제 데이터가 저장되는 공간)
+
+1. 회원가입 요청(View -> Controller)
+-사용자가 웹 페이지(View)에서 회원가입 정보(아이디, 비밀번호 등)를 
+입력하고, '가입하기' 버튼을 누르면 Controller로 요청 데이터가 전송된다.
+
+2. 요청 분석: 회원가입(Controller -> Service)
+-Controller는 들어온 요청을 분석하여 "아, 회원가입 처리 요청이구나!"라고 
+파악한 뒤, 실질적인 비즈니스 로직을 수행하는 Service 계층으로 데이터를 전달한다.
+
+3. 요청에 대한 업무수행(Service -> Model)
+-Service에서는 회원가입 시 필요한 검증(비밀번호 암호화, 중복 체크 등 서비스 
+규칙)을 수행한 후, 데이터를 저장하기 위해 Model(DAO/Repository)을 호출한다.
+
+4. DB 업무수행(Model)
+-Model 계층은 전달받은 회원 데이터를 DB에 안전하게 넣기 위해 SQL 쿼리를 
+준비하거나 ORM 처리를 진행한다.
+
+5. CRUD(Model -> DB)
+-Model이 DB에 접근하여 실제로 CRUD(Create, Read, Update, Delete 중 
+회원가입은 Create/Insert) 작업을 실행함으로써 회원 정보를 데이터베이스에 
+최종 저장한다.
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# JavaScript에서 '모듈'이란?
+-독립된 기능을 수행하는 코드 파일을 의미함
+(프로그램의 규모가 커질 때 코드 전체를 하나의 커다란 파일에 전부 
+작성하는 대신, 기능별로 쪼개어서 관리하는 단위)
+
+-> 가독성과 유지보수성, 재사용성, 네임스페이스(이름공간)분리
+
+export: 다른 파일에서 사용할 수 있도록 변수, 함수, 클래스 등을 외부에 공개한다.
+
+import: 다른 모듈에서 공개(export)한 요소들을 불러와서 사용한다.
+(import할 때, 변수와 함수를 구분하는게 가독성과 유지보수성에서 좋음)
+
+-ex)
+// 변수import
+import { 
+    SIGN_UP_VIEW,
+    SIGN_IN_VIEW,
+    SIGN_OUT_VIEW,
+    WRITE_VIEW,
+    LIST_VIEW,
+ } from './viewChaange.js';
+
+// 함수import
+import { showSelectedView } from './viewChaange.js';
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ 각 값을 독립적인 변수(상수) 로 선언하는 방식 ]
+const를 사용해 변경되지 않는 값을 각각 하나의 이름으로 관리하고 있으며, 
+systemFlag는 실행 중 값이 변경될 수 있으므로 let으로 선언되어 있다.
+
+let systemFlag = true;
+
+const OPENING_NEW_ACCOUNT               = 1;
+const DO_DEPOSIT                        = 2;
+const DO_WITHDRAW                       = 3;
+const PRINT_DEPOSIT_WITHDRAW_HISTORY    = 4;
+const SYSTEM_OUT                        = 99;
+
+
+[ 여러 값을 하나의 객체(Object) 안에 묶어서 관리하는 방식 ]
+관련 있는 값들을 하나의 객체인 config 안에 저장하므로 코드가 구조적으로 정리된다.
+
+export const config = {
+    systemFlag: true,
+    OPENING_NEW_ACCOUNT: 1,
+    DO_DEPOSIT: 2,
+    DO_WITHDRAW: 3,
+    PRINT_DEPOSIT_WITHDRAW_HISTORY: 4,
+    SYSTEM_OUT: 99,
+}
+
+
+선언 방식			| 독립적인 변수와 상수				| 객체 내부의 속성
+접근 방법			| DO_DEPOSIT					| config.DO_DEPOSIT
+자료형		    | 기본 자료형(Number, Boolean)	| 객체(Object)
+관련 데이터 관리	| 각각 관리						| 하나로 묶어서 관리
+모듈 사용			| 각각 export 필요				| 객체 하나만 export
+유지보수			| 상수가 많아질수록 불편			| 상수가 많아져도 관리가 쉬움
+코드 구조			| 단순한 프로그램에 적합			| 프로젝트 규모가 커질수록 유리
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+'=>'(화살표 함수/Arrow Function)는 이름이 없는 익명 함수
+() => { ... }
+
+ex)
+const initViews = () => {
+    console.log('initViews() called!');
+}
+-> 많은 사람이 initViews를 함수 이름이라고 생각하지만, 
+엄밀히 말하면 상수(const) 변수의 이름이다.
+
+------------------------------------------------------------------------
+JavaScript에서는 함수도 하나의 객체(Object)이다.
+-> 함수를 다른 변수에 저장할 수도 있다.
+--> 함수를 매개변수로 전달할 수도 있다.
+---> 함수를 반환할 수도 있다.
+
+	
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+# DTO
+(Data Transfer Object): 데이터를 전달하기 위한 객체
+(화면 ↔ 서버, Controller ↔ Service처럼 데이터를 이동시키는 용도로 사용한다)
+	-데이터를 전달
+	-getter/setter 사용
+	-DB와 직접 연결되지 않음
+
+# VO
+(Value Object): 값(Value)을 표현하는 객체
+(ID보다 값의 동일성이 중요하며, 일반적으로 변경되지 않는(불변) 객체로 설계한다)
+	-값 자체가 중요
+	-변경하지 않는 객체(Immutable)로 만드는 경우가 많음
+	-ID가 없음
+
+Entity
+데이터베이스의 테이블 한 행(Row)을 표현하는 객체
+(고유한 식별자(ID)를 가지며, 애플리케이션에서 'CRUD'의 대상이 된다)
+	-ID 존재
+	-DB와 연결
+	-값 변경 가능
+
+-실무 흐름
+Client -> DTO -> Controller -> DTO -> Service 
+-> Entity -> Repository -> Database
+
+-조회할 때
+Database -> Entity -> Service -> DTO -> Client
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+DAO(Data Access Object)
+데이터 저장소(Database, 파일, Map 등)에 접근하여 데이터를 저장·조회·수정·삭제
+(CRUD)하는 역할만 담당하는 객체
+-> 데이터를 어디에 저장할지, 어떻게 가져올지를 담당하는 객체
+
+Create -> 'insert'
+const insertNewMember = () => {
+
+}
+
+Read -> 'search'
+const searchNewMember = () => {
+    
+}
+
+Update -> 'update'
+const updateNewMember = () => {
+    
+}
+
+Delete -> 'delete'
+const deleteNewMember = () => {
+    
+}
+
+------------------------------------------------------------------------
+-프로그램 구조에서 DAO의 위치
+사용자 -> Controller -> Service -> DAO -> Database
+
+DTO			:계층 간 데이터를 전달
+Controller	:사용자 요청을 받음
+Service		:비즈니스 로직 처리
+DAO			:데이터 저장·조회·수정·삭제
+Database	:실제 데이터 저장
+
