@@ -1,9 +1,10 @@
 Front-end
-  -html/css
-  -javascript
+  -html/css	<--Notion Todo
+  -javascript	<--Notion Todo
 
 Back-end
-  -java
+  -python		<--Notion Todo : ?????
+  -java		<--Notion Todo
   -jsp
   -Database(MySQL)
   -Spring legacy
@@ -16,3 +17,12 @@ Back-end
 Portfolio
   -AI_드론 기반 보행자 검색추적을 위한 실시간 관제 시스템
   -github 주소: 연결하기
+
+Tools
+  -Git
+  -GitHub
+
+  -VScode	<--Notion Todo
+  -eclipse
+  -STS3 or STS4
+  -Intellij(무료, 유료)
