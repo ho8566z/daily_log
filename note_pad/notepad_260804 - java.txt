@@ -1,0 +1,567 @@
+20260804
+
+
+패키지: 디렉토리 경로
+
+# 환경변수 설정 확인
+
+C:\Windows\System32\cmd.exe 에서 'cmd'를 입력하고, 
+명령 프롬프트(cmd)에 'java com.apple.first.FirstClass'를 입력하면, 
+"Hello JAVA"이 출력된다.
+
+  출력 예시
+  C:\lyh\java\pjt\ex20260803\bin>java com.apple.first.FirstClass
+  Hello JAVA
+  
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+프로젝트 생성
+
+File -> New -> Project -> Java Project -> Next클릭 -> 'Project name' 입력
+-> JRE의 Java 버전 확인하고, Module 체크확인한 다음 -> Next클릭 -> bin 확인
+-> Finish클릭
+
+------------------------------------------------------------------------
+File -> New -> Package -> Name에 'com.office.example' 입력 -> Finish클릭
+-> 그럼, ex20260804의 src 내부에 생성
+
+------------------------------------------------------------------------
+File -> New -> Class -> Name에 'Ex001'(첫글자는 대문자) 입력-> Finish클릭 
+-> 그럼, com.office.example의 내부에 Ex001.java가 생성
+
+------------------------------------------------------------------------
+Close Project
+eclipse의 목록에 있는 프로젝트를 삭제하지 않고 닫을 수 있음.
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+"package com.office.example;"는 맨 위에 위치
+
+public class Ex001 {
+
+}는 package의 아래에 위치
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+package com.office.example;
+
+/*
+ * 1. class 란?
+ * class(클래스)는 프로그램을 구성하는 단위
+ * 그래서 java 응용프로그램은 반드시 하나 이상의 클래스 파일이 있어야 함.
+ * 
+ * 프로그램이란 것을 단순히 생각헤보면, 특정 기능들이 모여있는 집합체라고 할 수 있다.
+ * 여기서 특정 기능들이 기술되어 있는 곳이 바로 '클래스'이다.
+ * 
+ * 클래스는 기본적으로 'public', 'class' 키워드(예약어)를 사용하고 다음에 '클래스명(Ex001)'을 작성한다.
+ * 다음에 클래스안에 코드의 시작과 끝 '{...}'를 이용한다.
+ * 
+ * -------------- 노션 정리 : 중간 중간 그림을 삽입할 것 --------------
+ * 
+ * 2. 클래스명 규칙
+ * 클래스 이름은 java 파일명과 무조건 동일하게 한다.
+ * 따라서 하나의 java 파일에는 하나의 클래스가 있는게 일반적이다.
+ * 하지만, 일반적이지 않는 경우도 존재한다. -> 하나의 java 파일에 2개 이상의 클래스 선언(예전에 inner class -> 파일의 용량을 줄이기 위해)
+ * 파일명과 동일한 클래스는 public을 붙이고, 아닌 경우에는 public을 뺀다.
+ * 요즘에는 하나의 java 파일에 클래스를 2개 생성하기 보다는, 파일을 하나더 생성하는게 일반적이다.
+ * 
+ * 클래스명은 영문 대문자로 시작하는게 일반적이다
+ * 숫자를 사용하고자 핳때는 중간, 끝에만 사용 가능하다. 즉 클래스명의 첫글자에는 사용이 불가능하다
+ * Hello --> O 
+ * H33ello --> O
+ * Hello33 --> O
+ * 33Hello --> X
+ * 
+ * 일반적이지 않지만, 특수문자를 사용하는 경우가 있다. 이때 특수문자는 '$', '_'만 사용가능하다
+ * _Hello --> O
+ * He_llo --> O
+ * Hello_ --> O
+ * $Hello --> O
+ * Hel$lo --> O
+ * Hello$ --> O
+ * 
+ * Hello@ --> X
+ * Hello^^ --> X
+ * 
+ * 결론적으로 특수문자, 숫자는 가급적 사용하지 말 것
+ */
+
+------------------------------------------------------------------------
+public class Ex001 {
+	
+	/*
+	 * 메인 메서드란?
+	 * java 응용프로그램을 실행하면, JVM은 프로그램 내 많은 코드 중에서 가장 먼저 시작해야 하는 코드를 찾아야 한다.
+	 * 이때, JVM은 main 메서드를 프로그램의 시작점으로 생각하고 프로그램을 실행한다.
+	 * 
+	 * class, main()는 코드 블럭 '{ }'을 사용하기 때문에 들여쓰기는 아무런 의미가 없다.
+	 * 
+	 * ; --> 종결자
+	 * 
+	 */
+	
+//	public static void main(String[] args) {		// 프로그램 시작점 for JVM
+//		
+//		System.out.println("Hello World");  // === console.log() or print()
+//		
+//	}
+
+}
+
+------------------------------------------------------------------------
+// 한줄 주석 : ctrl + /
+// 두줄 주석 : /*입력하고 + ctrl + Enter
+
+// java 함수 -> class의 메서드
+
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+package com.office.example;
+
+public class VariableCls {
+	
+	// 변수
+	/*
+	 * 컴퓨터 프로그램에서 숫자, 문자 등과 같은 데이터를 저장하고 관리하는 방법에 대해서 학습한다.
+	 * 모든 컴퓨터 프로그래밍 언어는 데이터를 효율적으로 관리하기 위한 다양한 방법을 가지고 있다.
+	 * 그 중 변수를 이용한 데이터 관리는 데이터를 효율적으로 관람하기 위한 기초이다.
+	 * 
+	 * -------------- 노션 정리 : 중간 중간 그림을 삽입할 것 --------------
+	 * 변수 선언, 변수 초기화 부분을 각각 정리해서 이미지 삽입하고, 4byte도 꼭 입력할 것
+	 * ex) '데이터 메모리 변수선언'으로 검색
+	 */
+	
+------------------------------------------------------------------------
+	public static void main(String[] args) {
+		
+		// python
+		// num = 10
+		
+		// javascript
+		// let num = 10
+		
+		// java
+		// 데이터 타입(int) + 변수명(num) + 할당연산자(=) + 데이터(10) + 데이터 종결자(;)
+		// 변수 선언부 : 데이터 타입 + 변수명
+		// 변수 초기화 : 할당연산자 + 데이터 + 데이터 종결자
+		int num = 10;
+		
+------------------------------------------------------------------------
+		/*
+		 * '=' : 할당연산자
+		 * 수학에서는 좌변과 우변의 값이 같다고 하지만, 프로그램에서는 우변의 값을 좌변에 할당(대입)하는 연산자입니다.
+		 * 즉, '같다'라는 의미가 아니다.
+		 */
+		
+		int nums;	// 변수 선언
+		nums = 10;	// 변수 초기화
+		
+		System.out.println("nums is " + nums);		// nums is 10
+		
+		System.out.println(System.identityHashCode(nums));	// 1500056228
+		
+------------------------------------------------------------------------
+		// 메모리 주소를 변수로 선언
+		int addForNums = System.identityHashCode(nums);
+		
+		System.out.println(addForNums);			// 1500056228
+		
+		/*
+		 * java 응용 프로그램에서 메모리 주소를 꼭 알고 있어야 하는지?
+		 * 절대 X, 이유는 java에서는 메모리를 직접 관리하지 않기 때문이다.
+		 * 그럼, 메모리 관리는 누가 하는지?
+		 * JVM이 대신 메모리를 관리한다
+		 */
+
+------------------------------------------------------------------------
+		/*
+		 * 변수 이름 어떻게 작명하는지?
+		 * 
+		 * 1. 일반적으로 소문자로 작성한다.
+		 * int money = 100;		-> O
+		 * int Money = 100;		-> 적합X
+		 * 
+		 * 2. 변수명은 일반적으로 영문으로 한다.
+		 * int myMoney = 100;	-> O
+		 * int 나의돈 = 100;		-> 적합X
+		 * 
+		 * 3. 변수명은 데이터의 의미를 쉽게 파악할 수 있도록 만든다.
+		 * int score = 100;		-> O
+		 * string player = "홍길동"		-> 0
+		 * string stage = "쉬움스테이지"	-> O
+		 * 
+		 * int s = 100;		-> 적합X
+		 * string p1 = "홍길동";		-> 적합X
+		 * string stg = "쉬움스테이지";	-> 적합X
+		 * 
+		 * 4. 2개 이상의 단어가 조합된 경우, 낙타(camel) 표기법을 사용한다.
+		 * int myScore = 100;		-> 0
+		 * int myTotalScore = 100;	-> 0
+		 * 
+		 * int myscore = 100;		-> 적합X
+		 * int mytotalscore = 100;	-> 적합X
+		 * 
+		 * int my_score = 100;			-> 적합X
+		 * int my_total_score = 100;	-> 적합X
+		 * 
+		 * 변수명에 ' '(공백)이나, '_', '$'를 제외한 특수문자는 사용하지 않는다.
+		 * 
+		 * 정리하면,
+		 * 		변수명은 영문으로 하고, 첫 글자는 소문자로 한다.
+		 *		2개 이상의 단어가 조합된 경우, 낙타 표기법을 따른다.
+		 *		특수문자, 예약어 그리고 공백문자응 사용하지 않는다.
+		 *		숫자는 사용해야 하는 경우, 중간과 끝에 사용한다.
+		 */
+		
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+		
+		/*
+		 * 변수 데이터 변경
+		 * 변수는 '변하는 수'를 뜻한다. 따라서 필요할 때, 언제든지 데이터를 변경할 수 있다.
+		 * 변수의 데이터를 변결할때는 데이터 타입을 명시하지 않는다.
+		 */
+		
+		int score = 90;
+		System.out.println("score: " + score); 		// 90
+		
+		score = 100;
+		System.out.println("score: " + score); 		// 100
+
+------------------------------------------------------------------------
+		/*
+		 * 데이터 복사
+		 * 변수의 데이터를 복사할 수 있다.
+		 * int number1 = 10;
+		 * int number2;
+		 * System.out.println("number1: " + number1);	// 10
+		 * System.out.println("number2: " + number2);	// 0
+		 * 
+		 * number2 = number1; 	// 데이터 복사
+		 * System.out.println("number1: " + number1);	// 10
+		 * System.out.println("number2: " + number2);	// 10
+		 */
+		
+		int number1 = 10;
+		int number2;
+		System.out.println("number1: " + number1);	// 10
+//		System.out.println("number2: " + number2);	// 0
+		/*
+		Exception in thread "main" java.lang.Error: Unresolved compilation problem: 
+		The local variable number2 may not have been initialized
+
+		at com.office.example.VariableCls.main(VariableCls.java:125)
+		 */
+		
+		number2 = number1; 	// 데이터 복사
+		System.out.println("number1: " + number1);	// 10
+		System.out.println("number2: " + number2);	// 10
+		
+------------------------------------------------------------------------
+		/*
+		 * 변수를 프로그램에서 사용하는 이유?
+		 * '데이터'를 "재사용"을 하기 위해서
+		 * 
+		 * 함수는 '기능'을 재사용하기 위함
+		 */
+		
+		System.out.println(10);		// 10
+		System.out.println(10);		// 10
+		System.out.println(10);		// 10
+		
+		int numA = 10;
+		System.out.println("numA is " + numA);		// numA is 10
+		System.out.println("numA is " + numA);		// numA is 10
+		
+		numA = 20;
+		System.out.println("numA is " + numA);		// numA is 20
+		System.out.println("numA is " + numA);		// numA is 20
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+package com.office.example;
+
+public class DataType {
+
+	public static void main(String[] args) {
+		System.out.println("This class is DataType.");
+		
+		/*
+		 * 데이터 타입(Data Type) == 자료형		<--데이터 손실, 메모리 낭비
+		 * 데이터 타입이란, 메모리에 데이터가 저장될 때 데이터에 따라서 할당 받는 메모리 크기가 다르게 된다.
+		 * 예를 들어 정수는 1~8byte, 실수는 4~8byte의 크기가 할당된다.
+		 * 
+		 * [참고]
+		 * 메모리 단위
+		 * 1bit(비트)				메모리 최소단위
+		 * 8bit(비트)				1byte(바이트)
+		 * 1024byte(바이트)		1KB(키로 바이트)
+		 * 1024KB(키로 바이트)		1MB(메가 바이트)
+		 * 1024MB(메가 바이트)		1GB(기가 바이트)
+		 * 1024GB(기가 바이트)		1TB(테라 바이트)
+		 * 
+		 * 이렇게 데이터에 따라서 메모리 크기를 달리하는 이유는?
+		 * 메모리를 효율적으로 사용하기 위함
+		 * 
+		 * javascript의 경우
+		 * let num = 10;
+		 * let에서 1byte 정도 메모리 할당, num에서 메모리에 이름을 붙이고, =에서 메모리를 청소, 10에서 메모리를 확장/축소시킴 
+		 * -> 다이나믹(동적) 캐스팅(타이핑) (Dynamic Casting(Typing))
+		 * 
+		 * java의 경우
+		 * int num = 10;
+		 * int에서 데이터 타입인 int에 따라 4byte를 할당, num에서 메모리에 이름을 붙이고, =에서 메모리를 청소, 10에서 데이터를 할당 
+		 * -> 스태틱(정적) 캐스팅(타이핑) (Static Casting(Typing))
+		 * 
+		 * [참고]
+		 * 데이터 타입의 진정한 의미
+           위에서는 데이터 타입을 가급적 쉽게 설명하기 위해서 메모리 크기에 따른 데이터 구분이라고 했는데요, 
+           사실 데이터 타입은 메모리 크기뿐만 아니라 데이터의 저장 방식, 속성, 관련 명령 등에 따른 데이터 구분입니다. 
+           하지만, 지금 이 모든 것을 학습하는 불가능하고 향후 프로그래밍 언어를 학습하다 보면 자연스럽게 알 수 있는 내용입니다
+		 */
+		
+------------------------------------------------------------------------
+		
+		/*
+		 * 정수 데이터 타입 == 정수형
+		 * byte		1byte(8bit)	-> -128 ~ 127
+		 * short	2byte		-> -32,768 ~ 32,767
+		 * int		4byte		-> -2,147,483,648 ~ 2,147,483,647
+		 * long		8byte		-> -9,223,372,036,854,775,808 ~ 9,223,372,036,854,775,807
+		 */
+		
+		// byte
+		byte numByte = -128;
+		System.out.println("numByte " + numByte);	// numByte -128
+		
+		numByte = 127;
+		System.out.println("numByte " + numByte);	// numByte 127
+		
+//		numByte = 129;
+//		System.out.println("numByte " + numByte);	// Type mismatch: cannot convert from int to byte
+		
+		// short
+		short numShort = -32768;
+		System.out.println("numShort " + numShort); 	// numShort -32768
+		
+		numShort = 32767;
+		System.out.println("numShort " + numShort);		// numShort 32767
+		
+		// int
+		int numInt = -2147483648;
+		System.out.println("numInt " + numInt); 	// numInt -2147483648
+		
+		numInt = 2147483647;
+		System.out.println("numInt " + numInt); 	// numInt 2147483647
+		
+		// long
+		long numLong = -9223372036854775808L;		// long만 숫자 뒤에 L(꼭 대문자)를 입력해야 된다.
+		System.out.println("numLong " + numLong);	// numLong -9223372036854775808
+		
+		numLong = 9223372036854775807L;
+		System.out.println("numLong " + numLong);	// numLong 9223372036854775807
+		
+		
+------------------------------------------------------------------------
+		
+		/*
+		 * 실수 데이터 타입(부동소수)
+		 * float	4byte	-> 범위 (대략적)
+		 * 		양수 범위: $1.4 \times 10^{-45} \sim 3.4 \times 10^{38}$ (1.4E-45 ~ 3.4028235E38)
+		 * 		음수 범위: $-3.4 \times 10^{38} \sim -1.4 \times 10^{-45}$
+		 * 		정밀도 (유효 자릿수): 소수점 이하 약 6~7자리
+		 * double	8byte	-> 범위 (대략적)
+		 * 		양수 범위: $4.9 \times 10^{-324} \sim 1.7 \times 10^{308}$ (4.9E-324 ~ 1.7976931348623157E308)
+		 * 		음수 범위: $-1.7 \times 10^{308} \sim -4.9 \times 10^{-324}$
+		 * 		정밀도 (유효 자릿수): 소수점 이하 약 15~16자리
+		 */
+		
+		// float
+		float numFloat = 3.14f;
+		System.out.println("numFloat " + numFloat);		// numFloat 3.14
+		
+		// double
+		double numDouble = 3.14;
+		System.out.println("numDouble " + numDouble);	// numDouble 3.14
+		
+		float num1 = 3.14159265358979323846264338327950288f;
+	    double num2 = 3.14159265358979323846264338327950288d;
+	    
+	    System.out.println("num1 " + num1);		// num1 3.1415927
+	    System.out.println("num2 " + num2);		// num2 3.141592653589793
+	    
+		/*
+		 * float보다는 double을 사용하는게 정밀한 데이터 수치를 저장할 수 있기 때문에 double의 사용을 권장한다.
+		 */
+	    
+	    
+------------------------------------------------------------------------
+		
+		/*
+		 * 논리 데이터 타입 == 논리형
+		 * boolean	1byte	-> 0 or 1
+		 */
+	    
+	    boolean flag = true;
+	    System.out.println("flag " + flag);		// flag true
+	    
+	    flag = false;
+	    System.out.println("flag " + flag);		// flag false
+	    
+	    
+------------------------------------------------------------------------
+		
+		/*
+		 * 문자 데이터 타입 == 챠(char)
+		 * java에서는 python이나 javascript와 달리 문자와 문자열을 엄격히 구분한다.
+		 * char 	2byte	-> 0 ~ 65,535
+		 */
+	    
+	    char ch = 'a';
+	    System.out.println("ch " + ch);		// ch a
+	    
+	    ch = 'b';
+	    System.out.println("ch " + ch);		// ch b
+		
+------------------------------------------------------------------------
+	    /*
+	     * 빈문자(empty), 공백문자(space)
+	     * 
+	     * 빈문자 : 아무것도 없는 문자		--> ''
+	     * 공백문자 : 공백이 있는 문자		--> ' '(무조건 공백은 1개만 있어야 공백문자이다.)
+	     */
+	    
+//	    char chEmpty = ''; 		// 사용X
+	    char chSpace = ' ';		// O
+	    
+	    System.out.println("chSpace " + chSpace);		// 'chSpace  '
+	    
+------------------------------------------------------------------------
+	    /*
+	     * 유니코드란?
+	     * 문자가 메모리에 저장될 때 문자 자체로 저장되는 것이 아니고 유니코드로 저장된다
+	     * 유니코드란, 영어, 한글, 중국어 등의 전 세계의 모든 문자를 정수로 나타낸 코드로 컴퓨터로
+	     * 문자를 다룰 수 없기 때문에 문자를 정수로 변환해서 사용한다.
+	     */
+	    
+	    char char1 = 'A';
+	    System.out.println("char1 " + char1);		// char1 A
+	    
+	    int unicode1 = char1;
+	    System.out.println("unicode1 " + unicode1);		// unicode1 65
+	    
+	    char char2 = 'ㄱ';
+	    System.out.println("char2 " + char2);		// char2 ㄱ
+
+	    int unicode2 = char2;
+	    System.out.println("unicode2 " + unicode2);		// unicode2 12593
+	    
+	    char char3 = '나';
+	    int unicode3 = char3;
+	    System.out.println("unicode3 " + unicode3);		// unicode3 45208
+	    
+	    char char4 = 65;
+	    System.out.println("char4 " + char4);		// char4 A
+
+	    
+	    
+	    
+------------------------------------------------------------------------
+		
+ 		/*
+ 		 * 문자열 데이터 타입
+ 		 * String 	할당된 메모리 공간을 지정할 수 없다.
+ 		 */
+	    
+	    String str1 = "Hello World";
+	    System.out.println("str1 " + str1);		// str1 Hello World
+	    
+	    String str2 = "H";
+	    System.out.println("str2 " + str2);		// str2 H
+	    
+	    String str3 = " ";
+	    System.out.println("str3 " + str3);		// 'str3  '
+	    
+	    String str4 = "GOOD";		// str4 GOOD [ 'G', 'O', 'O', 'D' ]
+	    System.out.println("str4 " + str4);		// str4 GOOD
+	    
+	    /*
+	     * 문자열: String의 경우, '기초 데이터 타입'인 위의 다른 데이터 타입과 다른 '레퍼런스 타입'이다.
+	     */
+	    
+	    
+------------------------------------------------------------------------
+	    
+	    /* GC란?
+        * Garbage Collection(가비지 컬렉션)란, 메모리에서 더 이상 사용되지 않는 객체를 자동으로 제거하는 기능을 말한다.
+        * String 형을 쓰면 속도가 느려지는 이유는? String 형은 불변(immutable)하기 때문에 새로운 문자열을
+        * 생성할 때마다 새로운 메모리 공간을 할당하고 이전 문자열은 가비지 컬렉션에 의해 제거되기 때문에 속도가 느려진다.
+        */
+	    
+	    
+------------------------------------------------------------------------
+	    
+	    /*
+	     * 랩퍼(Wrapper) 클래스
+	     * (기초 데이터 타입에 랩핑해서 객체 데이터 타입으로 변환한 것)
+	     * java는 '객체지향언어'이다. 객체를 적극적으로 이용하자
+	     * 즉, 객체로 시작해서 객체로 끝내라
+	     * 
+	     * int num = 10;	// 객체X
+	     * 
+	     * 기초 데이터 타입 VS 객체 데이터(레퍼런스) 타입
+	     * 
+	     * int --> Integer
+	     */
+	    
+	    int numS = 10;							// 기초 데이터 타입
+	    System.out.println("numS " + numS);		// numS 10
+	    
+	    Integer numSS = Integer.valueOf(100);	// 객체 데이터 타입
+	    System.out.println("numSS " + numSS);	// numSS 100
+	    /*
+	     * 묵시적 변환 (Implicit Conversion)
+	     * : 자바 컴파일러가 내부적으로 객체의 toString() 메서드를 자동으로 호출한다.
+	     */
+	    
+	    System.out.println("numSS : " + numSS.toString());		// numSS : 100
+	    /*
+	     * 명시적 호출 (Explicit Call)
+	     * : 개발자가 코드에 직접 .toString()을 작성하여 Integer 객체가 가진 
+	     * 문자열 반환 기능을 명확하게 호출한다.
+	     */
+	    
+	    // 코드가 더 간결하고 가독성이 좋을 뿐만 아니라, 변수가 null일 때 2번과 달리 
+	    // NullPointerException(NPE) 에러를 방지할 수 있기 때문이다.
+	    
+	    System.out.println("최소값 : " + Integer.MIN_VALUE);		// 최소값 : -2147483648
+	    System.out.println("최대값 : " + Integer.MAX_VALUE);		// 최대값 : 2147483647
+	    
+	    
+	}
+	
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+메인 메서드 실행
+
+파일명 오른쪽 클릭 ->  Run AS 클릭 -> Java Application클릭 -> Console에 출력
+// Run AS를 눌렀을때, main method가 2개 이상이라면, 어느 main method를 실행해야 
+// 하는지 프로그램에서 모르는 상황이라서 메서드를 선택하라는 팝업창이 뜬다.
+
+때문에 단축키'ctrl + f11'을 이용한다.
+-> 단축키 ctrl + f11 : 마지막에 실행했던 프로그램(메인 메서드)을 다시 실행(Run)한다.
+

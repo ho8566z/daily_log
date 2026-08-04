@@ -1,0 +1,74 @@
+1. Java 개발환경
+
+Java를 개발하기 위한 환경을 구성하는 단계
+
+Java란?
+Java의 특징
+JDK / JRE / JVM
+Java 설치
+환경 변수(JAVA_HOME, PATH)
+Eclipse 설치
+IntelliJ IDEA 설치(선택)
+Java 프로젝트 생성
+Package 생성
+Class 생성
+프로그램 실행 방법
+Build Path
+외부 라이브러리 추가
+
+-----------------------------------------------------------------------------
+2. Java 핵심 문법
+
+Java 언어의 기본 문법과 객체지향의 핵심 개념
+
+기본 문법
+출력(System.out.println())
+주석
+변수
+자료형
+형변환
+연산자
+조건문
+반복문
+배열
+메서드
+객체지향
+클래스와 객체
+생성자
+this
+static
+캡슐화
+상속
+오버라이딩
+다형성
+추상 클래스
+인터페이스
+핵심 API
+String
+Wrapper Class
+Enum
+Generic
+Collection Framework
+List
+Set
+Map
+Lambda
+Stream
+예외 처리(Exception)
+
+-----------------------------------------------------------------------------
+3. Java 실무 활용
+
+실제 프로젝트에서 자주 사용하는 기능과 기술
+
+입출력(IO / NIO)
+파일 처리
+직렬화(Serialization)
+날짜와 시간 API(java.time)
+멀티스레드(Thread)
+네트워크(Socket)
+JDBC
+Logging
+Maven
+Gradle
+Java 프로젝트 제작
