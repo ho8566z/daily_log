@@ -1,0 +1,71 @@
+1. Python 기초
+Python이란?
+개발환경 설치
+출력 (print())
+주석
+변수
+데이터 타입
+형변환
+입력 (input())
+연산자
+문자열(String)
+조건문 (if)
+반복문 (for, while)
+컬렉션
+List
+Tuple
+Set
+Dictionary
+슬라이싱
+컴프리헨션
+함수(Function)
+
+##===================================###
+##===================================###
+2. Python 심화
+모듈(Module)
+패키지(Package)
+예외 처리
+파일 입출력
+객체지향 프로그래밍(OOP)
+클래스
+객체
+생성자
+상속
+오버라이딩
+다형성
+람다(Lambda)
+Iterator
+Generator
+Decorator
+정규표현식(Regex)
+
+##===================================###
+##===================================###
+3. Python 활용
+표준 라이브러리
+datetime
+random
+math
+os
+pathlib
+json
+가상환경(venv)
+패키지 관리(pip)
+웹 크롤링
+requests
+BeautifulSoup
+데이터 분석
+NumPy
+pandas
+데이터 시각화
+matplotlib
+데이터베이스(SQLite)
+GUI(Tkinter)
+웹 개발
+Flask
+Django
+API 활용
+비동기(asyncio)
+테스트(pytest)
+프로젝트

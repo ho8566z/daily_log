@@ -1,0 +1,577 @@
+20260806
+
+
+[ex20260805 -> [ Operator03 ]]
+
+/*
+ * 논리 연산자
+ * &&(AND), ||(OR), !(NOT)
+ * A && B : A와 B가 모두 true인 경우, 결과값은 true이다.
+ * A || B : A또는 B 중 하나라도 true인 경우, 결과값은 true이다.
+ * !A : A의 현재상태를 부정한다.
+ */
+
+int num1 = 10;
+int num2 = 20;
+int num3 = 30;
+
+boolean result = false;
+
+result = (num1 < num3) && (num2 < num3);		// true && true -> true
+System.out.println("result : " + result);		// result : true
+
+result = (num1 > num3) && (num2 < num3);		//false && true -> false
+System.out.println("result : " + result);		// result : false
+
+result = (num1 > num3) && (num2 > num3);		//false && false -> false
+System.out.println("result : " + result);		// result : false
+
+
+result = (num1 < num2) && (num2 < num3) && (num3 > num1);
+// true && true -> true
+				// true && true -> true
+System.out.println("result : " + result);		// result : true
+
+// --------------------------------------------------------------------------
+
+result = (num1 < num3) || (num2 < num3);		// true || true -> true
+System.out.println("result : " + result);		// result : true
+
+result = (num1 > num3) || (num2 < num3);		// false || true -> true
+System.out.println("result : " + result);		// result : true
+
+result = (num1 > num3) || (num2 > num3);		// false || false -> false
+System.out.println("result : " + result);		// result : false
+
+// --------------------------------------------------------------------------
+
+result = (num1 < num2);			// true
+System.out.println("result : " + result);		// result : true
+
+result = !(num1 < num2);		// false
+System.out.println("result : " + result);		// result : false
+
+result = !!(num1 < num2);		// true
+System.out.println("result : " + result);		// result : true
+
+// --------------------------------------------------------------------------
+
+// 논리 연산자 우선순위 && > ||
+
+int num11 = 10;
+int num12 = 20;
+int num13 = 30;
+result = (num11 < num13) || (num12 < num13) && (num11 > num13);
+							// true && false -> false
+			// true || false -> true
+// 연산자 우선순위에 따라 &&가 먼저 계산되고, ||이 계산되기 때문에 결과값이 true이다.
+System.out.println("result : " + result);		// result : true
+
+// --------------------------------------------------------------------------
+
+/*
+ * 조건식 연산자 == 삼항 연산자
+ * 조건식 ? x : y
+ */
+
+int passScore = 80;
+int myScore = 90;
+
+String passResult = (myScore >= passScore) ? "PASS" : "TRY AGAIN";
+System.out.println("passResult : " + passResult);		// passResult : PASS
+
+myScore = 70;
+passResult = (myScore >= passScore) ? "PASS" : "TRY AGAIN";
+System.out.println("passResult : " + passResult);		// passResult : TRY AGAIN
+
+
+if (myScore >= passScore) {
+	passResult = "PASS";
+} else {
+	passResult = "TRY AGAIN";
+}
+System.out.println("passResult : " + passResult);		// passResult : TRY AGAIN
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ex20260806 -> [ Condition ]]
+
+/*
+	 * if문
+	 * if (조건식) {
+	 * 조건식의 결과가 true인 경우, 실행되는 실행구문
+	 * }
+	 * 
+	 * if문 이미지 만들기
+	 * 속성 : if키워드, 조건식, 코드블록, 실행문
+	 */
+	
+	Scanner scanner = new Scanner(System.in);
+	
+//	int num = scanner.nextInt();
+//	if (num > 10) {
+//		System.out.printf("%d은 10보다 크다. \n", num);
+//	}
+//	12
+//	12은 10보다 크다. 
+	
+//--------------------------------------------------------------------------
+	
+	/*
+	 * if문 -> if ~ else문(양자택일), if ~ else if문(다중비교)
+	 * 
+	 * if ~ else문 이미지 만들기
+	 * 속성 : if키워드, else키워드, 조건식, 코드블록, 실행문
+	 * 
+	 * if ~ else if문 이미지 만들기
+	 * 속성 : if키워드, else if키워드, 조건식, 코드블록, 실행문
+	 */
+	
+	// 시험 점수가 70점 이상이면, 합격을 출력하고, 그렇지 않으면 불합격을 출력한다.
+	
+//	int userScore = scanner.nextInt();
+	
+//	if (userScore >= 70) {
+//		System.out.println("합격");
+//	} 
+//	if (userScore < 70) {
+//		System.out.println("불합격");
+//	}
+	
+	
+//	if (userScore >= 70) {
+//		System.out.println("합격");
+//	} else {
+//		System.out.println("불합격");
+//	}
+	
+	
+//	String result = userScore >= ? "합격" : "불합격";
+//	System.out.println("result : " + result);
+	
+//--------------------------------------------------------------------------
+	
+	/*
+	 * 시험점수가 90점 이상이면 'A',
+	 * 90점 미만에서 80점 이상이면 'B',
+	 * 80점 미만에서 70점 이상이면 'C',
+	 * 70점 미만에서 60점 이상이면 'D',
+	 * 60점 미만이면 'F'
+	 */
+	
+//	int studentScore = scanner.nextInt();
+//	if (studentScore >= 90) {
+//		System.out.println("A학점");
+//		
+//	} else if (studentScore >= 80) {
+//		System.out.println("B학점");
+//		
+//	} else if (studentScore >= 70) {
+//		System.out.println("C학점");
+//		
+//	} else if (studentScore >= 60) {
+//		System.out.println("D학점");
+//		
+//	} else {
+//		System.out.println("F학점");
+//	}
+	
+//	int studentScore = scanner.nextInt();
+//	if (studentScore >= 90) {
+//		System.out.println("A학점");
+//
+//	} else if (studentScore >= 60 && studentScore < 70) {
+//		System.out.println("D학점");
+//			
+//	} else if (studentScore >= 70 && studentScore < 80) {
+//		System.out.println("C학점");
+//		
+//	} else if (studentScore >= 80 && studentScore < 90) {
+//		System.out.println("B학점");
+//		
+//	} else {
+//		System.out.println("F학점");
+//	}
+	
+//--------------------------------------------------------------------------
+	
+	/*
+	 * switch ~ case문
+	 * if ~ else if문과 비슷하게 다중 비교를 할 수 있다.
+	 * 하지만, if ~ else if문과 동일하지는 않다.
+	 * 
+	 * switch(조건식) {
+	 *   case 값:
+	 *     실행문
+	 *     break;
+	 * }
+	 * 
+	 * switch ~ case문 이미지 만들기
+	 * 간단한 부연설명을 붙이는 식으로
+	 */
+	
+	// 메뉴 : 1.절전모드   2.시스템 종료   3.다시시작   4.잠금
+//	System.out.println("1.절전모드   2.시스템 종료   3.다시시작   4.잠금");
+//		
+//	int selectNumber = scanner.nextInt();
+//		
+//	switch (selectNumber) {
+//	case 1:
+//		System.out.println("절전모드 중...");
+//		break;
+//			
+//	case 2:
+//		System.out.println("시스템 종료 중...");
+//		break;
+//			
+//	case 3:
+//		System.out.println("다시시작 중...");
+//		break;
+//			
+//	case 4:
+//		System.out.println("잠금 중...");
+//		break;
+//			
+//	default:
+//		System.out.println("잘못된 입력입니다.");
+//		break;
+//	}
+	
+	/*
+	 * case의 경우, 중복으로도 사용이 가능하다
+	 * case 4:
+	 * case 5:
+	 * 		System.out.println("잠금 중...");
+			break;
+	 */
+	
+	final int CASE1 = 1;
+	final int CASE2 = 2;
+	final int CASE3 = 3;
+	final int CASE4 = 4;
+	final int CASE5 = 5;
+	
+//	int case1 = 1;
+	
+//	System.out.println("1.절전모드   2.시스템 종료   3.다시시작   4.잠금");
+//		
+//	int selectNumber = scanner.nextInt();
+//		
+//	switch (selectNumber) {
+//	case CASE1:
+//		System.out.println("절전모드 중...");
+//		break;
+//			
+//	case CASE2:
+//		System.out.println("시스템 종료 중...");
+//		break;
+//			
+//	case CASE3:
+//		System.out.println("다시시작 중...");
+//		break;
+//			
+//	case CASE4:
+//	case CASE5:
+//		System.out.println("잠금 중...");
+//		break;
+//			
+//	default:
+//		System.out.println("잘못된 입력입니다.");
+//		break;
+//	}
+	
+//--------------------------------------------------------------------------
+	
+	// break : 선택사항
+	
+	
+	System.out.println("고객등급 입력 : ");
+	/*
+	 * normal : 문자 50개 무료/월
+	 * vip : normal + 영화권 1매/월
+	 * vvip : vip + 해외여행 1회/년
+	 */
+	
+	final String NORMAL = "normal";
+	final String VIP = "vip";
+	final String VVIP = "vvip";
+	
+	String userGrade = scanner.nextLine();
+	
+	switch (userGrade) {
+	case VVIP:
+		System.out.println("해외여행 1회/년");
+//		System.out.println("영화권 1매/월");
+//		System.out.println("문자 50개 무료/월");
+		
+	case VIP:
+		System.out.println("영화권 1매/월");
+//		System.out.println("문자 50개 무료/월");
+	
+	case NORMAL:
+		System.out.println("문자 50개 무료/월");
+		break;
+		
+	}
+	
+	// break가 없다면, 순서를 잘맞춰야 논리적인 오류없이 조건문을 실행가능하다.
+
+	
+	scanner.close();
+	
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ex20260806 -> [ Loop ]]
+
+	/*
+	 * for문 & while문
+	 * 
+	 * for (int i = 0; i < 11; i++)
+	 * for (시작(초기화); 여기까지(조건식); 단계(증감식)) {
+	 * 		System.out.println("i : " + i); <-실행구문
+	 * }
+	 * 
+	 * for문 이미지 만들기
+	 * 바로 위의 설명을 참조해서
+	 */
+	
+//	for (int i = 0; i < 11; i++) {
+//		System.out.println("i : " + i);
+//	}
+//	i : 0
+//	i : 1
+//	i : 2
+//	...
+//	i : 10
+	
+	// 초기화 부분을 for문 바깥으로
+//	int i = 0;
+//		
+//	for (; i < 11; i++) {
+//		System.out.println("i : " + i);
+//	}
+	// 결과는 동일하다
+	
+//--------------------------------------------------------------------------
+	
+//	for (int i = 0, j = 10; i < 11 && j < 20; i++, j++) {
+//		System.out.printf("i : %d \t / j : %d \n", + i, j);
+//	}
+//	i : 0 	 / j : 10 
+//	i : 1 	 / j : 11 
+//	i : 2 	 / j : 12 
+//	...
+//	i : 10 	 / j : 20 
+	
+	
+	/*
+	 * K마트에서 고객 감사 할인행사를 진행한다.
+	 * 5% 할인쿠폰 증정
+	 * 쿠폰 개수는 사용자가 원하는 만큼
+	 * 단, 최대 쿠폰 수는 1인당 5개로 제한한다.
+	 */
+	
+	Scanner scanner = new Scanner(System.in);
+//	int couponNum = scanner.nextInt();
+
+//	for (int i = 0, j = 5; i < couponNum && j > 0; i++, j--) {
+//		System.out.println("쿠폰 발행");
+//	}
+	
+	// 전위 연산자
+//	for (int i = 0; i < couponNum; i++) {
+//		if (i >= 5) break;
+//		System.out.println("쿠폰 발행");
+//	}
+	
+	// 후위 연산자
+//	for (int i = 0; i < couponNum; ++i) {
+//		if (i >= 5) break;
+//		System.out.println("쿠폰 발행");
+//	}
+	
+	// for문에서 전위연산자와 후위연산자는 동일한 결과를 나타낸다.
+	
+	
+//--------------------------------------------------------------------------
+	
+	// 지양해야하는 코드
+//	for (double d = 0.0; d < 1; d += 0.1) {
+//		System.out.printf("d : %f \n", d);
+//	}
+//	d : 0.000000 
+//	d : 0.100000 
+//	d : 0.200000 
+//	d : 0.300000 
+//	...
+//	d : 1.000000 
+	
+//--------------------------------------------------------------------------
+	
+	/*
+	 * while문
+	 * 
+	 * for문이 횟수에 의한 반복이라면, while문은 조건에 의한 반복이다.
+	 * 
+	 * ex) for문: PT 10번 / while문: 100KG -> 80KG까지
+	 * 
+	 * while문 이미지 만들기
+	 * for문과 같이
+	 */
+	
+//	int num = 10;
+//	while (num > 0) {
+//	while (true) {
+//	// 조건식 = true
+//		System.out.println("조건식에 만족했다.");
+//		num--;
+//		if (num <= 5) break;
+//		// 증감식 or break로 whiie문을 제어해야 함
+//	}
+	
+//--------------------------------------------------------------------------
+	
+	// do ~ while
+	// 조건식과 별개로 무조건 딱 한번은 실행한다.
+	
+	/*
+	 * 1. 시음으로 처음 1회는 무료
+	 * 2. 마시고 맛있으면, 구독해라
+	 * 3. 계속하다가 질려서 구독을 중단하려
+	 */
+//	int condition = 0;
+//	do {
+//		System.out.println("우유 배송");
+//		System.out.println("정기배송 결정여부");
+//		System.out.println("1.계속 구독 / 2.구독 취소");
+//			
+//		condition = scanner.nextInt();
+//	} while(condition == 1);
+
+	scanner.close();
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ex20260806 -> [ ArrayClass ]]
+
+/*
+	 * 배열
+	 * 여러 개의 데이터를 묶어서 저장하고 관리하는 것
+	 * -> 데이터 집합체
+	 * 
+	 * 배열 이미지 만들기
+	 * '데이터 손실, 메모리 낭비'와 같이 네모칸 묶음을 사용해서
+	 * 
+	 * 
+	 * 배열 선언 <- 이미지 만들기
+	 * 변수명에 '[]'을 명시해 나타낸다.
+	 * ex)
+	 * int[] students = {10, 20, 30};
+	 * int students[] = {10, 20, 30};
+	 * 
+	 * 배열을 선언할때 명시한 데이터 타입은 배열에 들어 있는 데이터의 타입을 의미한다
+	 * 
+	 * 
+	 * 배열 생성
+	 * 3가지 방법 <- 이미지 만들기
+	 */
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------	
+	// 배열 선언 -1 <-많이사용
+	int[] myScores = {90, 50, 100};
+	
+	System.out.println("myScores: " + myScores);
+	System.out.println("myScores[0]: " + myScores[0]);
+  
+	for (int i = 0; i < myScores.length; i++) {
+		System.out.println(myScores[i]);
+	}
+  
+	for (int score : myScores) {      // 90 50 100
+		System.out.println("score: " + score);
+	}
+  
+	System.out.println(Arrays.toString(myScores));      //[90, 50, 100]
+  
+//	System.out.println(myScores[10]);      // ArrayIndexOutOfBoundsException 발생
+  
+	myScores[2] = 1000;
+	System.out.println(myScores[2]);
+
+	
+	// 배열 선언 -2
+	String[] myTools = new String[3];		// [ , , ]
+	myTools[0] = "지우개";
+	myTools[1] = "공책";
+	myTools[2] = "만년필";
+			
+	// 배열 선언 -3
+	float[] myFloats = new float[] {3.14f, 3.141592f, 3.141592876f};
+			
+			
+	/*
+	 * 인덱스를 이용한 데이터 조회 <- 개념 찾기
+	 */
+			
+			
+	// 학급 학생의 시험에 시험 성적과 평균을 출력하는 프로그램
+	int[] studentScores = {80, 95, 100, 70, 68, 74, 88, 98, 100, 76};	// 학생점수
+	
+	int total = 0;
+	float average = 0.0f;
+	
+	for (int i = 0; i < studentScores.length; i++) {
+		System.out.printf("studentScores[%d] score : %d\n", i, studentScores[i]);
+//		studentScores[0] score : 80 
+//		studentScores[1] score : 95 
+//		studentScores[2] score : 100 
+//		...
+//		studentScores[9] score : 76
+		
+		total += studentScores[i];
+	}
+	
+	System.out.println("총합 : " + total);		// 총합 : 849
+			
+	average = total / (float)studentScores.length;
+	System.out.println("평균 : " + average);		// 평균 : 84.9
+			
+//--------------------------------------------------------------------------
+	
+	// 메모리의 배열 형태 <- 개념 찾기, 이미지 만들기
+	
+//--------------------------------------------------------------------------
+	
+	/*
+	 * 배열 복사 <- 이미지 만들기
+	 * 
+	 * ex)
+	 * int num1 = 10;
+	 * int num2 = num1;
+	 * 
+	 * system.out.println("num1 : " + num1);	// num1 : 10
+	 * system.out.println("num2 : " + num2);	// num2 : 10
+	 * num1의 값이 10을 num2도 복사받아 10의 데이터를 지닌다.
+	 * num1의 값이 바뀌어도 num2의 값은 바뀌지 않는다.
+	 * python과 달리 java는 데이터를 참조하지 않고, 데이터 자체를 복사하기 때문이다.
+	 */
+	
+	int[] numbers = {10, 20, 30};
+	System.out.println("numbers : " + Arrays.toString(numbers));	// numbers : [10, 20, 30]
+	
+	int[] numCopys = numbers;
+	System.out.println("numCopys : " + Arrays.toString(numCopys));	// numCopys : [10, 20, 30]
+	
+	
+	numbers[1] = 999;		// numCopys의 데이터도 변경됨
+	System.out.println("numbers : " + Arrays.toString(numbers));	// numbers : [10, 999, 30]
+	System.out.println("numCopys : " + Arrays.toString(numCopys));	// numCopys : [10, 999, 30]
+	

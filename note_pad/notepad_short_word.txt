@@ -29,3 +29,6 @@ eclipse 단축키
 
 - ctrl + f11 -> Run As 실행
 
+- ctrl + shift + x -> 소문자에서 대문자로
+
+- ctrl + shift + y -> 대문자에서 소문자로
