@@ -1,0 +1,721 @@
+20260807
+
+
+[ ex20260807 -> [ ArrayClass ]]
+
+	/*
+	 * 변수는 배열의 첫번째 주소값 담는다 <- ["이미지 만들기"]
+	 * int의 경우 하나의 데이터가 4바이트이기 때문에 1개의 데이터 마다 4칸씩으로 만들기
+	 * 메모리 주소 또한 4칸씩 떨어트려서 만들기
+	 * 
+	 * int[] nums = {10, 20, 30};
+	 * nums[0] // 10 메모리 주소: 101 -> 101 + (0 * 4byte) -> 101
+	 * nums[1] // 20 메모리 주소: 105 -> 101 + (1 * 4byte) -> 105
+	 * nums[2] // 30 메모리 주소: 109 -> 101 + (2 * 4byte) -> 109
+	 * 
+	 * 무조건 인덱스 0번부터 시작해 움직일것 -> 인덱스 2번의 경우 : 2 * 4byte = 8칸 뒤
+	 */
+	
+	int[] nums = new int[5];
+	System.out.println("nums[0] : " + nums[0]);		// nums[0] : 0
+	System.out.println("nums[1] : " + nums[1]);		// nums[1] : 0
+	System.out.println("nums[2] : " + nums[2]);		// nums[2] : 0
+	System.out.println("nums[3] : " + nums[3]);		// nums[3] : 0
+	System.out.println("nums[4] : " + nums[4]);		// nums[4] : 0
+
+	for (int num : nums) {
+		System.out.println("num : " + num);
+	}
+//	num : 0
+//	num : 0
+//	num : 0
+//	num : 0
+//	num : 0
+	
+	
+	float[] floats = new float[3];
+	for (float f : floats ) {
+		System.out.println("f : " + f);
+	}
+//	f : 0.0
+//	f : 0.0
+//	f : 0.0
+	
+	
+	boolean[] flags = new boolean[3];
+	for (boolean b : flags) {
+		System.out.println("b : " + b);
+	}
+//	b : false
+//	b : false
+//	b : false
+	
+	//----------------------------------------------------------------
+	
+	// 배열 복사
+	
+	// 1 변수복사
+	int number1 = 10;
+	int number2 = 20;
+	
+	System.out.println("number1 : " + number1);		// number1 : 10
+	System.out.println("number2 : " + number2);		// number2 : 20
+	
+	number2 = number1;
+	System.out.println("number2 : " + number2);		// number2 : 10
+	
+	// 2 배열복사
+	int[] numbers1 = {10, 20, 30};		// [10	20	30]
+	int[] numbers2 = {100, 200, 300};	// [100	200	300]
+	
+	System.out.println("numbers1 : " + Arrays.toString(numbers1));	// numbers1 : [10, 20, 30]
+	System.out.println("numbers2 : " + Arrays.toString(numbers2));	// numbers2 : [100, 200, 300]
+	
+	numbers2 = numbers1;
+	System.out.println("numbers2 : " + Arrays.toString(numbers2));	// numbers2 : [10, 20, 30]
+	
+	numbers2[2] = 90;
+	System.out.println("numbers1 : " + Arrays.toString(numbers1));	// numbers1 : [10, 20, 90]
+	System.out.println("numbers2 : " + Arrays.toString(numbers2));	// numbers2 : [10, 20, 90]
+	
+	//----------------------------------------------------------------
+	
+	/*
+	 * 배열 삭제 <- ["이미지 만들기"]
+	 * 참조가 사라진 배열은 바로 사라지지는 않는다.
+	 * 더 이상 참조하는 변수가 없는 배열은 가비지 컬렉션(Garbage Collection, GC)의 
+	 * 대상이 되며, GC가 실행되는 시점에 JVM이 자동으로 메모리에서 제거한다.
+	 * 주의 : 한번 끊어진 배열은 복구는 불가능하다.
+	 */
+	int[] scores = {80, 90, 100};
+	System.out.println("scores : " + Arrays.toString(scores));		// scores : [80, 90, 100]
+	System.out.println("메모리 주소 : " + scores);		// 메모리 주소 : [I@6fdb1f78
+	
+	scores = null;
+	System.gc(); // 의미 없는 코드 : Garbage Collection의 강제실행은 불가능하기 때문이다.
+	
+	System.out.println("메모리 주소 : " + scores);		// 메모리 주소 : null
+	
+	
+	/*
+	 * java에서 배열의 길이를 변경할 수 없다 <- ["이미지 만들기"]
+	 * 최초 생성될때 길이를 설정하면, 이후에 길이를 변경할 수 없다
+	 * 때문에 배열의 길이와 다른 길이의 데이터를 넣는다면, 인덱스 오류가 발생한다.
+	 */
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ ex20260807 -> [ MultiArrayClass ]]
+
+	/*
+	 * 다차원 배열 <- ["이미지 만들기"]
+	 * 배열 안에 또 다른 배열이 선언되어 있는 다차원 배열
+	 * 다차원 배열은 2차원, 3차원, 4차원 ... n차원 배열로 원하는 만큼 선언할 수 있다.
+	 * 하지만, 일반적으로 2차원 배열까지만 사용하고 3차원 이상의 배열은 사용하지 않는다.
+	 * 그 이유는 3차원 이상의 배열은 오히려 데이터 관리가 어려워지기 때문이다.
+	 * 
+	 * 2차원 배열 <- ["이미지 만들기"]
+	 * 배열 안에 또 다른 배열이 있는 것
+	 * 배열 안에 또 다른 배열 주소값이 있다.
+	 * 
+	 * int[][] mns = new int[3][2];
+	 * [][]:2차원 배열 / [3]:1차원 배열의 길이-3칸, [2]:2차원 배열 길이-2칸
+	 * 
+	 */
+	
+	int[] ns = new int[3];
+	System.out.println("ns : " + ns);		// ns : [I@5aaa6d82
+	
+	int[][] mns = new int[3][2];
+	System.out.println("mns : " + mns);		// mns : [[I@198e2867
+	
+	int[][][] mn3s = new int[3][2][4];
+	System.out.println("mn3s : " + mn3s);	// mn3s : [[[I@3ada9e37
+	
+	//----------------------------------------------------------------
+	
+	// 다차원 배열 선언 - I (3x2) <- 많이사용 <- ["이미지 만들기"]
+	int [][] mns = {{1, 2}, {3, 4}, {5, 6}};
+	
+	
+	System.out.println("mns : " + mns);					// mns : [[I@5aaa6d82
+	System.out.println("mns[0] : " + mns[0]);			// mns[0] : [I@198e2867
+	System.out.println("mns[0][0] : " + mns[0][0]);		// mns[0][0] : 1
+	
+	for (int i = 0; i < mns.length; i++) {
+		int[] tempArr = mns[i];
+		for (int j = 0; j < tempArr.length; j++) {
+			System.out.println(mns[i][j]);
+		}
+//	}
+//	1
+//	2
+//	3
+//	4
+//	5
+//	6
+
+
+	// 다차원 배열 선언 - II (3x2) <- ["이미지 만들기"]
+	int [][] mns2 = new int[3][2];
+	mns2[0][0] = 1;
+	mns2[0][1] = 2;
+	mns2[1][0] = 3;
+	mns2[1][1] = 4;
+	mns2[2][0] = 5;
+	mns2[2][1] = 6;
+	
+	
+	// 다차원 배열 선언 - III (3x2) <- ["이미지 만들기"]
+	int [][] mns3 = new int[][] {{1, 2}, {3, 4}, {5, 6}};
+	
+	//----------------------------------------------------------------
+	
+	/*
+	 * 인덱스 0의 배열: 1
+	 * 인덱스 1의 배열: 2
+	 * 인덱스 2의 배열: 3
+	 */
+	
+	int[][] mns = new int[3][];
+	mns[0] = new int[1];
+	mns[1] = new int[2];
+	mns[2] = new int[3];
+	
+	// -> {{1}, {2, 3}, {4, 5, 6}}
+	
+	mns[0][0] = 1;
+	mns[1][0] = 2;
+	mns[1][1] = 3;
+	mns[2][0] = 4;
+	mns[2][1] = 5;
+	mns[2][2] = 6;
+	
+	for (int i = 0; i < mns.length; i++) {
+		int[] tempArr = mns[i];
+		for (int j = 0; j < tempArr.length; j++) {
+			System.out.printf("mns의 [%d][%d] = %d\n", i, j, tempArr[j]);
+		}
+	}
+//	mns의 [0][0] = 1
+//	mns의 [1][0] = 2
+//	mns의 [1][1] = 3
+//	mns의 [2][0] = 4
+//	mns의 [2][1] = 5
+//	mns의 [2][2] = 6
+	
+	//----------------------------------------------------------------
+	
+	// 국어, 영어, 수학의 성적 - 1~4학기 <- ["이미지 만들기"]
+	int[][] scores = {
+			{85, 90, 90},
+			{90, 80, 85},
+			{90, 90, 100},
+			{95, 85, 100}
+		};
+	
+	for (int i = 0; i < scores.length; i++) {
+		int[] tempArr = scores[i];
+		
+		for (int j = 0; j < tempArr.length; j++) {
+			
+			String str = "";
+			switch (j) {
+			case 0:
+				str = "국어";
+				break;
+				
+			case 1:
+				str = "영어";
+				break;
+				
+			case 2:
+				str = "수학";
+				break;
+			}
+			
+			System.out.printf("%d학기 %s 점수 : %d\n", (i+1), str, tempArr[j]);
+			
+		}
+	}
+//		1학기 국어 점수 : 85
+//		1학기 영어 점수 : 90
+//		1학기 수학 점수 : 90
+//		...
+//		4학기 수학 점수 : 100
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ ex20260807 -> [ Multi3ArrayClass ]]
+
+	/*
+	 * 3차원 배열 <- ["이미지 만들기"]
+	 * 간단한 개념만 정리
+	 * 
+	 * int[][][] nums = new int[3][2][2];
+	 */
+	
+	int[][][] nums = new int[3][2][1];
+	nums[0][0][0] = 1;
+	nums[0][1][0] = 2;
+	nums[1][0][0] = 3;
+	nums[1][1][0] = 4;
+	nums[2][0][0] = 5;
+	nums[2][1][0] = 6;
+	
+	int[][][] nums = {
+			{{1}, {2}},
+			{{3}, {4}},
+			{{5}, {6}}
+		};
+	
+	//----------------------------------------------------------------
+	
+	// 학생번호 1번(1학기(국어, 영어, 수학), 2학기(국어, 영어, 수학), 3학기(국어, 영어, 수학)),
+	// 학생번호 2번(1학기(국어, 영어, 수학), 2학기(국어, 영어, 수학), 3학기(국어, 영어, 수학)),
+	// 학생번호 3번(1학기(국어, 영어, 수학), 2학기(국어, 영어, 수학), 3학기(국어, 영어, 수학)),
+	// 학생번호 4번(1학기(국어, 영어, 수학), 2학기(국어, 영어, 수학), 3학기(국어, 영어, 수학))
+	//  <- ["이미지 만들기"]
+
+	
+	int[][][] scores = {
+			// 1번 학생
+			{{80, 90, 100}, {90, 95, 85}, {85, 85, 90}},
+			
+			// 2번 학생
+			{{90, 80, 85}, {90, 90, 85}, {95, 95, 100}},
+			
+			// 3번 학생
+			{{95, 80, 100}, {100, 85, 100}, {100, 80, 90}},
+			
+			// 4번 학생
+			{{85, 80, 100}, {90, 90, 95}, {100, 100, 80}}
+	};
+	
+	for (int i = 0; i < scores.length; i++) {				// 1차원 배열 순회
+		int[][] tempArr1 = scores[i];
+		
+		for (int j = 0; j < tempArr1.length; j++) {			// 2차원 배열 순회
+			int[] tempArr2 = tempArr1[j];
+			
+			for (int k = 0; k < tempArr2.length; k++) {		// 3차원 배열 순회
+				String str = "";
+				
+				switch (k) {
+				case 0:		// 국어
+					str = "국어";
+					break;
+					
+				case 1:		// 영어
+					str = "영어";
+					break;
+					
+				case 2:		// 수학
+					str = "수학";
+					break;
+				}
+				System.out.printf("%d번 학생 %d학기 %s 점수 : %d\n",
+						(i+1), (j+1), str, tempArr2[k]);
+			}
+		}
+	}
+//	1번 학생 1학기 국어 점수 : 80
+//	1번 학생 1학기 영어 점수 : 90
+//	1번 학생 1학기 수학 점수 : 100
+//	...
+//	4번 학생 3학기 수학 점수 : 80
+	
+	for (int i = 0; i < scores.length; i++) {
+		for (int j = 0; j < scores[i].length; j++) {
+			System.out.printf("\n============================\n");
+			System.out.printf("%d번 학생 %d학기 점수\n", (i+1), (j+1));
+			System.out.printf("\n----------------------------\n");
+			System.out.printf("국어\t영어\t수학\n");
+			System.out.printf("\n----------------------------\n");
+			for (int k = 0; k < scores[i][j].length; k++) {
+				System.out.printf("%d \t", scores[i][j][k]);
+			}
+			System.out.printf("\n============================\n");
+		}
+	}
+//	============================
+//	1번 학생 1학기 점수
+//
+//	----------------------------
+//	국어	영어	수학
+//
+//	----------------------------
+//	80 	90 	100 	
+//	============================
+//
+//	============================
+//	1번 학생 2학기 점수
+//
+//	----------------------------
+//	국어	영어	수학
+//
+//	----------------------------
+//	90 	95 	85 	
+//	============================
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+아래의 내용을 진행하기 전, 'Java 마스터' 교재 232p ~ 252p
+------------------------------------------------------------------------
+[ ex20260807 -> [ ClassEx001 ]]
+
+package com.office.example;
+
+public class ClassEx001 {
+	
+	public static void main(String[] args) {
+		
+		Cat cat1 = new Cat();		// 객체 생성 at 메모리
+		// [new Cat() -> Cat 클래스 -> Cat 객체] <- ["이미지 만들기"] - 격자 메모리 구조에서
+		// new cat은 격자 바깥, cat클래스와 cat객체는 격자 내부에
+		
+		// Cat cat1 = new Cat();에서 "Cat"은 같은 데이터 타입으로, 
+		// int와 float와 내가 만든 데이터 타입이다.
+		
+		System.out.println("cat1 : " + cat1);	// cat1 : com.office.example.Cat@73a28541
+		System.out.println(cat1.bread);			// 페르시안 : .bread는 Cat의 변수이다.
+		
+		cat1.eat();								// 먹다 : .eat()은 Cat의 메서드이다.
+		
+		
+		Person person1 = new Person();
+		
+		System.out.println("person1 : " + person1);	
+		// person1 : com.office.example.Person@3ada9e37
+		System.out.println(person1.name);		// Hong Gildong
+		
+		person1.run();							// 뛰다
+
+		System.out.println("setAttribute : " + person1.setAttribute);
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ ex20260807 -> [ Cat ]]
+
+package com.office.example;
+
+public class Cat {
+	
+	// 멤버 변수 == 속성 == attribute
+	String bread = "페르시안";
+	String color = "골드";
+	
+	// 멤버 메서드 == 기능 ==  method
+	void eat() {
+		// eat() 메서드 구현
+		System.out.println("먹다");
+	}
+	void scratch() {
+		// scratch() 메서드 구현
+		System.out.println("할퀴다");
+	}
+	void meow() {
+		// meow() 메서드 구현
+		System.out.println("밥을 먹다");
+	}
+}
+
+
+------------------------------------------------------------------------
+[ ex20260807 -> [ Person ]]
+
+package com.office.example;
+
+public class Person {
+	
+	// 속성
+	String name = "Hong Gildong";		// 멤버 변수(전역변수) or 멤버 필드
+	int regNum = 123;					// 멤버 변수(전역변수) or 멤버 필드
+	int setAttribute = setData();		// 메서드를 이용한 초기화
+	
+	int setData() {
+		name = "홍길동";
+		this.name = name;
+		regNum = 456;
+		
+		return 0;
+	}
+
+	// 기능
+	void walk() {
+		System.out.println("걷다");
+		
+//		int weight = 80;				// 변수(지역변수)
+		
+	}
+	void run() {
+		System.out.println("뛰다");
+	
+	}
+	void runForApeople() {		// 특정 대상을 위한 메서드 맞춤화
+		System.out.println("뛰다");
+	
+	}
+}
+
+
+------------------------------------------------------------------------
+[ ex20260807 -> [ Example01 ]]
+
+package com.office.example;
+
+import java.util.Arrays;
+
+public class Example01 {
+	
+	public static void main(String[] args) {
+		
+		Cat cat = new Cat();
+		
+		cat.bread = "페르시안 고양이";
+		cat.color = "흰색";
+		
+		System.out.println("cat.bread : " + cat.bread);		// cat.bread : 페르시안 고양이
+		System.out.println("cat.color : " + cat.color);		// cat.color : 흰색
+		System.out.println("cat.age : " + cat.age);			// cat.age : 10
+		
+		cat.eat();
+		
+//		cat.eatStatic();
+		
+		Cat.eatStatic();
+		
+		
+		int[] nums = {10, 20, 30};
+		// Arrays arrays = new Arrays()
+		// arrays.toString();
+		System.out.println(Arrays.toString(nums));
+		
+		// static은 객체를 생성하지 않고도, 메서드를 사용할 수 있다.
+		// static을 필요 이상으로 많이 사용하면 객체지향 설계의 장점을 잃게 된다.
+		// static은 객체를 새로 만들어도 값이 초기화되지 않고, 클래스가 로드된 동안 유지되기 때문이다.
+		
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ ex20260807 -> [ Example02 ]]
+
+package com.office.example;
+
+public class Example02 {
+	
+	// 멤버 필드
+	String name = "홍길동";
+	
+	public static void main(String[] args) {
+		
+		Example02 axample02 = new Example02();
+		
+		System.out.println("name : " + axample02.name);
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ ex20260807 -> [ Example03 ]]
+
+package com.office.example;
+
+public class Example03 {
+	
+	public static void main(String[] args) {
+		
+		Students student01 = new Students();
+		
+		student01.insertRecord(20221004, "홀길순");
+		student01.printInfo();
+		
+		
+		Students student02 = new Students();
+		
+		student02.insertRecord(20221005, "홀길동");
+		student02.printInfo();
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ ex20260807 -> [ Students ]]
+
+package com.office.example;
+
+public class Students {
+	
+	// 생성자
+	public Students() {
+		System.out.println("aaaaa");
+	}
+	
+	// 멤버 필드
+	int id;
+	String name;
+	
+	// 메서드
+	void insertRecord(int id, String name) {
+		this.id = id;
+		this.name = name;
+		
+	}
+	
+	void printInfo() {
+		System.out.println("아이디 : " + id);
+		System.out.println("이름 : " + name);
+	}
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ ex20260807 -> [ MainClass ]]
+
+package com.office.example;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		Calculator calculator = new Calculator();
+		
+		calculator.calculatorAdd(10, 20);
+		calculator.calculatorSub(20, 10);
+		calculator.calculatorMul(10, 20);
+		calculator.calculatorDiv(20, 10);
+		
+//		n1 + n2 = 30
+//		[Calculator] calculatorSub() called
+//		n1 - n2 = 10
+//		[Calculator] calculatorMul() called
+//		n1 * n2 = 200
+//		[Calculator] calculatorDiv() called
+//		n1 / n2 = 2.0
+		
+				
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ ex20260807 -> [ Calculator ]]
+
+package com.office.example;
+
+public class Calculator {		// 4칙연산(+, -, *, /)
+	
+	CalculatorAdd calculatorAdd = new CalculatorAdd();
+	CalculatorSub calculatorSub = new calculatorSub();
+	CalculatorMul calculatorMul = new calculatorMul();
+	CalculatorDiv calculatorDiv = new calculatorDiv();
+	
+	void calculatorAdd(int n1, int n2) {
+		System.out.println("[Calculator] calculatorAdd() called");
+		
+//		CalculatorAdd calculatorAdd = new CalculatorAdd();
+		calculatorAdd.addOperator(n1, n2);
+		
+	}
+	
+	void calculatorSub(int n1, int n2) {
+		System.out.println("[Calculator] calculatorSub() called");
+		
+//		CalculatorSub calculatorSub = new CalculatorSub();
+		calculatorSub.subOperator(n1, n2);
+		
+	}
+	
+	void calculatorMul(int n1, int n2) {
+		System.out.println("[Calculator] calculatorMul() called");
+		
+//		CalculatorMul calculatorMul = new CalculatorMul();
+		calculatorMul.mulOperator(n1, n2);
+		
+	}
+	
+	void calculatorDiv(int n1, int n2) {
+		System.out.println("[Calculator] calculatorDiv() called");
+		
+//		CalculatorDiv calculatorDiv = new CalculatorDiv();
+		calculatorDiv.divOperator(n1, n2);
+		
+	}
+}
+
+
+------------------------------------------------------------------------
+[ ex20260807 -> [ CalculatorAdd ]]
+
+package com.office.example;
+
+public class CalculatorAdd {
+	
+	void addOperator(int n1, int n2) {
+		System.out.println("n1 + n2 = " + (n1 + n2));
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ ex20260807 -> [ CalculatorSub ]]
+
+package com.office.example;
+
+public class calculatorDiv {
+	
+	void divOperator(int n1, int n2) {
+		System.out.println("n1 / n2 = " + (n1 / (float) n2));
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ ex20260807 -> [ CalculatorMul ]]
+
+package com.office.example;
+
+public class calculatorMul {
+	
+	void mulOperator(int n1, int n2) {
+		System.out.println("n1 * n2 = " + (n1 * n2));
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ ex20260807 -> [ CalculatorDiv ]]
+
+package com.office.example;
+
+public class calculatorDiv {
+	
+	void divOperator(int n1, int n2) {
+		System.out.println("n1 / n2 = " + (n1 / (float) n2));
+	}
+
+}
+
