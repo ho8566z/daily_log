@@ -1,0 +1,742 @@
+20260810
+
+
+Example001 -> Student
+
+package com.office.example;
+
+public class Example001 {
+	
+	public static void main(String[] args) {
+		
+		/*
+		 * 객체 초기화
+		 * 클래스애서 생성된 객체의 초기화를 담당하는 메서드라고 합니다.
+		 */
+		
+		Student student00 = new Student();
+		student00.printInfo();
+		// 매개변수를 넣지 않으면, 기본 생성자의 내용을 적용받는다.
+		
+		Student student01 = new Student("홍길동", 1, 20, "computer");
+		student01.printInfo();
+		// 매개변수를 입력한 대로 출력받는다.
+		
+		Student student02 = new Student("박찬호", 2, 21, "music");
+		student02.printInfo();
+		
+		Student student03 = new Student("박세리", 1, 20, "sport");
+		student03.printInfo();
+		
+		new Student("이병규", 1, 20, "low");
+		// 사진 참조해서 이미지 만들기(표 형태의 기능명세서 일부)
+		
+		new Student(null, 0, 0, null);
+		// 매개변수명도 속성명과 같게 하는게 관례
+
+	}
+
+}
+------------------------------------------------------------------------
+package com.office.example;
+
+public class Student {
+	
+	// 생성자(Constructor)	<- 기본 생성자(Default Constructor)
+	public Student() {
+		System.out.println("Student() Constructor CALLED");
+		
+		// 생성자를 이용한 초기화
+		// 이렇게 '디폴트 생성자'에서 멤버 필드를 초기화하게 되면, 이제 디폴트 생성자는 
+		// 더 이상 디폴트 생성자가 아닌, 이제 '일반 생성자'라고 한다.
+		//
+		// 그럼, 디폴트 생성자가 없으니, 컴파일러가 개발자를 대신해서 디폴트 생성자를 넣어줄까?
+		// 아니다, 일반생성자가 하나라도 존재하면, 컴파일러는 디폴트 생성자를 넣어주지 않는다.
+		// 기본 생성자와 일반 생성자는 동시에 존재할 수 없다.
+		name = "홍길동";
+		grade = 1;
+		age = 20;
+		major = "computer";
+		
+	}
+	// 이미지 만들기 : 사진 참조
+	// [new Student(): 객체 생성 -> student 객체(인스턴스) 생성 -> student(생성자)초기화]
+	
+	
+	// 생성자 매개변수 => 일반 생성자 == 생성자 오버로딩(overloading, 과적)
+	// 매개변수 이름은 가독성이 뛰어난 이름 : 속성명과 동일하게 한다.
+//	public Student(String n, int g, int a, String m) {
+	public Student(String name, int grade, int age, String major) {
+		this.name = name;
+		this.grade = grade;
+		this.age = age;
+		this.major = major;
+		// this는 속성명과 매개변수명이 같아서 오류가 발생할 때, 전역변수에 값을 할당할 때 사용한다.
+	}
+	
+	/*
+	 * 메서드 오버로딩(Method Overloading)이란 하나의 클래스 안에서 같은 
+	 * 이름의 메서드를 여러 개 정의하는 것을 의미한다.
+	 * 
+	 * 단, 메서드의 이름은 같지만 매개변수(Parameter)의 개수, 
+	 * 자료형 또는 순서가 달라야 한다.
+	 */
+	
+	
+	
+	// 속성 == 멤버 필드
+	String name;		// null
+	int grade;			// 0
+	int age;			// 0
+	String major;		// null
+	
+	
+	// 기능 == 멤버 메서드
+	public void printInfo() {
+		System.out.println("Name : " + name);
+		System.out.println("Grade : " + grade);
+		System.out.println("Age : " + age);
+		System.out.println("Major : " + major);
+	}
+	
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+Example002 -> OurStudent
+
+package com.office.example;
+
+public class Example002 {
+	
+	public static void main(String[] args) {
+		
+		// 1번째 학생
+		//1학년, 1반, 5번, 박찬호, false
+//		OurStudent ourStudent01 = new OurStudent();
+//		ourStudent01.grade = 1;
+//		ourStudent01.classNo = 1;
+//		ourStudent01.studentNo = 5;
+//		ourStudent01.studentName = "박찬호";
+//		ourStudent01.absence = false;
+		
+//		OurStudent ourStudent01 = new OurStudent(1, 1, 2, "박찬호", false);
+//		ourStudent01.printInfo();
+//		
+//		OurStudent ourStudent02 = new OurStudent(1, 2, 5, "박지성", false);
+//		ourStudent02.printInfo();
+		
+		
+		OurStudent ourStudent01 = new OurStudent(1, 2, "박찬호");
+		ourStudent01.printInfo();
+		
+		OurStudent ourStudent02 = new OurStudent(2, 5, "박지성");
+		ourStudent02.printInfo();
+		
+		// 박세리 2학년 전학
+		OurStudent ourStudent03 = new OurStudent(2, 5, 10, "박세리");
+		ourStudent03.printInfo();
+		
+		OurStudent ourStudent04 = new OurStudent(0, 0, 0, null, false);
+		ourStudent04.printInfo();
+
+	}
+
+}
+------------------------------------------------------------------------
+package com.office.example;
+
+public class OurStudent {
+	
+	// 속성
+//	int grade;					// 학년
+//	int classNo;				// 반번호
+//	int studentNo;				// 개인번호
+//	String studentName;			// 학생이름
+//	boolean absence;			// 휴학구분
+	
+	// 컴플레인 이후, 수정
+	int grade = 1;				// 학년
+	int classNo;				// 반번호
+	int studentNo;				// 개인번호
+	String studentName;			// 학생이름
+	boolean absence = false;	// 휴학구분
+
+	
+	//생성자
+//	public OurStudent() {		// 디폴트 생성자
+//		
+//	}
+	
+	
+	// 생성자 오버로딩 ==> 절대로 필수인 속성 초기화를 놓치는 오류를 피할 수 있다.
+	// 초기의 모든 객체를 초기화하는 버전
+	public OurStudent(
+			int grade,
+			int classNo,
+			int studentNo,
+			String studentName,
+			boolean absence) {		// 디폴트 생성자
+		
+		this.grade = grade;
+		this.classNo = classNo;
+		this.studentNo = studentNo;
+		this.studentName = studentName;
+		this.absence = absence;
+	}
+	
+	// 컴플레인 이후, 수정해서 객체 3개를 초기화하는 버전
+	public OurStudent(
+			int classNo,
+			int studentNo,
+			String studentName) {		// 디폴트 생성자
+		
+		this.classNo = classNo;
+		this.studentNo = studentNo;
+		this.studentName = studentName;
+	}
+	
+	// 컴플레인 이후, 수정해서 객체 4개를 초기화하는 버전
+	public OurStudent(
+			int grade,
+			int classNo,
+			int studentNo,
+			String studentName) {		// 디폴트 생성자
+		
+		this.grade = grade;
+		this.classNo = classNo;
+		this.studentNo = studentNo;
+		this.studentName = studentName;
+	}
+	
+	
+	// 메서드
+	public void printInfo() {
+		System.out.println("Grade : " + grade);
+		System.out.println("ClassNo : " + classNo);
+		System.out.println("StudentNo : " + studentNo);
+		System.out.println("StudentName : " + studentName);
+		System.out.println("Absence : " + absence);
+	}
+	
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+Example003 -> Car
+
+package com.office.example;
+
+public class Example003 {
+	
+	public static void main(String[] args) {
+		
+		Car car01 = new Car(500, 1000, 2000);
+//		car01.goForward();
+//		car01.goBack();
+//		car01.doStop();
+		
+		car01.testDrive();
+		
+//		System.out.println(car01.length);
+//		System.out.println(car01.price);
+//		System.out.println(car01.displacement);
+		
+		car01.printCarSpec("kor");
+		
+		car01.goForward(50);
+		
+		int result = car01.getDistance(2, 50);
+		System.out.println("이동 거리 : " + result + "km");
+		
+	}
+
+}
+------------------------------------------------------------------------
+package com.office.example;
+
+public class Car {
+	
+	// 멤버 필드
+	int length;			// 길이
+	int price;			// 가격
+	int displacement;	// 배기량
+
+	public Car() {
+		System.out.println("----Default Constructor----");
+		
+		
+	}
+	
+	// 생성자 오버로딩
+	public Car(int length, int price, int displacement) {
+		this.length = length;
+		this.price = price;
+		this.displacement = displacement;
+		
+	}
+	
+	
+	// 메서드
+	// 메서드가 실행되고 나서 반환되는 데이터의 데이터 타입을 명시한다.
+	// 하지만, 메서드가 실행되고 나서 반환되는 데이터가 없을 때는 void를 쓴다.
+	// 메서드명은 '동사 + 명사' or '동사'의 구조로 만드는 게 기본 문법구조이다.
+	public void goForward() {	// <- 매개변수
+		System.out.println("goForward() called");
+		
+	}
+	
+	public void goForward(int speed) {	// <- 매개변수
+		System.out.println(speed + "km/h - goForward() called");
+		
+	}
+	
+	public void goBack() {
+//		this.goForward(); 			// <- 접근 제한자
+		System.out.println("goBack() called");
+		
+	}
+	
+	public void doStop() {
+		System.out.println("doStop() called");
+		
+	}
+	
+	public void testDrive() {
+		goForward();
+		goBack();
+		doStop();
+		
+	}
+	
+	public void printCarSpec(String language) {
+		if (language.equals("kor")) {
+			printCarSpecForKor();
+		} else {
+			printCarSpecForEng();
+		}
+		
+	}
+	
+	private void printCarSpecForKor() {
+		System.out.println("길이 : " + this.length + "센티미터");
+		System.out.println("가격 : " + this.price + "원");
+		System.out.println("배기량 : " + this.displacement + "씨씨");
+		
+	}
+	
+	private void printCarSpecForEng() {
+		System.out.println("length : " + this.length + "cm");
+		System.out.println("price : " + this.price + "won");
+		System.out.println("displacement : " + this.displacement + "cc");
+		
+	}
+	// 이미지 만들기 - 3번째 사진 참조
+	
+	
+	// 거리 = 시간 x 속도
+	public int getDistance(int hour, int speed) {
+//		System.out.println("이동 거리 : " + (hour * speed) + "km");
+		int distance = hour * speed;
+		
+		return distance;
+//		System.out.println("메서드 실행 끝");
+		// 언리처블 코드 : return 뒤에 존재하는 코드들은 실행될 수 없다는 경고 코드
+		
+		// 반환되지 않을 때는 void를, return으로 반환될 때에는 반환되는 데이터의 데이터 타입을 명시한다.
+		
+		// 이미지 만들기 - 4번째 사진 참조
+	}
+	
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+Example004
+
+package com.office.example;
+
+public class Example003 {
+	
+	public static void main(String[] args) {
+		
+		Car car01 = new Car(500, 1000, 2000);
+//		car01.goForward();
+//		car01.goBack();
+//		car01.doStop();
+		
+		car01.testDrive();
+		
+//		System.out.println(car01.length);
+//		System.out.println(car01.price);
+//		System.out.println(car01.displacement);
+		
+		car01.printCarSpec("kor");
+		
+		car01.goForward(50);
+		
+		int result = car01.getDistance(2, 50);
+		System.out.println("이동 거리 : " + result + "km");
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+Example005 -> DwStudent
+
+package com.office.example;
+
+import java.util.ArrayList;
+
+public class Example005 {
+	
+	public static void main(String[] args) {
+		
+		// 1.학생 등록 - 3명
+		ArrayList<DwStudent> dwStudents = new ArrayList<DwStudent>();
+		
+		DwStudent student01 = new DwStudent("박찬호", 20);
+		dwStudents.add(student01);
+		
+		DwStudent student02 = new DwStudent("박지성", 25);
+		dwStudents.add(student02);
+		
+		DwStudent student03 = new DwStudent("박세리", 26);
+		dwStudents.add(student03);
+		
+		
+		// 박지성 학생의 정보 찾기
+		for (int i = 0; i < dwStudents.size(); i++) {
+			DwStudent dwStudent = dwStudents.get(i);
+			if (dwStudent.name.equals("박지성")) {
+				System.out.println("이름 : " + dwStudent.name);
+				System.out.println("나이 : " + dwStudent.age);
+				
+			}
+		}
+		
+		
+		
+	}
+
+}
+------------------------------------------------------------------------
+package com.office.example;
+
+public class DwStudent {
+	
+	String name;
+	int age;
+	
+	public DwStudent(String name, int age) {
+		super();
+		this.name = name;
+		this.age = age;
+	}
+	// generate~~ 여기
+	
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+View(Console) -> Controller -> (Service) -> Model(Dao) -> DTO/DB(ArrayList)
+
+[ MainClass ]
+
+package com.office.member;
+
+import com.office.member.MemberContoller;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		new MemberContoller().execute();
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ MemberContoller ]
+
+package com.office.member;
+
+import java.util.Scanner;
+
+import com.office.member.MemberDto;
+import com.office.member.MemberService;
+
+public class MemberContoller {
+	
+	public void execute() {
+		System.out.println("[MemberController] execute()");
+		
+		boolean systemFlag = true;
+		
+		String memId;
+		String memPw;
+		String memMail;
+		
+		MemberDto memberDto = null;
+		MemberService memberService = new MemberService();
+		
+		Scanner scanner = new Scanner(System.in);
+		
+		while (systemFlag) {
+			System.out.println("1.Sign-Up   2.Sign-In   3.Modify   4.Delete   5.System-Out");
+			System.out.println("Please MENU NUMBER");
+			
+			int selectedMenuNumber = scanner.nextInt();
+			scanner.nextLine();
+			
+			
+			switch (selectedMenuNumber) {
+			case 1:			// Sign-Up
+				System.out.println("Please new member ID");
+				memId = scanner.nextLine();
+				
+				System.out.println("Please new member PW");
+				memPw = scanner.nextLine();
+				
+				System.out.println("Please new member Mail");
+				memMail = scanner.nextLine();
+				
+				memberDto = new MemberDto(memId, memPw, memMail);
+				
+//				memberService = new MemberService();
+				memberService.doSignUp(memberDto);
+				
+				break;
+				
+			case 2:			// Sign-In
+				System.out.println("Please member ID");
+				memId = scanner.nextLine();
+				
+				System.out.println("Please member PW");
+				memPw = scanner.nextLine();
+			
+				memberDto = new MemberDto(memId, memPw, null);
+				
+//				memberService = new MemberService();
+				memberService.doSignIn(memberDto);
+				
+				break;
+				
+			case 3:			// Modify
+				System.out.println("Please new member PW");
+				memPw = scanner.nextLine();
+				
+				System.out.println("Please new member Mail");
+				memMail = scanner.nextLine();
+				
+				memberDto = new MemberDto(null, memPw, memMail);
+				
+//				memberService = new MemberService();
+				memberService.doModify(memberDto);
+				
+				break;
+		
+			case 4:			// Delete
+				System.out.println("Please delete member ID");
+				memId = scanner.nextLine();
+				
+				System.out.println("Please delete member PW");
+				memPw = scanner.nextLine();
+			
+				memberDto = new MemberDto(memId, memPw, null);
+				
+//				memberService = new MemberService();
+				memberService.doDelete(memberDto);
+				
+				break;
+		
+			case 99:		// System-Out
+				systemFlag = false;
+				System.out.println("Goob Bye.");
+				
+				break;
+			}
+		}
+		
+		scanner.close();
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ MemberDao ]
+
+package com.office.member;
+
+import java.util.ArrayList;
+
+import com.office.member.MemberDto;
+
+public class MemberDao {
+	
+ArrayList<MemberDto> memberDB = new ArrayList<MemberDto>();
+	
+	public void insertMember(MemberDto memberDto) {
+		System.out.println("[MemberDao] insertMember");
+		
+		memberDB.add(memberDto);
+		
+		// 확인
+		MemberDto dto = memberDB.get(0);
+		System.out.println("아이디 : " + dto.memId);
+		System.out.println("비밀번호 : " + dto.memPw);
+		System.out.println("메일 : " + dto.memMail);
+	}
+
+	public MemberDto selectMemberByMemId(String memId) {
+		System.out.println("[MemberDao] selectMemberByMemId()");
+		
+		for (int i = 0; i < memberDB.size(); i++) {
+			MemberDto dto = memberDB.get(i);
+			if (dto.memId.equals(memId)) {
+				return dto;
+			}
+		}
+		
+		return null;
+	}
+
+	public void updateMember(MemberDto memberDto) {
+		System.out.println("[MemberDao] updateMember()");
+		
+		
+		
+//		memberDB.set();
+//		memberDB.set();
+		
+		// 확인
+		MemberDto dto = memberDB.get(0);
+		System.out.println("아이디 : " + dto.memId);
+		System.out.println("비밀번호 : " + dto.memPw);
+		System.out.println("메일 : " + dto.memMail);
+		
+	}
+
+	public MemberDto deleteMemberByMemId(String memId) {
+		System.out.println("[MemberDao] deleteMemberByMemId()");
+		
+		for (int j = 0; j < memberDB.size(); j++) {
+			MemberDto dto = memberDB.get(j);
+			if (dto.memId.equals(memId)) {
+				memberDB.remove(memId);
+			}
+		}
+		
+		return null;
+	}
+
+}
+
+------------------------------------------------------------------------
+[ MemberDto ]
+
+package com.office.member;
+
+public class MemberDto {
+	
+//	final int MEMID = 1;
+//	final int MEMPW = 2;
+//	final int MEMMAIL = 3;
+	
+	String memId;
+	String memPw;
+	String memMail;
+	
+	public MemberDto(String memId, String memPw, String memMail) {
+		super();
+		this.memId = memId;
+		this.memPw = memPw;
+		this.memMail = memMail;
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ MemberService ]
+
+package com.office.member;
+
+import com.office.member.MemberDao;
+import com.office.member.MemberDto;
+
+public class MemberService {
+	
+MemberDao memberDao = new MemberDao();
+	
+	// Sign-Up
+	public void doSignUp(MemberDto memberDto) {
+		System.out.println("[MemberSerive] doSignUp");
+		
+		// 회원가입 진행
+//		MemberDao memberDao = new MemberDao();
+		memberDao.insertMember(memberDto);
+		
+	}
+
+	// Sign-In
+	public void doSignIn(MemberDto memberDto) {
+		System.out.println("[MemberService] doSignIn");
+		
+//		MemberDao memberDao = new MemberDao();
+		MemberDto selectedMemberDto = memberDao.selectMemberByMemId(memberDto.memId);
+		
+		if (selectedMemberDto != null) {
+			// 존재하는 ID
+			if (memberDto.memPw.equals(selectedMemberDto.memPw)) {
+				System.out.println("Sign-In SUCCESS");
+			} else {
+				System.out.println("Sorry. Sign-In FAIL");
+			}
+			
+		} else {
+			// 존재하지 않는 ID
+			System.out.println("Sorry. Sign-In FAIL");
+		}
+		
+	}
+
+	public void doModify(MemberDto memberDto) {
+		System.out.println("[memberDao] doModify");
+		
+		
+	}
+
+	public void doDelete(MemberDto memberDto) {
+		System.out.println("[MemberService] doDelete");
+		
+//		MemberDao memberDao = new MemberDao();
+		MemberDto selectedMemberDto = memberDao.deleteMemberByMemId(memberDto.memId);
+		
+		if (selectedMemberDto != null) {
+			// 존재하는 ID
+			if (memberDto.memPw.equals(selectedMemberDto.memPw)) {
+				System.out.println("Delete SUCCESS");
+			} else {
+				System.out.println("Sorry. Delete FAIL");
+			}
+			
+		} else {
+			// 존재하지 않는 ID
+			System.out.println("Sorry. Delete FAIL");
+		}
+		
+	}
+
+}
