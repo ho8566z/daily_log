@@ -1,0 +1,880 @@
+20260811
+
+
+MVC 디자인 패턴 <- 이미지 만들기(아래 '[]' 참조)
+
+-Model: 데이터, View, Controller + Service
+- MVC 패턴을 사용하는 이유
+    - 프로그램의 역할을 Model, View, Controller로 분리하기 위해 사용한다.
+    - 코드의 구조를 체계적으로 관리하고 유지보수성을 높이기 위해 사용한다.
+    - 각 영역의 결합도를 낮추고 코드의 재사용성과 협업 효율을 높이기 위해 사용한다.
+- MVC 패턴에서 Service을 따로 쓰는 이유
+    - Controller와 DAO에 비즈니스 로직이 집중되는 것을 방지하고, 비즈니스 로직을 별도의 Service 계층에서 처리하여 각 계층의 역할과 책임을 분리하기 위해 사용한다.
+    - 이를 통해 코드의 유지보수성, 재사용성, 확장성을 높일 수 있다.
+
+[ Clent <-> Server ]
+[ Server -> Controller -> Service -> Dao -> DB ]
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.office.dw;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		new MemberController().execute();
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ MemberController ]
+
+package com.office.dw;
+
+import java.util.Scanner;
+
+public class MemberController {
+	
+	final int MEMBER_SIGN_UP 		= 1;
+	final int MEMBER_SIGN_IN 		= 2;
+	final int MEMBER_MODIFY 		= 3;
+	final int MEMBER_DELETE 		= 4;
+	final int MEMBER_SYSTEM_OUT 	= 99;
+	
+	
+	public void execute() {
+		System.out.println("[MemberController] execute()");
+		
+		Scanner scanner = new Scanner(System.in);
+		
+		boolean systemFlag = true;
+		
+		String memId = null;
+		String memPw = null;
+		String memMail = null;
+		String memPhone = null;
+		
+		MemberService memberService = new MemberService();
+		
+		while (systemFlag) {
+			System.out.println("1.SIGIN_UP  2.SIGN_IN  3.MODIFY  4.DELETE  99.SYSTEM_OUT");
+			
+			int userSelectedMenuNumber = scanner.nextInt();
+			scanner.nextLine();
+			
+			switch (userSelectedMenuNumber) {
+			case MEMBER_SIGN_UP:			// SIGIN_UP
+				
+				System.out.println("Please Input new Member ID");
+				memId = scanner.nextLine();
+				
+				System.out.println("Please Input new Member PW");
+				memPw = scanner.nextLine();
+				
+				System.out.println("Please Input new Member Mail");
+				memMail = scanner.nextLine();
+				
+				System.out.println("Please Input new Member Phone");
+				memPhone = scanner.nextLine();
+				
+//				memberService = new MemberService();
+				memberService.doSignUp(new MemberDto(memId, memPw, memMail, memPhone));
+				
+				break;
+				
+				
+			case MEMBER_SIGN_IN:			// SIGN_IN
+				System.out.println("Please Input Member ID");
+				memId = scanner.nextLine();
+				
+				System.out.println("Please Input Member PW");
+				memPw = scanner.nextLine();
+				
+//				memberService = new MemberService();
+				memberService.doSignIn(new MemberDto(memId, memPw, null, null));
+				
+				break;
+				
+				
+			case MEMBER_MODIFY:			// MODIFY
+				
+				// 1. 사용자가 ID, PW, Mail, Phone를 입력한다.
+				// 2. 그럼, ID, PW를 가지고 인증한다.
+				// 3. 인증이 되면, Mail, Phone 정보를 업데이트한다.
+				
+				System.out.println("Please Input Member ID");
+				memId = scanner.nextLine();
+				
+				System.out.println("Please Input Member PW");
+				memPw = scanner.nextLine();
+				
+				System.out.println("Please Input Member Mail");
+				memMail = scanner.nextLine();
+				
+				System.out.println("Please Input Member Phone");
+				memPhone = scanner.nextLine();
+				
+				memberService.modify(new MemberDto(memId, memPw, memMail, memPhone));
+				
+				break;
+				
+				
+			case MEMBER_DELETE:			// DELETE
+				
+				// 1. 사용자가 ID, PW, Mail, Phone를 입력한다.
+				// 2. 그럼, ID, PW를 가지고 인증한다.
+				// 3. 인증이 되면, 삭제한다.
+				
+				System.out.println("Please Input Member ID");
+				memId = scanner.nextLine();
+				
+				System.out.println("Please Input Member PW");
+				memPw = scanner.nextLine();
+				
+				memberService.delete(new MemberDto(memId, memPw, null, null));
+				
+				break;
+				
+				
+			case MEMBER_SYSTEM_OUT:		// SYSTEM_OUT
+				systemFlag = false;
+				System.out.println("SYSTEM_OUT");
+				
+				break;
+			}
+			
+		}
+		
+		scanner.close();
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ MemberDao ]
+
+package com.office.dw;
+
+import java.util.ArrayList;
+
+public class MemberDao {
+	
+//	java.util.ArrayList<MemberDto> memberDB = new java.util.ArrayList<MemberDto>();
+	// 클래스 풀네임을 쓰는 방법(지양할 것)
+	// ctrl + shift + o = 자동으로 import 하고, 사용하지 않는 import는 삭제한다.
+	// 1145 이미지 참조
+	ArrayList<MemberDto> memberDB = new ArrayList<MemberDto>();
+
+	public void insertNewMember(MemberDto memberDto) {
+		System.out.println("[MemberDao] insertNewMember()");
+		
+		memberDB.add(memberDto);
+		
+		System.out.println(memberDB.get(0).memId);
+		System.out.println(memberDB.get(0).memPw);
+		System.out.println(memberDB.get(0).memMail);
+		System.out.println(memberDB.get(0).memPhone);
+		
+	}
+
+	public MemberDto selectMemberDtoByMemId(String memId) {
+		System.out.println("[MemberDao] selectMemberDtoByMemId()");
+		
+		for (int i = 0; i < memberDB.size(); i++) {
+			MemberDto dto = memberDB.get(i);
+			if (dto.memId.equals(memId)) {
+				return dto;
+			}
+		}
+		
+		return null;
+		
+	}
+
+	public void updateMemberForMailAndPhone(MemberDto memberDto) {
+		System.out.println("[MemberDao] updateMemberForMailAndPhone()");
+		
+		for (int i = 0; i < memberDB.size(); i++) {
+			MemberDto dto = memberDB.get(i);
+			if (dto.memId.equals(memberDto.memId)) {
+				dto.memMail = memberDto.memMail;
+				dto.memPhone = memberDto.memPhone;
+				
+				System.out.println("Mail : " + dto.memMail);
+				System.out.println("Phone : " + dto.memPhone);
+				
+				break;
+			}
+		}
+		
+	}
+
+	public void deleteMemberByMemId(String memId) {
+		System.out.println("[MemberDao] deleteMemberByMemId()");
+		
+		for (int i = 0; i < memberDB.size(); i++) {
+			MemberDto dto = memberDB.get(i);
+			if (dto.memId.equals(memId)) {
+				memberDB.remove(i);
+				
+				System.out.println("memberDB.size() : " + memberDB.size());
+				
+			}
+		}
+		
+	}
+
+
+}
+
+
+------------------------------------------------------------------------
+[ MemberService ]
+
+package com.office.dw;
+
+public class MemberService {
+	
+	MemberDao memberDao = new MemberDao();
+
+	// SIGIN_UP
+	public void doSignUp(MemberDto memberDto) {
+		System.out.println("[MemberService] doSignUp()");
+		
+//		memberDao = new MemberDao();
+		memberDao.insertNewMember(memberDto);
+		
+	}
+
+	// SIGN_IN (인증(Yes or No) : Autentication // 인가(권한) : Athurization)
+	public boolean doSignIn(MemberDto memberDto) {
+		System.out.println("[MemberService] doSignIn()");
+		
+//		memberDao = new MemberDao();
+		MemberDto selectMemberDto = memberDao.selectMemberDtoByMemId(memberDto.memId);
+		
+		if (selectMemberDto != null) {
+			if (selectMemberDto.memPw.equals(memberDto.memPw)) {
+				System.out.println("[MemberService] SIGN_IN SUCCESS");
+				return true;
+				
+			} else {
+				System.out.println("[MemberService] SIGN_IN FAIL");
+				return false;
+			}
+			
+		} else {
+			System.out.println("[MemberService] SIGN_IN FAIL");
+			return false;
+			
+		}
+		
+	}
+
+	public void modify(MemberDto memberDto) {
+		System.out.println("[MemberService] modify()");
+		
+		// 인증 : ID, PW
+		boolean resultForAutentication = verifyByMemIdAndMemPw(memberDto.memId, memberDto.memPw);
+		
+		// 업데이트 : Mail, Phone
+		if (resultForAutentication) {
+			// 업데이트 실시
+			memberDao.updateMemberForMailAndPhone(memberDto);
+			
+		}
+		
+	}
+
+	public void delete(MemberDto memberDto) {
+		System.out.println("[MemberService] delete()");
+		
+		// 인증 : ID, PW
+		boolean resultForAutentication = verifyByMemIdAndMemPw(memberDto.memId, memberDto.memPw);
+		
+		if (resultForAutentication) {
+			memberDao.deleteMemberByMemId(memberDto.memId);
+		}
+		
+		
+	}
+	
+	public boolean verifyByMemIdAndMemPw(String id, String pw) {
+		System.out.println("[MemberService] verifyByMemIdAndMemPw()");
+		
+		return doSignIn(new MemberDto(id, pw, null, null));
+		
+	}
+	
+
+}
+
+
+------------------------------------------------------------------------
+[ MemberDto ]
+
+package com.office.dw;
+
+public class MemberDto {
+	
+	String memId;
+	String memPw;
+	String memMail;
+	String memPhone;
+	
+	public MemberDto(String memId, String memPw, String memMail, String memPhone) {
+		this.memId = memId;
+		this.memPw = memPw;
+		this.memMail = memMail;
+		this.memPhone = memPhone;
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+배열[,,,]
+->
+
+Vector [,,,]
+->
+
+ArrayList [,,,]
+
+// Vector와 ArrayList의 차이점
+
+
+
+dic, Map -> [Java] HashMap
+
+------------------------------------------------------------------------
+
+package com.office.dw;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Vector;
+
+public class TempClass {
+	
+	public static void main(String[] args) {
+		
+		ArrayList<Integer> nums = new ArrayList<Integer>();
+		
+		// 데이터 추가
+		nums.add(10);
+		nums.add(20);
+		nums.add(30);
+		
+		// 데이터 조회
+		nums.get(0);
+		nums.get(1);
+		nums.get(2);
+		
+		// 데이터 삭제
+		nums.remove(2);
+		nums.remove(1);
+		nums.remove(0);
+		
+		// 크기 조회
+		nums.size();
+		
+//---------------------------------------------------------------------------
+		
+		Vector<Integer> nums2 = new Vector<Integer>();
+		
+		// 데이터 추가
+		nums2.add(10);
+		nums2.add(20);
+		nums2.add(30);
+		
+		// 데이터 조회
+		nums2.get(0);
+		nums2.get(1);
+		nums2.get(2);
+		
+		// 데이터 삭제
+		nums2.remove(2);
+		nums2.remove(1);
+		nums2.remove(0);
+		
+		// 크기 조회
+		nums2.size();
+		
+//---------------------------------------------------------------------------
+		
+		HashMap<Integer, String> hashMap = new HashMap<Integer, String>();
+		
+		// 데이터 추가
+		hashMap.put(1, "박찬호");
+		hashMap.put(2, "박지성");
+		hashMap.put(3, "박세리");
+		
+		// 데이터 조회
+		System.out.println(hashMap.get(1));		// 박찬호
+		System.out.println(hashMap.get(2));		// 박지성
+		System.out.println(hashMap.get(3));		// 박세리
+		
+		// 데이터 삭제
+		hashMap.remove(1);
+		System.out.println(hashMap.get(1));
+		
+		// 데이터 조회
+		System.out.println(hashMap.size());		// 2
+		
+		// 전체 데이터 삭제
+		hashMap.clear();
+		System.out.println(hashMap.size());		// 0
+		
+		// value 변경
+		hashMap.put(1, "박찬호");
+		hashMap.put(2, "박지성");
+		hashMap.put(3, "박세리");
+		
+		hashMap.put(1, "홍길동");
+		System.out.println(hashMap.get(1));		// 홍길동
+	}
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ ArrayList -> HashMap ]
+
+[ MemberDao ]
+
+package com.office.dw;
+
+import java.util.HashMap;
+
+public class MemberDao {
+	
+//	ArrayList<MemberDto> memberDB = new ArrayList<MemberDto>();
+	
+	HashMap<String, MemberDto> memberDB =  new HashMap<String, MemberDto>();
+
+	public void insertNewMember(MemberDto memberDto) {
+		System.out.println("[MemberDao] insertNewMember()");
+		
+//		memberDB.add(memberDto);
+		memberDB.put(memberDto.memId, memberDto);
+		
+	}
+
+	public MemberDto selectMemberDtoByMemId(String memId) {
+		System.out.println("[MemberDao] selectMemberDtoByMemId()");
+		
+//		for (int i = 0; i < memberDB.size(); i++) {
+//			MemberDto dto = memberDB.get(i);
+//			if (dto.memId.equals(memId)) {
+//				return dto;
+//			}
+//		}
+//		
+//		return null;
+		
+		MemberDto memberDto =  memberDB.get(memId);
+		return memberDto;
+		
+	}
+
+	public void updateMemberForMailAndPhone(MemberDto memberDto) {
+		System.out.println("[MemberDao] updateMemberForMailAndPhone()");
+		
+//		for (int i = 0; i < memberDB.size(); i++) {
+//			MemberDto dto = memberDB.get(i);
+//			if (dto.memId.equals(memberDto.memId)) {
+//				dto.memMail = memberDto.memMail;
+//				dto.memPhone = memberDto.memPhone;
+//				
+//				System.out.println("Mail : " + dto.memMail);
+//				System.out.println("Phone : " + dto.memPhone);
+//				
+//				break;
+//			}
+//		}
+		
+		memberDB.put(memberDto.memId, memberDto);
+		
+	}
+
+	public void deleteMemberByMemId(String memId) {
+		System.out.println("[MemberDao] deleteMemberByMemId()");
+		
+//		for (int i = 0; i < memberDB.size(); i++) {
+//			MemberDto dto = memberDB.get(i);
+//			if (dto.memId.equals(memId)) {
+//				memberDB.remove(i);
+//				
+//				System.out.println("memberDB.size() : " + memberDB.size());
+//				
+//			}
+//		}
+		
+		memberDB.remove(memId);
+		
+	}
+
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+##패키지
+
+####패키지 란?
+
+비슷하거나 관련 있는 클래스를 하나의 그룹으로 묶어 관리하는 단위이다.
+
+패키지는 디렉토리(폴더)와 비슷한 구조로 관리되며, 클래스의 이름을 구분하고 코드를 체계적으로 관리하는 데 사용한다.
+
+
+- 기본 패키지 작명하는 법
+
+도메인 역순. 서비스명
+apple.com -> com.apple.iphone20
+
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.office.ex.main;
+
+import com.office.ex.controller.GameController;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		new GameController().execute();
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ GameController ]
+
+package com.office.ex.controller;
+
+import java.util.Scanner;
+
+import com.office.ex.service.GameService;
+
+public class GameController {
+	
+	public void execute() {
+		
+		GameService gameService = new GameService();
+		
+		Scanner scanner = new Scanner(System.in);
+		int selectedNumber = scanner.nextInt();
+		
+		switch (selectedNumber) {
+		case 1:		// run
+			gameService.run();
+			break;
+
+		case 2:		// stop
+			gameService.stop();
+			break;
+		
+		}
+		
+		scanner.close();
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ GameService ]
+
+package com.office.ex.service;
+
+import com.office.ex.runner.Rabbit;
+import com.office.ex.runner.Turtle;
+
+public class GameService {
+	
+	Turtle turtle = new Turtle();
+	Rabbit rabbit = new Rabbit();
+	
+	public void run() {
+		turtle.run();
+		rabbit.run();
+		
+	}
+
+	public void stop() {
+		turtle.stop();
+		rabbit.stop();
+		
+	}
+	
+}
+
+
+------------------------------------------------------------------------
+[ Rabbit ]
+
+package com.office.ex.runner;
+
+public class Rabbit {
+	
+	public void run() {
+		System.out.println("[Rabbit] run()");
+		
+		System.out.println("토끼는 깡총 깡총~");
+		
+	}
+
+	public void stop() {
+		System.out.println("[Rabbit] stop()");
+		
+		System.out.println("토끼 그대로 정지");
+		
+	}
+		
+}
+
+
+------------------------------------------------------------------------
+[ Turtle ]
+
+package com.office.ex.runner;
+
+public class Turtle {
+	
+	public void run() {
+		System.out.println("[Turtle] run()");
+		
+		System.out.println("거북이는 엉금 엉금~");
+		
+	}
+
+	public void stop() {
+		System.out.println("[Turtle] stop()");
+		
+		System.out.println("거북이 천천히 정지");
+		
+	}
+	
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+접근제한자
+
+외부에서 객체를 사용할 때 속성과 메서드에 대해서 접근 가능 범위를 지정하는 것이다
+
+객체지향 프로그래밍에서 데이터와 기능을 외부의 무분별한 접근으로부터 보호하고, 필요한 부분만 공개하기 위해 사용한다.
+
+
+인스턴스와 멤버
+
+인스턴스란 클래스로부터 생성된 객체를 의미하고, 멤버란 객체의 구성요소(속성, 생성자, 메서드)들을 의미한다.
+
+이미지 : [클래스] -> 객체생성 -> [객체{속성}, {생성자}, {메서드}]
+
+
+접근 제어자
+
+클래스의 필드, 메서드, 생성자, 클래스 등에 대한 접근 범위를 지정하는 키워드이다.
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.office.ex.main;
+
+import com.office.ex.controller.PayController;
+
+public class MainClass {
+
+	/*
+	 * 접근 제어자 	| 의미
+	 * private		| 같은 클래스 내에서만 접근 가능
+	 * default		| private + 같은 패키지 내에서만 접근 가능(명시x = default)
+	 * protected	| default + 상속 관계일 때 자식 클래스에서 접근 가능
+	 * public		| 누구나 접근 가능
+	 * 
+	 * 이미지 만들기 (그래프 등으로)
+	 */
+	
+	public static void main(String[] args) {
+		
+		new PayController().execute();
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ PayController ]
+
+package com.office.ex.controller;
+
+import java.util.Scanner;
+
+import com.office.ex.service.PayService;
+
+public class PayController {
+	
+	public void execute() {
+		
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.println("Please enter the month : ");
+		int thisMonth = scanner.nextInt();
+		
+		PayService payService = new PayService();
+		payService.pay(thisMonth);
+		
+		scanner.close();
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ PayService ]
+
+package com.office.ex.service;
+
+import com.office.ex.worker.Chajang;
+import com.office.ex.worker.Daeri;
+import com.office.ex.worker.Gwajang;
+
+public class PayService {
+	
+	Daeri daeri;
+	Gwajang gwajang;
+	Chajang chajang;
+	
+	public PayService() {
+		daeri = new Daeri();
+		gwajang = new Gwajang();
+		chajang = new Chajang();
+		
+	}
+	
+	public void pay(int month) {
+		
+//		daeri.money = 1100000;
+		// 급여액 변경할 수 있는 권한 CEO
+		daeri.setMoney(1100000, "CEO");
+		
+		daeri.pay();
+		gwajang.pay();
+		chajang.pay();
+		
+		System.out.println(month + "월, 급여 지급완료");
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ Daeri ]
+
+package com.office.ex.worker;
+
+public class Daeri {
+	
+	public String name = "Kim Daeri";
+	private int money;
+	
+	public Daeri() {
+		money = 1000000;
+		
+	}
+	
+	public void pay() {
+		System.out.println(name + "님 노고에 감사드립니다.");
+		System.out.println(money + "원, 지급완료");
+		
+	}
+	
+	public void setMoney(int money, String grade) {
+		if (grade.equals("CEO")) {
+			
+			this.money = money;
+		}
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ Gwajang ]
+
+package com.office.ex.worker;
+
+public class Gwajang {
+	
+	public String name = "Kim Gwajang";
+	private int money;
+	
+	public Gwajang() {
+		money = 2000000;
+		
+	}
+	
+	public void pay() {
+		System.out.println(name + "님 노고에 감사드립니다.");
+		System.out.println(money + "원, 지급완료");
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+[ Chajang ]
+
+package com.office.ex.worker;
+
+public class Chajang {
+	
+	public String name = "Kim Chajang";
+	private int money;
+	
+	public Chajang() {
+		money = 3000000;
+		
+	}
+	
+	public void pay() {
+		System.out.println(name + "님 노고에 감사드립니다.");
+		System.out.println(money + "원, 지급완료");
+		
+	}
+
+}
+
