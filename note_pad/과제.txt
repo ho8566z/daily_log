@@ -1,0 +1,14 @@
+과제
+
+-멤버 서비스(signUp, signIn, modify, delete, systemOut)
+	: MainClass, MemberController, MemberDao, MemberDto, MemberService
+
+-학급 총점, 평점(totalScore, averageScore)
+	: MainClass, ScoreOutput, TotalCalculate, AverageCalculate
+
+======================================================
+-홀짝 게임(game, gameLog)
+	: MainClass, GameContorller, GameDao, GameDto, GameService
+
+GameContorller
+	1.Game_On/Off  2.Game_Start  3.Game_Log  4.Game_Out

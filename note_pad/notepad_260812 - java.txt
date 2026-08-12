@@ -1,0 +1,532 @@
+20260812
+
+
+##getter & setter
+
+객체의 데이터를 안전하게 보존하기 위한 수단이다.
+
+private으로 캡슐화한 필드에 접근할 수 있는 통로를 제공하는 것이다.
+
+
+getter
+	객체의 속성값을 읽어올때 사용하는 메서드
+
+setter
+	객체의 속성값을 설정할때 사용하는 메서드
+	
+	
+[ CoolingSystem 일부 ]
+
+//	// name convention
+//	
+//	// 조회한다 : get(getter)
+//	// 접근체한자(public) 반환데이터타입 get+속성(변수)명
+//	public int getTargetTemperature() {
+//		return this.targetTemperature;
+//	}
+//	
+//	// 설정한다 : set(setter)
+//	// 접근체한자(public) 반환데이터타입x set+속성(변수)명
+//	public void setTargetTemperature(int targetTemperature) {
+//		this.targetTemperature = targetTemperature;
+//	}
+	
+	public int getTargetTemperature() {
+		return targetTemperature;
+	}
+
+	public void setTargetTemperature(int targetTemperature) {
+		this.targetTemperature = targetTemperature;
+	}	
+
+------------------------------------------------------------------------
+##무결성
+
+데이터베이스처럼 객체의 데이터(속성)가 외부로부터 훼손되지 않고 정확하며 신뢰가 보장되어야 한다는 것을 의미한다.
+
+	무결성은 핵심적으로 데이터가 올바른 상태를 유지하는 것이다.
+
+
+ex) 접근제어자 : private <- public으로 우회하는 방법
+
+-1번째 사진 참조 : 이미지 만들기
+-2번째 사진 참조 : 이미지 만들기
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+##객체 의존성(Object Dependencies)
+
+한 객체가 다른 객체의 기능이나 데이터를 사용하면 의존 관계가 형성되며, 생성자를 통해 의존하는 인스턴스를 전달받아 내부에 할당하여 사용한다.
+
+[ main, controller, system ]
+
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.office.ex.main;
+
+import com.office.ex.controller.CoolingController;
+import com.office.ex.system.CoolingSystem;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		CoolingSystem coolingSystem = 
+				new CoolingSystem("white");
+		
+		CoolingController coolingController = 
+				new CoolingController(coolingSystem);
+		coolingController.control();
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ CoolingController ]
+
+package com.office.ex.controller;
+
+import java.util.Scanner;
+
+import com.office.ex.system.CoolingSystem;
+
+public class CoolingController {
+	
+	private CoolingSystem coolingSystem;
+	
+	public CoolingController(CoolingSystem coolingSystem) {
+		this.coolingSystem = coolingSystem;
+				
+	}
+	
+	public void control() {
+		
+		Scanner scanner = new Scanner(System.in);
+		
+		boolean systemFlag = true;
+		
+		while (systemFlag) {
+			System.out.println("Choose the function you want.");
+			System.out.println("1.Power On/Off   2.Temperature setting   3.The End");
+			
+			int selectedFunction = scanner.nextInt();
+			
+			switch(selectedFunction) {
+			case 1:
+//				boolean currentStatus = coolingSystem.isPower();
+//				if (currentStatus) {
+//					coolingSystem.setPower(false);
+//				} else {
+//					coolingSystem.setPower(true);
+//				}
+				coolingSystem.setPower(!coolingSystem.isPower());
+				
+				break;
+				
+				
+			case 2:
+				
+				System.out.println("Enter the desired temperature.");
+				int desiredTemperature = scanner.nextInt();
+			
+				coolingSystem.setTargetTemperature(desiredTemperature);
+				
+				break;
+			
+				
+			case 3:
+				
+				systemFlag = false;
+				
+				break;
+			}
+			
+			coolingSystem.printSystemInformation();
+			
+		}
+		
+		
+		
+		scanner.close();
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ CoolingSystem ]
+
+package com.office.ex.system;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class CoolingSystem {
+	
+	private boolean power;				// 전원(외부 접근 불가)
+	private int targetTemperature;		// 희망 온도(외부 접근 불가)
+	private String dateOfManufacture;	// 제조일(외부 접근 불가)
+	private String color;				// 색상(외부 접근 불가)
+	
+	public CoolingSystem(String color) {
+		
+		power = false;
+		targetTemperature = 18;
+		dateOfManufacture = getSystemDateTime();			// 현재시간
+		
+		this.color = color;
+		
+	}
+	
+	//------------------------------------------------------------
+	
+	// 기능(메서드)
+	// 에어컨의 전체 정보를 출력하는 메서드
+	
+	public void printSystemInformation() {
+		
+		System.out.println("=========== SystemInformation ===========");
+		System.out.println("Power : " + isPower());
+		System.out.println("TargetTemperature : " + getTargetTemperature());
+		System.out.println("DateOfManufacture : " + getDateOfManufacture());
+		System.out.println("Color : " + getColor());
+		System.out.println("=========================================");
+		
+	}
+	
+	//------------------------------------------------------------
+	
+//	// name convention
+//	
+//	// 조회한다 : get(getter)
+//	// 접근체한자(public) 반환데이터타입 get+속성(변수)명
+//	public int getTargetTemperature() {
+//		return this.targetTemperature;
+//	}
+//	
+//	// 설정한다 : set(setter)
+//	// 접근체한자(public) 반환데이터타입x set+속성(변수)명
+//	public void setTargetTemperature(int targetTemperature) {
+//		this.targetTemperature = targetTemperature;
+//	}
+	
+	public boolean isPower() {
+		return power;
+	}
+
+	public void setPower(boolean power) {
+		this.power = power;
+	}
+	
+	
+	public int getTargetTemperature() {
+		return targetTemperature;
+	}
+
+	public void setTargetTemperature(int targetTemperature) {
+		
+		if (!power) power = true;
+		
+		if (targetTemperature < 18) {
+			targetTemperature = 18;
+			
+		} else if (targetTemperature > 30) {
+			targetTemperature = 30;
+		}
+		
+		this.targetTemperature = targetTemperature;
+	}	
+	
+
+	public String getDateOfManufacture() {
+		return dateOfManufacture;
+	}
+
+//	public void setDateOfManufacture(String dateOfManufacture) {
+//		this.dateOfManufacture = dateOfManufacture;
+//	}
+
+	public String getColor() {
+		return color;
+	}
+
+//	public void setColor(String color) {
+//		this.color = color;
+//	}
+
+	//------------------------------------------------------------
+	
+	// 현재 시스템 날짜, 시간 구하기 메서드
+	private String getSystemDateTime() {
+		
+		LocalDateTime now = LocalDateTime.now();	// 현재 시스템의 날짜와 시간 구하기
+		String dateTime = 
+				now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+				// 날짜와 시간 현식을 맞춤
+		
+		return dateTime;
+		
+		// 3번째 사진 참조 : 이미지 만들기
+		
+	}
+	
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+##메서드 오버로딩과 가변인자
+
+####메서드 오버로딩
+
+생성자 오버로딩과 비슷한 개념으로 하나의 메서드명으로 여러 개 선언하는 것을 의미한다.
+
+동일한 이름의 메서드를 과적해서 선언한다는 의미이다.
+
+매개변수 목록의 개수나 타입이 달라야 메서드 오버로딩이 가능하다.
+
+[ overloadng }
+
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.office.ex.overloading;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		Greet greet = new Greet();
+		
+//		greet.printGreetWord();
+//		greet.printGreetWordByName("박찬호");
+		
+		greet.printGreetWord("박찬호");
+		greet.printGreetWord();
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ Greet ]
+
+package com.office.ex.overloading;
+
+public class Greet {
+	
+	/*
+	public void printGreetWord() {
+		System.out.println("안녕하세요.");
+		
+	}
+	
+	public void printGreetWordByName(String name) {
+		System.out.println(name + "님, 안녕하세요.");
+		
+	}
+	*/
+	
+	public void printGreetWord() {
+		System.out.println("안녕하세요.");
+		
+	}
+	
+	public void printGreetWord(String name) {
+		System.out.println(name + "님, 안녕하세요.");
+		
+	}
+	
+	public void printGreetWord(char c) {
+		System.out.println(c + "님, 안녕하세요.");
+		
+	}
+	
+	public void printGreetWord(String name, String word) {
+		System.out.println(name + "님" + word);
+		
+	}
+	
+	// 매개변수 목록의 개수나 타입이 달라야 메서드 오버로딩이 가능하다.
+	
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+####가변인자
+
+메서드가 전달받을 인자의 개수를 정해두지 않고, 여러 개의 인자를 받을 수 있도록 하는 문법이다.
+
+[ multiargs ]
+
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.office.ex.multiargs;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		Score score = new Score();
+//		score.printStudentsTotalAndAverageScore(1, 80, 90, 100);
+//		score.printStudentsTotalAndAverageScore(2, 80, 90, 100, 80);
+//		score.printStudentsTotalAndAverageScore(3, 80, 90, 100, 80, 55, 80, 90, 100, 80);
+		
+		
+		// other people
+//		Score score2 = new Score();
+//		int[] scores = {10, 20, 30};
+//		score2.getTotalScore(scores);		// 총점
+//		score2.getAverageScore(scores);		// 평균
+		
+		int[] scores = {10, 20, 30};
+		TotalAverage.getTotalScore(scores);		// 총점
+		TotalAverage.getAverageScore(scores);		// 평균
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ Score ]
+
+package com.office.ex.multiargs;
+
+public class Score {
+	
+	// 학생들의 시험점수를 출력
+	// 총점 & 평점
+	
+	/*
+	// 학생 3명
+	public void printStudentsTotalAndAverageScore(
+			int score1,
+			int score2,
+			int score3) {
+		
+		int totalScore = score1 + score2 + score3;
+		System.out.println("총점 : " + totalScore);
+		
+		float averageScore = totalScore / 3;
+		System.out.println("평균 : " + averageScore);
+		
+	}
+	
+	// 학생 4명
+	public void printStudentsTotalAndAverageScore(
+			int score1,
+			int score2,
+			int score3,
+			int score4) {
+		
+		int totalScore = score1 + score2 + score3 + score4;
+		System.out.println("총점 : " + totalScore);
+		
+		float averageScore = totalScore / 4;
+		System.out.println("평균 : " + averageScore);
+		
+	}
+	
+	// 학생 5명
+	public void printStudentsTotalAndAverageScore(
+			int score1,
+			int score2,
+			int score3,
+			int score4,
+			int score5) {
+		
+		int totalScore = score1 + score2 + score3 + score4 + score5;
+		System.out.println("총점 : " + totalScore);
+		
+		float averageScore = totalScore / 5;
+		System.out.println("평균 : " + averageScore);
+		
+	}
+	*/
+	
+	//---------------------------------------------------------------------------------
+	
+	// 가변인자와 매개변수
+	// 매개변수와 가변인자의 순서로 사용하는 것은 가능하지만, 가변인자와 매개변수의 순서로 사용하는 것은 불가능하다.
+	// -> 가변인자는 모든 파라미터의 마지막에 존재해야 한다.
+	//
+	// 파라미터의 개수나 매개변수의 데이터 타입이 다를 때는 가변인자 또한 메서드 오버로딩할 수 있다.
+	/*
+	 * ex)
+	 * (int classNumber, int ...score) 					== O
+	 * (int classNumber, String coment, int ...score) 	== O
+	 * (int ...score, int classNumber) 					== X
+	 */
+	
+	public void printStudentsTotalAndAverageScore(int classNumber, int ...scores) {
+		
+//		int totalScore = 0;
+//		for (int i = 0; i < scores.length; i++) {
+//			totalScore += scores[i];
+//		}
+		System.out.println(classNumber + "반, 총점 : " + TotalAverage.getTotalScore(scores));
+		// 100 -> 3반 총점 : 100
+		
+//		float averageScore = 0.0f;
+//		if (scores.length > 0) {
+//			averageScore = totalScore / scores.length;
+//		}
+		System.out.println(classNumber + "반, 평균 : " + TotalAverage.getAverageScore(scores));
+		// 80.0 -> 3반 평균 : 80
+		
+	}
+	
+//	public void printStudentsTotalAndAverageScore(String classNumber, int ...scores) {
+//		
+//		int totalScore = 0;
+//		for (int i = 0; i < scores.length; i++) {
+//			totalScore += scores[i];
+//		}
+//		System.out.println(classNumber + "반, 총점 : " + totalScore);
+//		// 100 -> 3반 총점 : 100
+//		
+//		float averageScore = 0.0f;
+//		if (scores.length > 0) {
+//			averageScore = totalScore / scores.length;
+//		}
+//		System.out.println(classNumber + "반, 평균 : " + averageScore);
+//		// 80.0 -> 3반 평균 : 80
+//		
+//	}
+	
+	
+}
+
+------------------------------------------------------------------------
+[ TotalAverage ]
+
+package com.office.ex.multiargs;
+
+public class TotalAverage {
+	
+	// 총점 전문가 메서드
+	static public int getTotalScore(int[] scores) {
+		
+		int totalScore = 0;
+		for (int i = 0; i < scores.length; i++) {
+			totalScore += scores[i];
+		}
+		return totalScore;
+	}
+
+	
+	// 평균 전문가 메서드
+	static public float getAverageScore(int[] scores) {
+		
+		float averageScore = 0.0f;
+		if (scores.length > 0) {
+			averageScore = getTotalScore(scores) / scores.length;
+		}
+		return averageScore;
+	}
+
+}
