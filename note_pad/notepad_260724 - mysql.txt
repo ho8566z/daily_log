@@ -32,6 +32,7 @@
 		
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
+
 # 데이터 흐름
 
 Client
@@ -48,3 +49,64 @@ SQL
    │
 DB Server
 
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+-- SQL(Structured Query Language)
+-- 새로운 DB를 만들자 -> database 생성
+create database db_member;
+
+-- 기존 db 삭제
+drop database member;
+
+-- db 조회
+show databases;
+
+-- db 선택
+use db_member;
+
+-- table 생성
+create table member(
+	no		int			auto_increment,
+    id		varchar(50)		unique		not null,
+    pw		varchar(50)		not null,
+    mail	varchar(50)		not null,
+    phone	varchar(50)		not null,
+    reg_date	datetime	default current_timestamp,
+    mod_date	datetime	default current_timestamp on update current_timestamp,
+    primary key(no)
+);
+
+-- table 삭제
+drop table member;
+
+-- CRUD
+-- 데이터 생성
+insert into member(id, pw, mail, phone) 
+values('gildong', '1234', 'gildong@gmail.com', '010-1234-5678');
+
+insert into member(id, pw, mail, phone) 
+values('chanho', '5678', 'chanho@gmail.com', '010-5678-1234');
+
+-- 데이터 조회
+select * from member;
+select id, pw from member;
+
+-- 데이터 수정
+-- 가정 gildong 회원의 연락처가 010-1234-5678dptj 1234-9999로 변경되었을때
+update member 
+set 
+	phone = '010-1234-1234', 
+	mod_date = current_timestamp 
+where 
+	id = 'gildong';
+
+-- -------------------------
+update member 
+set 
+	phone = '010-1234-1234'
+where 
+	id = 'gildong';
+
+-- 데이터 삭제
+delete from member where id = 'gildong';

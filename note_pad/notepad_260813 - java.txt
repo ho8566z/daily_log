@@ -1,0 +1,1145 @@
+20260813
+
+
+[ MainClass ]
+
+package com.office.ex;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		/*
+		 * 상속(Inheritance) ==  인간세계의 '상속'과 동일하다.
+		 * ParentsClass가 ChildClass한테 상속(속성, 기능)할 수 았다.
+		 * 
+		 * -1 코드 재사용
+			부모 클래스의 공통적인 속성과 기능을 자식 클래스가 사용할 수 있습니다.
+			중복 코드를 줄일 수 있습니다.
+		 * -2 기능 확장 및 재정의
+			자식 클래스에서 새로운 기능을 추가할 수 있습니다.
+			부모의 메서드를 오버라이딩(Overriding)하여 자식에게 맞게 변경할 수도 있습니다.
+		 * -3 다형성
+			부모 클래스 타입으로 자식 클래스 객체를 다룰 수 있습니다.
+			이를 통해 하나의 부모 타입으로 여러 자식 객체를 일관되게 처리할 수 있습니다.
+		 * 
+		 * 1번째 사진참조 <- 이미지 만들기-1
+		 * 
+		 * 
+		 * 이미지 만들기-2
+		 * class GrandParentClass {
+			    void grandParentMethod() {
+			        System.out.println("GrandParent 기능");
+			    }
+			}
+			
+			class ParentClass extends GrandParentClass {
+			    void parentMethod() {
+			        System.out.println("Parent 기능");
+			    }
+			}
+			
+			class ChildClass extends ParentClass {
+			    void childMethod() {
+			        System.out.println("Child 기능");
+			    }
+			}
+			
+			데이터타입
+			GrandParentClass => GrandParentClass
+			ParentClass => GrandParentClass, ParentClass
+			ChildClass => GrandParentClass, ParentClass, ChildClass
+		 */
+		
+		
+		ChildClass childClass = new ChildClass();
+		childClass.print();
+		
+		ParentClass[] parentClasses = {childClass};
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ ParentClass ]
+
+package com.office.ex;
+
+public class ParentClass {
+	
+	public void print() {
+		System.out.println("ABCDEF");
+
+	}
+
+}
+
+------------------------------------------------------------------------
+[ ChildClass ]
+
+package com.office.ex;
+
+public class ChildClass extends ParentClass{
+
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+상속 코드 예시 +오버라이드
+
+[ MainClass ]
+
+package com.office.ex;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		/*
+		 * 아버지의 중식당 - 메뉴 짬뽕, 짜장면
+		 */
+		FatherRestaurant fatherRestaurant = new FatherRestaurant();
+		fatherRestaurant.makeJajangmyeon();		// 짜장면
+		fatherRestaurant.makeJjamppong(); 		// 짬뽕
+		
+		/*
+		 * 아버지의 은퇴, 자식에게 중식당을 물려준다.
+		 * 중식당을 새로 오픈
+		 */
+		ChildResturant childResturant = new ChildResturant();
+		childResturant.makeJajangmyeon();		// 짜장면
+		childResturant.makeJjamppong();			// 짬뽕
+		
+		fatherRestaurant.makeBokkeumbap();		// 볶음밥
+		childResturant.makeBokkeumbap();		// 볶음밥
+		
+		/*
+		 * 아버지의 볶음밥이 맛 없는 자식
+		 * 오버라이드(Override, 재정의)
+		 */
+		childResturant.makeBokkeumbap(2);
+		
+		/*
+		 * 자식의 중식당에서 아버지 중식당의 단골손님왈, 아버지의 볶음밥을 먹고싶다고 말한다.
+		 */
+		childResturant.makeBokkeumbap(1);
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ FatherRestaurant ]
+
+package com.office.ex;
+
+public class FatherRestaurant {
+	
+	// 짜장면 만들기
+	public void makeJajangmyeon() {
+		System.out.println("[FatherRestaurant] makeJajangmyeon");
+		
+	}
+	
+	// 짬뽕 만들기
+	public void makeJjamppong() {
+		System.out.println("[FatherRestaurant] makeJjamppong");
+		
+	}
+	
+	// 볶음밥
+	public void makeBokkeumbap() {
+		System.out.println("[FatherRestaurant] makeBokkeumbap");
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ ChildResturant ]
+
+package com.office.ex;
+
+public class ChildResturant extends FatherRestaurant {
+	
+	static final int FATHER = 1;
+	static final int CHILD = 2;
+
+//	@Override
+	public void makeBokkeumbap(int family) {
+
+//		super.makeBokkeumbap();
+		
+		switch (family) {
+		case FATHER:
+			super.makeBokkeumbap();
+			
+			break;
+			
+		case CHILD:
+			System.out.println("[ChildResturant] makeBokkeumbap");
+			
+			break;
+		}
+		
+	}
+
+	/*
+	@Override	// 없어도 정의됨
+	// 오버라이드(Override)
+	// 상위 클래스의 기능을 하위 클래스에서 기능을 수정/추가/삭세해 재정의하는 것
+	public void makeBokkeumbap() {
+		System.out.println("[ChildResturant] makeBokkeumbap");
+		
+	}
+	*/
+	
+	// this는 해당 인스턴스에서 가리키지만, super는 하위클래스에서 상위클래스를 가리킨다.
+	
+	
+
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+##인터페이스(Interface)
+
+####implements
+
+Parent클래스에서 구현되지 않은 것들을 Child클래스에서 구현할 수 있도록 하는 키워드 - (1046 이미지 삽입)
+
+일종의 작업명세서
+
+(실생활에서 가정 AIot로 인터페이스 설명하기)
+
+
+[ 인터페이스를 이용한 다형성, 정확히는 인터페이스 타입으로 구현 객체를 참조하는 것을 보여주는 예시 ]
+
+//	ArrayList<String> arrayList = new ArrayList<String>();
+	List<String> arrayList = new ArrayList<String>();
+	
+//	Vector<String> vector = new Vector<String>();
+	List<String> vector = new Vector<String>();
+	
+	arrayList.add("");
+	vector.add("");
+	
+	// List<String>으로 데이터 타입 통합
+	
+	ArrayList<List<String>> list = new ArrayList<List<String>>();
+	list.add(arrayList);
+	list.add(vector);
+
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.office.ex.inter;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		Child child = new Child();
+		child.doPrint();
+		child.doRun();
+		child.doEat();
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ interface Parent ]
+
+package com.office.ex.inter;
+
+public interface Parent {
+	
+	public void doPrint();
+	
+	public void doRun();
+
+}
+
+------------------------------------------------------------------------
+[ interface GrandParent ]
+
+package com.office.ex.inter;
+
+public interface GrandParent {
+	
+	public void doEat();
+
+}
+
+------------------------------------------------------------------------
+[ Child ]
+
+package com.office.ex.inter;
+
+public class Child implements Parent, GrandParent{
+
+	// 상속과 달리 인터페이스를 사용하면, 여러개의 타입을 사용할 수 있다.
+	
+	// Parent
+	@Override
+	public void doPrint() {
+		System.out.println("Hello");
+		
+	}
+
+	// Parent
+	@Override
+	public void doRun() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	// GrandParent
+	@Override
+	public void doEat() {
+		System.out.println("Eat");
+		
+	}
+	
+	
+
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ interface IFatherRestaurant ]
+
+package com.office.ex;
+
+public interface IFatherRestaurant {
+	
+	public void makeTangsuyuk();
+
+}
+
+------------------------------------------------------------------------
+[ ChildResturant + implements IFatherRestaurant ]
+
+package com.office.ex;
+
+public class ChildResturant 
+				extends FatherRestaurant
+				implements IFatherRestaurant{
+	
+	static final int FATHER = 1;
+	static final int CHILD = 2;
+
+//	@Override
+	public void makeBokkeumbap(int family) {
+
+//		super.makeBokkeumbap();
+		
+		switch (family) {
+		case FATHER:
+			super.makeBokkeumbap();
+			
+			break;
+			
+		case CHILD:
+			System.out.println("[ChildResturant] makeBokkeumbap");
+			
+			break;
+		}
+		
+	}
+	
+
+	@Override
+	public void makeTangsuyuk() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/*
+	@Override	// 없어도 정의됨
+	// 오버라이드(Override)
+	// 상위 클래스의 기능을 하위 클래스에서 기능을 수정/추가/삭세해 재정의하는 것
+	public void makeBokkeumbap() {
+		System.out.println("[ChildResturant] makeBokkeumbap");
+		
+	}
+	*/
+	
+	// this는 해당 인스턴스에서 가리키지만, super는 하위클래스에서 상위클래스를 가리킨다.
+	
+	
+
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.toyoffice.toy;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		IToy teddybear = new Teddybear();
+		teddybear.doWalk();
+		teddybear.doSpeach();
+		
+		IToy robot = new Robot();
+		robot.doWalk();
+		robot.doSpeach();
+		
+		IToy airplane = new AirPlane();
+		airplane.doWalk();
+		airplane.doSpeach();
+		
+		IToy[] iToys = {teddybear, robot, airplane};
+		for (int i = 0; i < iToys.length; i++) {
+			iToys[i].doWalk();
+		}
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ IToy ]
+
+package com.toyoffice.toy;
+
+public interface IToy {
+	
+	public void doWalk();
+	
+	public void doSpeach();
+	
+//	public void name();
+
+}
+
+------------------------------------------------------------------------
+[ Teddybear ]
+
+package com.toyoffice.toy;
+
+public class Teddybear implements IToy {
+	
+	// 걷다
+	@Override
+	public void doWalk() {
+		System.out.println("[Teddybear] walk!");
+	}
+	
+	// 말하다
+	@Override
+	public void doSpeach() {
+		System.out.println("[Teddybear] speach!");
+	}
+
+}
+
+------------------------------------------------------------------------
+[ Robot ]
+
+package com.toyoffice.toy;
+
+public class Robot implements IToy {
+
+	// 걷다
+	@Override
+	public void doWalk() {
+		System.out.println("[Robot] walk!");
+		
+	}
+
+	// 말하다
+	@Override
+	public void doSpeach() {
+		System.out.println("[Robot] speach!");
+		
+	}
+	
+	
+
+}
+
+------------------------------------------------------------------------
+[ AirPlane ]
+
+package com.toyoffice.toy;
+
+public class AirPlane implements IToy {
+
+	@Override
+	public void doWalk() {
+		walk();
+		
+	}
+
+	@Override
+	public void doSpeach() {
+		speach();
+		
+	}
+	
+	// 걷다
+	private void walk() {
+		System.out.println("[AirPlane] walk!");
+		
+	}
+
+	// 말하다
+	private void speach() {
+		System.out.println("[AirPlane] speach!");
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+##인터페이스와 산업표준화
+
+####산업 표준화
+
+여러 회사나 제품이 공통된 규칙과 규격을 사용하도록 정하는 것이다.
+
+
+####인터페이스
+
+구현 클래스가 지켜야 할 공통 규격(규칙)을 정의한다.
+
+
+-> 인터페이스를 "산업 표준화"라는 비유를 사용하는 이유는, 인터페이스가 구현 클래스들이 따라야 할 공통 규격을 제공하기 때문이다.
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+Strategy Pattern(전략 패턴)이란?
+
+Strategy Pattern은 하나의 작업을 수행하는 여러 가지 방법(전략)을 각각의 클래스로 분리하고, 상황에 따라 원하는 전략을 선택하여 사용하는 디자인 패턴이다.
+
+-> 같은 일을 하는 여러 방법을 인터페이스로 묶고, 필요한 방법을 선택해서 사용하는 것이다.
+
+------------------------------------------------------------------------
+
+		 Strategy
+		인터페이스
+			│
+   ┌────────┼────────┐
+   ↓        ↓        ↓
+StrategyA StrategyB StrategyC
+ 전략 A     전략 B     전략 C
+ 
+ 
+ PaymentStrategy
+      │
+ ┌────┼─────────┐
+ ↓    ↓         ↓
+카드  현금    카카오페이
+
+------------------------------------------------------------------------
+
+핵심 3가지
+1. 인터페이스
+	→ 여러 전략이 지켜야 할 공통 규격
+2. 전략 클래스
+	→ 실제 작업 방법을 각각 구현
+3. 전략 교체
+	→ new CardPayment() → new CashPayment()처럼 원하는 전략을 선택
+	
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+이미지 만들기 <- 2, 3번째 사진참조
+
+[ new 부품 -> 부품 객체 ] 참고
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.office.ex;
+
+import java.util.Scanner;
+
+public class MainClass {
+
+   public static void main(String[] args) {
+      
+      Scanner scanner = new Scanner(System.in);
+      
+      // ID, PW == 1
+      /*
+      System.out.print("Enter ID & PW");
+      String id = scanner.nextLine();
+      String pw = scanner.nextLine();
+      
+      Service service = new Service();
+      service.doutentication(1, new AuthenticationDto(id, pw, null));
+      */
+      
+      // ID, PW, MAIL == 2
+      /*
+      System.out.print("Enter ID & PW");
+      String id = scanner.nextLine();
+      String pw = scanner.nextLine();
+      String mail = scanner.nextLine();
+      
+      Service service = new Service();
+      service.doutentication(2, new AuthenticationDto(id, pw, mail));
+      */
+      
+      Service service = new Service();
+      
+      // 1 ID, PW
+      /*
+      System.out.print("Enter ID & PW");
+      String id = scanner.nextLine();
+      String pw = scanner.nextLine();
+      
+//      Service service = new Service();
+      service.doutentication(
+    		  new AuthenticationByIdPw(), 
+    		  new AuthenticationDto(id, pw, null));
+    	*/
+      
+      
+      // 2 ID, PW, MAIL
+      System.out.print("Enter ID & PW");
+      String id = scanner.nextLine();
+      String pw = scanner.nextLine();
+      String mail = scanner.nextLine();
+      
+//      Service service = new Service();
+      service.doutentication(
+    		  new AuthenticationByIdPwMail(), 
+    		  new AuthenticationDto(id, pw, mail));
+      
+  
+      
+      scanner.close();
+   }
+   
+}
+
+------------------------------------------------------------------------
+[ Service ]
+
+package com.office.ex;
+
+public class Service {
+	
+	/*
+	public void doutentication(int num, AuthenticationDto authenticationDto) {
+		
+		switch (num) {
+		case 1:		// id, pw 인증
+			
+			AuthenticationByIdPw authenticationByIdPw = new AuthenticationByIdPw();
+			authenticationByIdPw.autentication(authenticationDto);
+			
+			break;
+			
+		case 2:		// id, pw, mail 인증
+			
+			AuthenticationByIdPwMail authenticationByIdPwMail = new AuthenticationByIdPwMail();
+			authenticationByIdPwMail.autentication(authenticationDto);
+			
+			break;
+			
+		}
+		
+	}
+	*/
+	
+	
+	public void doutentication(IAuthentication iAuthentication, AuthenticationDto authenticationDto) {
+		
+		iAuthentication.autentication(authenticationDto);
+		
+	}	
+	
+}
+
+------------------------------------------------------------------------
+[ IAuthentication ]
+
+package com.office.ex;
+
+public interface IAuthentication {
+
+   public void autentication(AuthenticationDto authenticationDto);
+   
+}
+
+------------------------------------------------------------------------
+[ AuthenticationDto ]
+
+package com.office.ex;
+
+public class AuthenticationDto {
+   
+   private String id;
+   private String pw;
+   private String mail;
+   
+   public AuthenticationDto(String id, String pw, String mail) {
+	this.id = id;
+	this.pw = pw;
+	this.mail = mail;
+}
+
+   public String getId() {
+      return id;
+   }
+   
+   public void setId(String id) {
+      this.id = id;
+   }
+   
+   public String getPw() {
+      return pw;
+   }
+   
+   public void setPw(String pw) {
+      this.pw = pw;
+   }
+   
+   public String getMail() {
+      return mail;
+   }
+   
+   public void setMail(String mail) {
+      this.mail = mail;
+   }
+
+}
+
+------------------------------------------------------------------------
+[ AuthenticationByIdPw ]
+
+package com.office.ex;
+
+public class AuthenticationByIdPw implements IAuthentication {
+
+   @Override
+   public void autentication(AuthenticationDto authenticationDto) {
+      
+      // gildong, 1234면 인증 완료
+      if (authenticationDto.getId().equals("gildong") 
+            && 
+            authenticationDto.getPw().equals("1234")) {
+         System.out.println("authentication SUCCESS!!");
+         
+      } else {
+         System.out.println("authentication FAIL!!");
+         
+      }
+      
+   }
+   
+}
+
+------------------------------------------------------------------------
+[ AuthenticationByIdPwMail ]
+
+package com.office.ex;
+
+public class AuthenticationByIdPwMail implements IAuthentication {
+
+   @Override
+   public void autentication(AuthenticationDto authenticationDto) {
+	   
+      // gildong, 1234, gildong@gmail.com면 인증 완료
+      if (authenticationDto.getId().equals("gildong") 
+            && 
+            authenticationDto.getPw().equals("1234")
+            &&
+            authenticationDto.getMail().equals("gildong@gmail.com")) {
+         System.out.println("authentication SUCCESS!!");
+               
+      } else {
+         System.out.println("authentication FAIL!!");
+               
+      }
+      
+   }
+
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.office.ex;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		Calculator calculator = new Calculator();
+//		calculator.addCal(10, 20);
+//		calculator.subCal(10, 20);
+//		calculator.mulCal(10, 20);
+//		calculator.divCal(10, 20);
+		
+		calculator.cal(new AddCal(), 10, 20);
+		calculator.cal(new SubCal(), 10, 20);
+		calculator.cal(new MulCal(), 10, 20);
+		calculator.cal(new DivCal(), 10, 20);
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ Calculator ]
+
+package com.office.ex;
+
+public class Calculator {
+	
+	public void cal(ICal iCal, int n1, int n2) {
+		iCal.doCal(n1, n2);
+	}
+	
+	
+	/*
+	public void cal(AddCal addCal, int n1, int n2) {
+		addCal.doCal(n1, n2);
+		
+	}
+	
+	public void cal(SubCal subCal, int n1, int n2) {
+		subCal.doCal(n1, n2);
+		
+	}
+	
+	public void cal(MulCal mulCal, int n1, int n2) {
+		mulCal.doCal(n1, n2);
+		
+	}
+	
+	public void cal(DivCal divCal, int n1, int n2) {
+		divCal.doCal(n1, n2);
+		
+	}
+	*/
+	
+	
+	/*
+	public void addCal(int n1, int n2) {
+//		System.out.println("Result : " + (n1 + n2));
+		
+//		AddCal addCal = new AddCal();
+//		addCal.addCal(n1, n2);
+		
+		ICal iCal = new AddCal();
+		iCal.doCal(n1, n2);
+		
+	}
+	
+	public void subCal(int n1, int n2) {
+//		System.out.println("Result : " + (n1 - n2));
+		
+//		SubCal subCal = new SubCal();
+//		subCal.subCal(n1, n2);
+		
+		ICal iCal = new SubCal();
+		iCal.doCal(n1, n2);
+		
+	}
+	
+	public void mulCal(int n1, int n2) {
+//		System.out.println("Result : " + (n1 * n2));
+		
+//		MulCal mulCal = new MulCal();
+//		mulCal.mulCal(n1, n2);
+		
+		ICal iCal = new MulCal();
+		iCal.doCal(n1, n2);
+		
+	}
+	
+	public void divCal(int n1, int n2) {
+//		System.out.println("Result : " + (n1 / (float) n2));
+		
+//		DivCal divCal = new DivCal();
+//		divCal.divCal(n1, n2);
+		
+		ICal iCal = new DivCal();
+		iCal.doCal(n1, n2);
+		
+	}
+	*/
+
+}
+
+------------------------------------------------------------------------
+[ ICal ]
+
+package com.office.ex;
+
+public interface ICal {
+	
+	public void doCal(int n1, int n2);
+
+}
+
+------------------------------------------------------------------------
+[ AddCal ]
+
+package com.office.ex;
+
+public class AddCal implements ICal {
+	
+//	public void addCal(int n1, int n2) {
+//		System.out.println("ADD Result : " + (n1 + n2));
+//		
+//	}
+
+	@Override
+	public void doCal(int n1, int n2) {
+		System.out.println("ADD Result : " + (n1 + n2));
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ SubCal ]
+
+package com.office.ex;
+
+public class SubCal implements ICal {
+	
+//	public void subCal(int n1, int n2) {
+//		System.out.println("SUB Result : " + (n1 - n2));
+//		
+//	}
+
+	@Override
+	public void doCal(int n1, int n2) {
+		System.out.println("SUB Result : " + (n1 - n2));
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ MulCal ]
+
+package com.office.ex;
+
+public class MulCal implements ICal {
+
+//	public void mulCal(int n1, int n2) {
+//		System.out.println("MUL Result : " + (n1 * n2));
+//		
+//	}
+
+	@Override
+	public void doCal(int n1, int n2) {
+		System.out.println("MUL Result : " + (n1 * n2));
+		
+	}
+	
+}
+
+------------------------------------------------------------------------
+[ DivCal ]
+
+package com.office.ex;
+
+public class DivCal implements ICal {
+
+//	public void divCal(int n1, int n2) {
+//		System.out.println("DIV Result : " + (n1 / (float) n2));
+//		
+//	}
+
+	@Override
+	public void doCal(int n1, int n2) {
+		System.out.println("DIV Result : " + (n1 / (float) n2));
+		
+	}
+	
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+##디펜던시 인젝션
+
+####Dependency Injection(DI, 의존성 주입)이란?
+
+객체가 필요한 다른 객체(의존 객체)를 직접 생성하지 않고, 외부에서 전달받는 것이다.
+
+1. 일반적인 방식 — 직접 생성
+
+2. Dependency Injection — 외부에서 주입
+즉,객체 간 결합도를 낮추고, 코드의 변경·확장·테스트를 쉽게 만들기 위해 사용한다.
+
+------------------------------------------------------------------------
+
+Strategy Pattern과 연결
+
+  PaymentStrategy
+        ↑
+        │
+   ┌────┴───┐
+   ↓        ↓
+  Card     Cash
+ Payment  Payment
+   │        │
+   └────┬───┘
+        ↓
+     Shopping
+        ↑
+        │
+   외부에서 주입
+   
+------------------------------------------------------------------------
+##싱글턴 패턴
+
+특정 클래스의 객체가 프로그램 전체에서 단 하나만 생성되도록 보장하고, 그 하나의 객체를 어디서든 사용할 수 있도록 하는 디자인 패턴이다.
+
+핵심 특징 3가지
+
+1. 객체를 하나만 생성
+	여러 번 객체를 요청해도 동일한 객체를 사용한다.
+
+2. 외부에서 new로 객체를 직접 생성하지 못하게 함
+	생성자를 private으로 만들어 외부에서 객체를 생성하지 못하도록 한다.
+
+3. 하나의 객체를 공유
+	getInstance() 같은 메서드를 통해 이미 만들어진 하나의 객체를 반환한다.
+	
+	
+ Singleton
+	 │
+	 ▼
+┌─────────┐
+│ 객체 1개 │
+└─────────┘
+  ▲     ▲
+  │     │
+obj1   obj2
+
+------------------------------------------------------------------------
+싱글턴 패턴 코드 예시
+
+class Singleton {
+
+    // ① 하나의 객체를 저장
+    private static Singleton instance;
+
+    // ② 외부에서 new 하지 못하도록 생성자를 private
+    private Singleton() {
+    }
+
+    // ③ 객체를 하나만 생성하고 반환
+    public static Singleton getInstance() {
+
+        if (instance == null) {
+            instance = new Singleton();
+        }
+
+        return instance;
+    }
+}
+
+
+사용
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Singleton obj1 = Singleton.getInstance();
+        Singleton obj2 = Singleton.getInstance();
+
+        System.out.println(obj1 == obj2);
+    }
+}
+
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.office.ex;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		Singleton singleton1 = Singleton.getInstance();
+		
+		Singleton singleton2 = Singleton.getInstance();
+		
+		System.out.println(singleton1 == singleton1);		// true
+		
+		
+		singleton1.inceaseCount(); 		// count : 1
+		singleton1.inceaseCount(); 		// count : 2
+		System.out.println(singleton1.getCount()); 		// 2
+		
+		
+		singleton2.inceaseCount();		// count : 3
+		System.out.println(singleton1.getCount()); 		// 3
+		System.out.println(singleton2.getCount()); 		// 3
+		
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ Singleton ]
+
+package com.office.ex;
+
+public class Singleton {
+	
+	private static Singleton singleton;
+	private int count = 0;
+	
+	private Singleton() {}
+	
+	public static Singleton getInstance() {
+		if (singleton == null) {
+			singleton = new Singleton();
+		}
+		return singleton;
+	}
+	
+	
+	
+	public void inceaseCount() {
+		count++;
+	}
+
+	
+	public int getCount() {
+		return count;
+	}
+
+	
+}
+
+------------------------------------------------------------------------
+
+
