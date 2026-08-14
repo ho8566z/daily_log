@@ -1,0 +1,69 @@
+20260814
+
+
+##예외처리
+
+package com.office.ex;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		/*
+		 * 예외 처리(Exception)
+		 * 문제는 에러(예외)가 발생했을때, 시스템이 절대로 멈춰서는 안된다.
+		 * 예외가 발생했을때, 어떻게 하면 시스템이 멈추지 않고 진행되게 만드는지 고민해야 한다.
+		 * 그래서 예외가 발생한다면, 예외는 따로 처리해야 하고, 시스템은 계속 실행(유지)되어야 한다.
+		 * 
+		 * 일반적으로 '예외'하고 '에러'를 동일한 의미로 사용한다.
+		 * 예외는 소프트웨어 실행 중 발생할 수 있는 문제
+		 * 에러는 프로그램이나 인프라, 시스템 자체에서 발생하는 심각한 문제
+		 */
+		
+		int num1 = 10;
+		int num2 = 0;
+		
+//		System.out.println("num1 + num2 = " + (num1 + num2));	// num1 + num2 = 10
+//		System.out.println("num1 - num2 = " + (num1 - num2));	// num1 - num2 = 10
+//		System.out.println("num1 * num2 = " + (num1 * num2));	// num1 * num2 = 0
+//		System.out.println("num1 / num2 = " + (num1 / num2));	// NG ->
+//		// Exception in thread "main" java.lang.ArithmeticException: / by zero
+//		// at com.office.ex.MainClass.main(MainClass.java:20)
+
+		
+		// try ~ catch
+		System.out.println("num1 + num2 = " + (num1 + num2));	// num1 + num2 = 10
+		
+		try {
+			// 실행구문
+			System.out.println("num1 / num2 = " + (num1 / num2));	// NG
+			
+		// 여러 개의 catch
+		} catch (ArithmeticException e) {		
+			// ArithmeticException : Exception의 하위 클래스 / Unchecked Exception(비검사 예외)
+			System.out.println("예외 발생");			// 예외 발생
+			
+		} catch (Exception e) {
+			// 예외가 발생했을때, 예외처리하는 구문
+			System.out.println("예외 발생");			// 예외 발생
+			System.out.println(e.getMessage());		// / by zero
+			e.printStackTrace();		// NG ->
+			// java.lang.ArithmeticException: / by zero
+			// at com.office.ex.MainClass.main(MainClass.java:29)
+			
+		} finally {
+			// 예외가 발생하든 하지않든, 무조건 실행하는 'try ~ catch의 옵션' 구문
+			System.out.println("나는 무조건 실행한다.");	// 나는 무조건 실행한다.
+		}
+		
+		System.out.println("num1 - num2 = " + (num1 - num2));	// num1 - num2 = 10
+		System.out.println("num1 * num2 = " + (num1 * num2));	// num1 * num2 = 0
+		
+		
+		
+		
+	}
+
+}
+
+------------------------------------------------------------------------
