@@ -1,0 +1,214 @@
+20260818
+
+
+##DataBase
+
+####구축
+
+-DataBase server를 만들고 운영관리
+-DataBase 엔지니어 영역
+
+
+####구현
+
+-사용
+-개발자의 영역(CRUD == SQL)
+-SQL : 표준언어(단, DB 제조사에서 SQL을 커스터마이징 함)
+
+
+####구축 방법
+
+1. in Windows10 -> for 개인 로컬 DB 사용을 위함
+
+2. in Linux(Ubuntu) -> for 팀 사용 and 배포
+
+
+DBMS
+데이터베이스 : 데이터의 집합 또는 공간
+데이터베이스를 관리하는 툴 또는 소프트웨어 또는 프로그램
+
+관계형 DBMS == RDBMS
+
+
+------------------------------------------------------------------------
+
+데이터 무결성
+
+데이터베이스의 모든 대이터는 오류가 있어서는 안된다.
+그래서 데이터베이스는 제약조건이라는 특성을 갖게 된다.
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+MySQL의 root
+
+-데이터베이스의 모든 권한을 가진 최고 관리자 계정이다.
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+##MySQL 설치 절차
+
+####1. MySQL 다운로드
+
+	MySQL 공식 홈페이지 접속
+	MySQL Installer for Windows 다운로드
+	Community 버전 선택
+	
+	
+####2. MySQL Installer 실행
+
+	설치 유형 선택
+	Developer Default 권장
+	필요한 MySQL 구성 요소 자동 설치
+	
+	
+####3. MySQL Server 설정
+
+	Config Type 설정
+	TCP/IP 포트 설정 → 기본값 3306
+	Windows Service 설정
+	
+	
+####4. Root 계정 설정
+
+	root 비밀번호 설정
+	비밀번호는 MySQL 관리자 계정 접속에 사용
+	
+	
+####5. 설치 진행
+
+	설정 내용 확인
+	Execute 클릭
+	설치 완료
+	
+	
+####6. MySQL 접속 확인
+
+	MySQL Workbench 실행
+	Local instance MySQL 접속
+	root 계정과 설정한 비밀번호 입력
+	
+
+20260818 사진참조해 만들기
+
+https://j-yeon.tistory.com/entry/Mysql-Windows-11-%EB%A1%9C%EC%BB%AC-%EA%B0%9C%EB%B0%9C-%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%B6%95-MySQL-84-LTS-%EC%84%A4%EC%B9%98-%EB%B0%8F-%EC%84%A4%EC%A0%95?utm_source=chatgpt.com
+
+https://kks1177.tistory.com/156?utm_source=chatgpt.com
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+-- 20260818 SQL Example
+-- CRUD
+
+-- 데이터베이스 생성
+CREATE DATABASE DB_MEMBER;
+
+
+-- 데이터베이스 삭제
+DROP DATABASE DB_MEMBER;
+
+
+-- DATABASE 선택
+USE DB_MEMBER;
+
+
+-- CRUD 작업 시작
+-- TABLE 생성
+-- CREATE TABLE TBL_MEMBER(
+-- 	mNo			INT		NOT NULL	PRIMARY KEY		AUTO_INCREMENT	 UNIQUE	  COMMENT '자동 생성 회원번호',
+-- 	mId			VARCHAR(50)		NOT NULL	UNIQUE		COMMENT '회원 ID',
+-- 	mPw			VARCHAR(100)	NOT NULL	COMMENT '회원 비밀번호',
+-- 	mMail		VARCHAR(50)		NOT NULL	COMMENT '회원 메일주소',
+-- 	mPhone		VARCHAR(50)		COMMENT '회원 연락처',
+-- 	m_reg_date	TIMESTAMP		DEFAULT NOW(),
+-- 	m_mod_date	TIMESTAMP		DEFAULT NOW()
+-- );
+
+CREATE TABLE TBL_MEMBER (
+    mNo        INT          NOT NULL AUTO_INCREMENT UNIQUE COMMENT '자동 생성 회원번호',
+    mId        VARCHAR(50)  NOT NULL UNIQUE COMMENT '회원 ID',
+    mPw        VARCHAR(100) NOT NULL COMMENT '회원 비밀번호',
+    mMail      VARCHAR(50)  NOT NULL COMMENT '회원 메일주소',
+    mPhone     VARCHAR(50)           COMMENT '회원 연락처',
+    m_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '회원 등록일',
+    m_mod_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+			   ON UPDATE CURRENT_TIMESTAMP COMMENT '회원 수정일',
+
+    PRIMARY KEY (mNo)
+);
+
+
+-- TABLE 구조확인 방법
+DESC TBL_MEMBER;
+
+
+-- TABLE의 데이터 조회(READ)
+SELECT * FROM TBL_MEMBER;
+
+
+-- TABLE의 데이터 부분조회(READ)
+SELECT mNo NO, mId ID, m_reg_date REG_DATE FROM TBL_MEMBER;
+
+
+-- WHERE == IF문 -> 조건절
+SELECT 
+	* 
+FROM 
+	TBL_MEMBER 
+WHERE 
+	mId = 'chanho' && 
+    mPw = '5678';
+
+SELECT 
+	COUNT(*) CNT
+FROM 
+	TBL_MEMBER 
+WHERE 
+	mNo >= '2';
+    
+
+-- TABLE 삭제
+DROP TABLE TBL_MEMBER;
+
+
+-- CREATE
+INSERT INTO TBL_MEMBER(mId, mPw, mMail, mPhone) VALUES('gildong', '1234', 'gildong@gmail.com', '010-1234-5678');
+
+
+-- 코드 리팩토링 1
+INSERT INTO 
+	TBL_MEMBER(mId, mPw, mMail, mPhone) 
+VALUES('chanho', '5678', 'chanho@gmail.com', '010-1111-2222');
+     
+     
+-- 코드 리팩토링 2
+INSERT INTO 
+	TBL_MEMBER(
+		mId, 
+		mPw, 
+		mMail, 
+		mPhone) 
+VALUES(
+		'saeri', 
+		'7777', 
+		'saeri@naver.com', 
+		'010-0001-0002');
+
+
+-- UPDATE
+UPDATE TBL_MEMBER SET mId = 'abcde' WHERE mNo = 1;
+
+UPDATE
+	TBL_MEMBER
+SET
+	mId = 'abcde',
+    mPw = '1000'
+WHERE
+	mNo = 1 AND
+    mMail = 'gildong@gmail.com';
+
+
+-- DELETE
+DELETE FROM TBL_MEMBER WHERE mNo = 1;
+-- 데이터는 삭제하는게 아닌, 다른 데이터베이스나 테이블로 옮기는 것이 바람직하다.
