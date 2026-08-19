@@ -1,0 +1,694 @@
+20260819
+
+
+DBeaver 왜 쓰는지?
+
+-DBeaver는 데이터베이스를 편리하게 관리하고 SQL을 실행하기 위해 사용한다.
+
+-MySQL을 설치하면 데이터베이스 자체는 사용할 수 있지만, 터미널에서 명령어를 직접 입력해야 하는 경우가 많다.
+
+-DBeaver를 사용하면 이를 GUI 환경에서 쉽게 확인하고 관리할 수 있다.
+
+
+-MySQL = 데이터베이스를 실제로 동작시키는 DBMS
+
+-DBeaver = 그 데이터베이스를 편하게 관리하는 프로그램
+
+------------------------------------------------------------------------
+
+설치 절차 - 지피티
+
+DBeaver 설치 절차
+1. DBeaver 공식 홈페이지 접속
+
+-DBeaver 공식 홈페이지
+
+2. 다운로드
+
+-홈페이지에서 Download를 선택합니다.
+
+-Windows PC라면 일반적으로:
+
+-Windows
+-Windows Installer
+-자신의 PC 환경에 맞는 버전 선택
+
+-대부분의 일반적인 Windows 10/11 PC에서는 Windows 64-bit Installer를 선택하면 됩니다.
+
+3. 설치 파일 실행
+
+-다운로드한 설치 파일을 실행합니다.
+
+-설치 과정에서 보통 다음 순서로 진행합니다.
+
+-Next
+-라이선스 동의 → I Agree
+-설치 대상 선택 → 기본값 사용
+-시작 메뉴 폴더 → 기본값 사용
+-바탕화면 바로가기 등 필요하면 선택
+-Install
+-설치 완료 → Finish
+
+4. DBeaver 실행
+
+-설치가 끝나면 DBeaver를 실행합니다.
+
+5. MySQL 연결
+
+-MySQL을 이미 설치했다면 DBeaver에서:
+
+-왼쪽 상단 플러그 아이콘 → New Database Connection을 선택합니다.
+
+-그리고: MySQL 선택 → Next
+
+------------------------------------------------------------------------
+드라이버 : 서로 다른 소프트웨어나 하드웨어가 통신할 수 있도록 중간에서 연결해 주는 프로그램나 소프트웨어
+(디비버 디비 커넥션 캡쳐와 같이)
+
+------------------------------------------------------------------------
+
+디비버 코드(mysql의 db_order에서) : TBL_ORDER
+
+------------------------------------------------------------------------
+2번쩨 사진까지 참조
+
+------------------------------------------------------------------------
+
+java database connector
+
+------------------------------------------------------------------------
+
+##순수 JAVA 프로젝트와 MySQL을 사용하는데, 이때 MySQL 드라이버 설치 방법
+
+------------------------------------------------------------------------
+unhandled 에러 캡쳐 다음에(바로 코드)
+
+String url = "jdbc:mysql://localhost:3306/db_member";
+		String user = "root";
+		String password = "1234";
+		
+		try {
+			Connection conn = DriverManager.getConnection(url, user, password);
+			// unhandled : java에서 mysql에 대해 connection이 100% 이루어지지 않기 때문에 '예외처리'해야 한다.
+			
+			System.out.println("Connection SUCCESS");
+			
+		} catch (Exception e) {
+			System.out.println("Connection FAIL");
+			
+			e.printStackTrace();
+					
+------------------------------------------------------------------------
+외부자원 해제(close)
+
+String url = "jdbc:mysql://localhost:3306/db_member";
+		String user = "root";
+		String password = "1234";
+		
+		Connection conn = null;
+		
+		try {
+			conn = DriverManager.getConnection(url, user, password);
+			// unhandled : java에서 mysql에 대해 connection이 100% 이루어지지 않기 때문에 '예외처리'해야 한다.
+			
+			// conn =? !null || null
+			
+			System.out.println("Connection SUCCESS");
+			
+		} catch (Exception e) {
+			System.out.println("Connection FAIL");
+			
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(conn != null) conn.close();
+				
+			} catch (Exception e2) {
+				e2.printStackTrace();
+				
+			}
+			
+		}
+		
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+SQL 실행 -> MemberService(Java) + DB(DBeaver, MySQL) 코드 예시
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.office.dbex;
+
+import com.office.dbex.member.MemberController;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+		new MemberController().execute();
+		
+		/*
+		//MySQL Connect Test <- 정리할것
+		String url = "jdbc:mysql://localhost:3306/db_member";
+		String user = "root";
+		String password = "1234";
+		
+		Connection conn = null;
+		
+		try {
+			conn = DriverManager.getConnection(url, user, password);
+			// unhandled : java에서 mysql에 대해 connection이 100% 이루어지지 않기 때문에 '예외처리'해야 한다.
+			
+			// conn =? !null || null
+			
+			System.out.println("Connection SUCCESS");
+			
+		} catch (Exception e) {
+			System.out.println("Connection FAIL");
+			
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(conn != null) conn.close();
+				
+				System.out.println("conn close");
+				
+			} catch (Exception e2) {
+				e2.printStackTrace();
+				
+			}
+			
+		}
+		*/
+
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ MemberController ]
+
+package com.office.dbex.member;
+
+import java.util.Scanner;
+
+import com.office.dbex.IConfig;
+
+public class MemberController implements IMember, IConfig {
+	
+	public void execute() {
+	
+		Scanner scanner = new Scanner(System.in);
+		boolean systemFlag = true;
+		MemberService memberService = new MemberService();
+
+		while (systemFlag) {
+			System.out.println("1.SIGN_UP  2.SIGN_IN  3.MODIFY  4.DELETE  99.SYSTEM_OUT");
+		
+			int userSelectedMenuNumber = scanner.nextInt();
+			scanner.nextLine();
+			
+			String memId = null;
+			String memPw = null;
+			String memMail = null;
+			String memPhone = null;
+			
+			switch (userSelectedMenuNumber) {
+			case MEMBER_SIGN_UP:
+				
+				System.out.println("Please input new member ID");
+				memId = scanner.nextLine();
+				
+				System.out.println("Please input new member PW");
+				memPw = scanner.nextLine();
+				
+				System.out.println("Please input new member MAIL");
+				memMail = scanner.nextLine();
+				
+				System.out.println("Please input new member PHONE");
+				memPhone = scanner.nextLine();
+				
+				MemberDto memberDtoForSignUp = new MemberDto(memId, memPw, memMail, memPhone);
+				
+				int resultForSignUp = memberService.doSignUp(memberDtoForSignUp);	// 0:fail, 1:success
+				
+				if (resultForSignUp > MEMBER_SIGN_UP_FAIL) {
+					System.out.println("[MemberController] NEW MEMBER SIGN_UP SUCCESS");
+				
+				} else {
+					System.out.println("[MemberController] NEW MEMBER SIGN_UP FAIL");
+					
+				}
+				
+				break;
+
+			case MEMBER_SIGN_IN:
+				
+				System.out.println("Please input member ID");
+				memId = scanner.nextLine();
+				
+				System.out.println("Please input member PW");
+				memPw = scanner.nextLine();
+				
+				MemberDto memberDtoForSignIn = new MemberDto(memId, memPw);
+				
+				boolean resultForSignIn = memberService.doSignIn(memberDtoForSignIn);
+				
+				if (resultForSignIn) {
+					System.out.println("[MemberController] MEMBER SIGN_IN SUCCESS");
+				
+				} else {
+					System.out.println("[MemberService] MEMBER SIGN_IN FAIL");
+					
+				}
+				
+				break;
+				
+			case MEMBER_MODIFY:
+				
+				break;
+				
+			case MEMBER_DELETE:
+				
+				break;
+				
+			case SYSTEM_OUT:
+				systemFlag = false;
+				System.out.println("Say GoodBye");
+				
+				break;
+			
+			}
+			
+		}
+		
+		scanner.close();
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ MemberService ]
+
+package com.office.dbex.member;
+
+public class MemberService implements IMember {
+	
+	MemberDao memberDao = new MemberDao();
+
+	// Sign_Up
+	public int doSignUp(MemberDto memberDto) {
+		System.out.println("[MemberService] doSignUp()");
+		
+		int result = memberDao.insertNewMember(memberDto);
+		/*
+		if (result > 0) {
+			System.out.println("[MemberService] NEW MEMBER SIGN_UP SUCCESS");
+		
+		} else {
+			System.out.println("[MemberService] NEW MEMBER SIGN_UP FAIL");
+			
+		}
+		*/
+		
+		switch (result) {
+		case MEMBER_SIGN_UP_SUCCESS:
+			System.out.println("[MemberService] MEMBER_SIGN_UP_SUCCESS");	// =1
+			
+			break;
+			
+		case MEMBER_SIGN_UP_FAIL:
+			System.out.println("[MemberService] MEMBER_SIGN_UP_FAIL");		// =0
+			
+			break;
+			
+		default:
+			System.out.println("[MemberService] MEMBER_SIGN_UP_FAIL");
+			
+			break;
+			
+		}
+		
+		
+		return result;
+	}
+
+	// Sign_In
+	public boolean doSignIn(MemberDto memberDto) {
+		System.out.println("[MemberService] doSignIn()");
+		
+		// ID, PW
+		MemberDto selectedMemberDto = 
+				memberDao.selectMemberByMemId(memberDto.getMemId());	// By => WHERE
+		/*
+		if (selectedMemberDto != null) {
+			System.out.println("[MemberService] MEMBER SIGN_IN SUCCESS");
+			return MEMBER_SIGN_IN_SUCCESS;
+			
+		} else {
+			System.out.println("[MemberService] MEMBER SIGN_IN FAIL");
+			return MEMBER_SIGN_IN_FAIL;
+		}
+		*/
+		
+		if (selectedMemberDto != null) {
+			if (selectedMemberDto.getMemPw().equals(memberDto.getMemPw())) {
+				System.out.println("[MemberService] MEMBER SIGN_IN SUCCESS");
+			
+				return MEMBER_SIGN_IN_SUCCESS;
+				
+			} else {
+				System.out.println("[MemberService] MEMBER SIGN_IN FAIL");
+				System.out.println("[MemberService] PW NG");
+				
+				return MEMBER_SIGN_IN_FAIL;
+			}
+			
+		} else {
+			System.out.println("[MemberService] MEMBER SIGN_IN FAIL");
+			System.out.println("[MemberService] ID NG");
+			
+			return MEMBER_SIGN_IN_FAIL;
+			
+		}
+	
+	}
+
+}
+
+------------------------------------------------------------------------
+[ MemberDao ]
+
+package com.office.dbex.member;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+public class MemberDao implements IMemberDao {
+	
+	public int insertNewMember(MemberDto memberDto) {
+		System.out.println("[MemberDao] insertNewMember()");
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int result = -1;
+		
+		
+		try {
+			// 1.Connect 객체 생성(App과 DB서버 연결, 다리를 만드는)
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+		
+			// 2.작업 명세서(SQL)
+			/*
+			String sql = "INSERT INTO TBL_MEMBER(memId, memPw, memMail, memPhone) "
+						+ "VALUES(" + memberDto.getMemId() + 
+						", " + memberDto.getMemPw() + 
+						", " + memberDto.getMemMail() + 
+						", " + memberDto.getMemPhone() + ")";
+			*/
+			String sql = "INSERT INTO TBL_MEMBER(memId, memPw, memMail, memPhone) "
+						+ "VALUES(?,?,?,?)";
+			
+			// 3.일꾼
+			pstmt = conn.prepareCall(sql);
+			
+			// 4.데이터 주입
+			pstmt.setString(1, memberDto.getMemId());
+			pstmt.setString(2, memberDto.getMemPw());
+			pstmt.setString(3, memberDto.getMemMail());
+			pstmt.setString(4, memberDto.getMemPhone());
+			
+			// 5.작업 지시(run or execute)
+			result = pstmt.executeUpdate();		// 0 또는 1
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			
+			// 6.외부자원 해제
+			try {
+				if (pstmt != null) pstmt.close();	// null point error
+				if (conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				
+			}
+		}
+		
+		return result;
+	}
+
+	
+
+	public MemberDto selectMemberByMemId(String memberId) {
+		System.out.println("[MemberDao] selectMemberByMemId()");
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<MemberDto> dtos = new ArrayList<MemberDto>();
+		
+		
+		try {
+			// 1.Connect 객체 생성(App과 DB서버 연결, 다리를 만드는)
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+		
+			// 2.작업 명세서(SQL)
+			String sql = "SELECT "
+						+ 	"* "
+						+ "FROM "
+						+ 	"TBL_MEMBER "
+						+ "WHERE "
+						+ 	"memId = ?";
+			
+			// 3.일꾼
+			pstmt = conn.prepareCall(sql);
+			
+			// 4.데이터 주입
+			pstmt.setString(1, memberId);
+			
+			// 5.작업 지시(run or execute)
+			rs = pstmt.executeQuery();
+			//ResultSet 사진과 같이 설명 붙이기
+			
+			while (rs.next()) {
+				int memNo = rs.getInt("memNo");
+				String memId = rs.getString("memId");
+				String memPw = rs.getString("memPw");
+				String memMail = rs.getString("memMail");
+				String memPhone = rs.getString("memPhone");
+				String memRegDate = rs.getString("memRegDate");
+				String memModDate = rs.getString("memModDate");
+				
+				MemberDto dto = new MemberDto(memNo, memId, memPw, memMail, memPhone, memRegDate, memModDate);
+				
+				dtos.add(dto);
+				
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			
+			// 6.외부자원 해제
+			try {
+				if (rs != null) rs.close();
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				
+			}
+		}
+		
+		return dtos.size() > 0 ? dtos.get(0) : null;
+	}
+	
+	
+
+}
+
+------------------------------------------------------------------------
+[ MemberDto ]
+
+package com.office.dbex.member;
+
+public class MemberDto {
+	
+	private int memNo;
+	private String memId;
+	private String memPw;
+	private String memMail;
+	private String memPhone;
+	private String memRegDate;
+	private String memModDate;
+	
+	public MemberDto() {
+		
+	}
+	
+
+	public MemberDto(String memId, String memPw, String memMail, String memPhone) {
+		this.memId = memId;
+		this.memPw = memPw;
+		this.memMail = memMail;
+		this.memPhone = memPhone;
+	}
+	
+
+	public MemberDto(String memId, String memPw) {
+		this.memId = memId;
+		this.memPw = memPw;
+	}
+	
+	
+	public MemberDto(int memNo, String memId, String memPw, String memMail, String memPhone, String memRegDate,
+			String memModDate) {
+		this.memNo = memNo;
+		this.memId = memId;
+		this.memPw = memPw;
+		this.memMail = memMail;
+		this.memPhone = memPhone;
+		this.memRegDate = memRegDate;
+		this.memModDate = memModDate;
+	}
+
+
+	public int getMemNo() {
+		return memNo;
+	}
+	public void setMemNo(int memNo) {
+		this.memNo = memNo;
+	}
+	public String getMemId() {
+		return memId;
+	}
+	public void setMemId(String memId) {
+		this.memId = memId;
+	}
+	public String getMemPw() {
+		return memPw;
+	}
+	public void setMemPw(String memPw) {
+		this.memPw = memPw;
+	}
+	public String getMemMail() {
+		return memMail;
+	}
+	public void setMemMail(String memMail) {
+		this.memMail = memMail;
+	}
+	public String getMemPhone() {
+		return memPhone;
+	}
+	public void setMemPhone(String memPhone) {
+		this.memPhone = memPhone;
+	}
+	public String getMemRegDate() {
+		return memRegDate;
+	}
+	public void setMemRegDate(String memRegDate) {
+		this.memRegDate = memRegDate;
+	}
+	public String getMemModDate() {
+		return memModDate;
+	}
+	public void setMemModDate(String memModDate) {
+		this.memModDate = memModDate;
+	}
+}
+
+------------------------------------------------------------------------
+[ interface IMember ]
+
+package com.office.dbex.member;
+
+public interface IMember {
+	
+	// MENU
+	final public int MEMBER_SIGN_UP		= 1;
+	final public int MEMBER_SIGN_IN		= 2;
+	final public int MEMBER_MODIFY		= 3;
+	final public int MEMBER_DELETE		= 4;
+	
+	// SIGN_UP RESULT
+	final public int MEMBER_SIGN_UP_SUCCESS = 1;
+	final public int MEMBER_SIGN_UP_FAIL = 0;
+
+	// SIGN_UP RESULT
+	final public boolean MEMBER_SIGN_IN_SUCCESS = true;
+	final public boolean MEMBER_SIGN_IN_FAIL 	= false;
+		
+}
+
+------------------------------------------------------------------------
+[ interface IConfig ]
+
+package com.office.dbex;
+
+public interface IConfig {
+	
+	final public int SYSTEM_OUT		= 99;
+
+}
+
+------------------------------------------------------------------------
+[ interface IMemberDao ]
+
+package com.office.dbex.member;
+
+public interface IMemberDao {
+	
+	final String URL = "jdbc:mysql://localhost:3306/db_member";
+	final String USER = "root";
+	final String PASSWORD = "1234";
+
+}
+
+------------------------------------------------------------------------
+[ DBeaver / MySQL / DB_MEMBER / TBL_MEMBER ]
+
+-- -------------------------------------------------------------------------
+-- -----------------------------DB_MEMBER START-----------------------------
+-- -------------------------------------------------------------------------
+
+-- CREATE DATABASE
+CREATE DATABASE DB_MEMBER;
+SHOW DATABASES;
+USE DB_MEMBER;
+
+-- CREATE TABLE
+CREATE TABLE TBL_MEMBER(
+	memNo		INT				NOT NULL	AUTO_INCREMENT,
+	memId		VARCHAR(50)		NOT NULL	UNIQUE,
+	memPw		VARCHAR(100)	NOT NULL,
+	memMail		VARCHAR(50),
+	memPhone	VARCHAR(50),
+	memRegDate	TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+	memModDate	TIMESTAMP DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY(MEMNO)
+)
+
+SHOW TABLES;
+
+INSERT INTO TBL_MEMBER(memId, memPw, memMail, memPhone) 
+VALUES('gildong', 1234, 'gildong@gmail.com', '010-1234-5678');
+					
+SELECT * FROM TBL_MEMBER;
+
+------------------------------------------------------------------------

@@ -49,6 +49,37 @@ ERD
 
 
 
+DBeaver
+
+1. DBeaver 기초
+
+DBeaver란?
+DBeaver를 사용하는 이유
+DBeaver 주요 기능
+DBeaver와 DBMS의 관계
+
+
+2. 설치 및 연결
+
+DBeaver 설치
+데이터베이스 드라이버
+MySQL 드라이버
+데이터베이스 연결
+Connection 설정
+
+
+3. 데이터베이스 관리
+
+SQL Editor
+SQL 실행
+데이터 조회
+테이블 확인
+테이블 구조 확인
+ER Diagram
+데이터 수정
+
+
+
 DataBase (Linux / Ubuntu)
 
 1. Linux 기초
@@ -119,20 +150,7 @@ PATH
 .profile
 
 
-8. MySQL 서버 관리
-
-MySQL 설치
-MySQL 서버 실행 / 종료
-MySQL 서비스 관리
-MySQL 접속
-사용자 관리
-데이터베이스 관리
-포트 설정
-설정 파일
-로그 확인
-
-
-9. 서버 관리 기초
+8. 서버 관리 기초
 
 SSH 접속
 사용자 관리

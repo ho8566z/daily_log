@@ -32,3 +32,6 @@ eclipse 단축키
 - ctrl + shift + x -> 소문자에서 대문자로
 
 - ctrl + shift + y -> 대문자에서 소문자로
+
+- ctrl + shift + r -> Open Resourse : 원하는 파일로 이동하기
+
