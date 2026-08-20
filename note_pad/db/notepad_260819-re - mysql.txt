@@ -1,0 +1,645 @@
+package com.office.dbex.member;
+
+public interface IMember {
+	
+	// MENU
+	final public int MEMBER_SIGN_UP		= 1;
+	final public int MEMBER_SIGN_IN		= 2;
+	final public int MEMBER_MODIFY		= 3;
+	final public int MEMBER_DELETE		= 4;
+	final public int MEMBER_SIGN_OUT	= 5;
+	
+	// SIGN_UP RESULT
+	final public int MEMBER_SIGN_UP_SUCCESS = 1;
+	final public int MEMBER_SIGN_UP_FAIL = 0;
+
+	// SIGN_UP RESULT
+	final public boolean MEMBER_SIGN_IN_SUCCESS = true;
+	final public boolean MEMBER_SIGN_IN_FAIL 	= false;
+		
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+package com.office.dbex.member;
+
+public interface IMemberDao {
+	
+	final String URL = "jdbc:mysql://localhost:3306/db_member";
+	final String USER = "root";
+	final String PASSWORD = "1234";
+
+	
+	public int insertNewMember(MemberDto memberDto);
+
+	public MemberDto selectMemberByMemId(String memberId);
+
+	public int updateMembere(MemberDto memberDto);
+
+	public int deleteMemberByMemId(String MemId);
+	
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+package com.office.dbex.member;
+
+import java.util.Scanner;
+
+import com.office.dbex.IConfig;
+import com.office.dbex.session.SessionClass;
+
+public class MemberController implements IMember, IConfig {
+	
+	public void execute() {
+	
+		Scanner scanner = new Scanner(System.in);
+		boolean systemFlag = true;
+		MemberService memberService = new MemberService(new MemberDao());
+
+		while (systemFlag) {
+			
+			if (SessionClass.getInstance().getSignInedMemId() == null) {
+				System.out.println("1.SIGN_UP  2.SIGN_IN  99.SYSTEM_OUT");
+				
+			} else {
+				System.out.println("3.MODIFY  4.DELETE  5.Sign_Out  99.SYSTEM_OUT");
+			}
+		
+			int userSelectedMenuNumber = scanner.nextInt();
+			scanner.nextLine();
+			
+			String memId = null;
+			String memPw = null;
+			String memMail = null;
+			String memPhone = null;
+			
+			switch (userSelectedMenuNumber) {
+			case MEMBER_SIGN_UP:
+				
+				System.out.println("Please input new member ID");
+				memId = scanner.nextLine();
+				
+				System.out.println("Please input new member PW");
+				memPw = scanner.nextLine();
+				
+				System.out.println("Please input new member MAIL");
+				memMail = scanner.nextLine();
+				
+				System.out.println("Please input new member PHONE");
+				memPhone = scanner.nextLine();
+				
+				MemberDto memberDtoForSignUp = new MemberDto(memId, memPw, memMail, memPhone);
+				
+				int resultForSignUp = memberService.doSignUp(memberDtoForSignUp);	// 0:fail, 1:success
+				
+				if (resultForSignUp > MEMBER_SIGN_UP_FAIL) {
+					System.out.println("[MemberController] NEW MEMBER SIGN_UP SUCCESS");
+				
+				} else {
+					System.out.println("[MemberController] NEW MEMBER SIGN_UP FAIL");
+					
+				}
+				
+				break;
+
+			case MEMBER_SIGN_IN:
+				
+				System.out.println("Please input member ID");
+				memId = scanner.nextLine();
+				
+				System.out.println("Please input member PW");
+				memPw = scanner.nextLine();
+				
+				MemberDto memberDtoForSignIn = new MemberDto(memId, memPw);
+				
+				boolean resultForSignIn = memberService.doSignIn(memberDtoForSignIn);
+				
+				if (resultForSignIn) {
+					System.out.println("[MemberController] MEMBER SIGN_IN SUCCESS");
+				
+					SessionClass session = SessionClass.getInstance();
+					session.setSignInedMemId(memId);
+					
+				} else {
+					System.out.println("[MemberService] MEMBER SIGN_IN FAIL");
+					
+					SessionClass session = SessionClass.getInstance();
+					session.setSignInedMemId(null);
+					
+				}
+				
+				break;
+				
+			case MEMBER_MODIFY:
+				
+				System.out.println("Please input new member PW");
+				memPw = scanner.nextLine();
+				
+				System.out.println("Please input new member MAIL");
+				memMail = scanner.nextLine();
+				
+				System.out.println("Please input new member PHONE");
+				memPhone = scanner.nextLine();
+				
+				MemberDto memberDtoForModify = new MemberDto(memId, memPw, memMail, memPhone);
+				
+				int resultForModify = memberService.doModify(memberDtoForModify);	// 0:fail, 1:success
+				
+				if (resultForModify > 0) {
+					System.out.println("[MemberController] NEW MEMBER MODIFY SUCCESS");
+				
+				} else {
+					System.out.println("[MemberController] NEW MEMBER MODIFY FAIL");
+					
+				}
+				
+				break;
+				
+			case MEMBER_DELETE:
+				
+				int resultForRemove = memberService.doRemove();
+				
+				if (resultForRemove > 0) {
+					System.out.println("[MemberController] NEW MEMBER DELETE SUCCESS");
+					
+					SessionClass.getInstance().setSignInedMemId(null);
+				
+				} else {
+					System.out.println("[MemberController] NEW MEMBER DELETE FAIL");
+					
+				}
+				
+				break;
+				
+			case MEMBER_SIGN_OUT:
+				
+					SessionClass.getInstance().setSignInedMemId(null);
+				
+				break;
+				
+			case SYSTEM_OUT:
+				systemFlag = false;
+				System.out.println("Say GoodBye");
+				
+				break;
+			
+			}
+			
+		}
+		
+		scanner.close();
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+package com.office.dbex.member;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+public class MemberDao implements IMemberDao {
+	
+	@Override
+	public int insertNewMember(MemberDto memberDto) {
+		System.out.println("[MemberDao] insertNewMember()");
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int result = -1;
+		
+		
+		try {
+			// 1.Connect 객체 생성(App과 DB서버 연결, 다리를 만드는)
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+		
+			// 2.작업 명세서(SQL)
+			/*
+			String sql = "INSERT INTO TBL_MEMBER(memId, memPw, memMail, memPhone) "
+						+ "VALUES(" + memberDto.getMemId() + 
+						", " + memberDto.getMemPw() + 
+						", " + memberDto.getMemMail() + 
+						", " + memberDto.getMemPhone() + ")";
+			*/
+			String sql = "INSERT INTO TBL_MEMBER(memId, memPw, memMail, memPhone) "
+						+ "VALUES(?,?,?,?)";
+			
+			// 3.일꾼
+			pstmt = conn.prepareCall(sql);
+			
+			// 4.데이터 주입
+			pstmt.setString(1, memberDto.getMemId());
+			pstmt.setString(2, memberDto.getMemPw());
+			pstmt.setString(3, memberDto.getMemMail());
+			pstmt.setString(4, memberDto.getMemPhone());
+			
+			// 5.작업 지시(run or execute)
+			result = pstmt.executeUpdate();		// 0 또는 1
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			
+			// 6.외부자원 해제
+			try {
+				if (pstmt != null) pstmt.close();	// null point error
+				if (conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				
+			}
+		}
+		
+		return result;
+	}
+
+	
+	@Override
+	public MemberDto selectMemberByMemId(String memberId) {
+		System.out.println("[MemberDao] selectMemberByMemId()");
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<MemberDto> dtos = new ArrayList<MemberDto>();
+		
+		
+		try {
+			// 1.Connect 객체 생성(App과 DB서버 연결, 다리를 만드는)
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+		
+			// 2.작업 명세서(SQL)
+			String sql = "SELECT "
+						+ 	"* "
+						+ "FROM "
+						+ 	"TBL_MEMBER "
+						+ "WHERE "
+						+ 	"memId = ?";
+			
+			// 3.일꾼
+			pstmt = conn.prepareCall(sql);
+			
+			// 4.데이터 주입
+			pstmt.setString(1, memberId);
+			
+			// 5.작업 지시(run or execute)
+			rs = pstmt.executeQuery();
+			// ResultSet 사진과 같이 설명 붙이기
+			
+			while (rs.next()) {		// ResultSet => DTO Mapping : RowMapper
+				int memNo = rs.getInt("memNo");
+				String memId = rs.getString("memId");
+				String memPw = rs.getString("memPw");
+				String memMail = rs.getString("memMail");
+				String memPhone = rs.getString("memPhone");
+				String memRegDate = rs.getString("memRegDate");
+				String memModDate = rs.getString("memModDate");
+				
+				MemberDto dto = new MemberDto(memNo, memId, memPw, memMail, memPhone, memRegDate, memModDate);
+				
+				dtos.add(dto);
+				
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			
+			// 6.외부자원 해제
+			try {
+				if (rs != null) rs.close();
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				
+			}
+		}
+		
+		return dtos.size() > 0 ? dtos.get(0) : null;
+	}
+
+
+	@Override
+	public int updateMembere(MemberDto memberDto) {
+		System.out.println("[MemberDao] updateMembere()");
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int result = -1;
+		
+		
+		try {
+			// 1.Connect 객체 생성(App과 DB서버 연결, 다리를 만드는)
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+		
+			// 2.작업 명세서(SQL)
+			String sql = "UPDATE "
+							+ "TBL_MEMBER "
+						+ "SET "
+							+ "memPw = ?,"
+							+ "memMail = ?,"
+							+ "memPhone =? "
+						+ "WHERE "
+							+ "memId = ?";
+			
+			// 3.일꾼
+			pstmt = conn.prepareStatement(sql);
+			
+			// 4.데이터 주입
+			pstmt.setString(1, memberDto.getMemPw());
+			pstmt.setString(2, memberDto.getMemMail());
+			pstmt.setString(3, memberDto.getMemPhone());
+			pstmt.setString(4, memberDto.getMemId());
+			
+			
+			// 5.작업 지시(run or execute)
+			result = pstmt.executeUpdate();		// 0 또는 1
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			
+			// 6.외부자원 해제
+			try {
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				
+			}
+		}
+		
+		return result;
+		
+	}
+
+
+	@Override
+	public int deleteMemberByMemId(String memId) {
+		System.out.println("[MemberDao] deleteMemberByMemId");
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int result = -1;
+		
+		
+		try {
+			// 1.Connect 객체 생성(App과 DB서버 연결, 다리를 만드는)
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+		
+			// 2.작업 명세서(SQL)
+			String sql = "DELETE FROM "
+							+ "TBL_MEMBER "
+						+ "WHERE "
+							+ "memId = ?";
+			
+			// 3.일꾼
+			pstmt = conn.prepareStatement(sql);
+			
+			// 4.데이터 주입
+			pstmt.setString(1, memId);
+			
+			// 5.작업 지시(run or execute)
+			result = pstmt.executeUpdate();		// 0 또는 1
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			
+			// 6.외부자원 해제
+			try {
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+package com.office.dbex.member;
+
+public class MemberDaoForOracle implements IMemberDao {
+
+	@Override
+	public int insertNewMember(MemberDto memberDto) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public MemberDto selectMemberByMemId(String memberId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int updateMembere(MemberDto memberDto) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int deleteMemberByMemId(String MemId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+package com.office.dbex.member;
+
+import com.office.dbex.session.SessionClass;
+
+public class MemberService implements IMember {
+	/*
+	IMemberDao memberDao = new MemberDao();
+	IMemberDao memberDao = new MemberDaoForOracle();
+	*/
+	
+	IMemberDao memberDao;
+	
+	public MemberService(IMemberDao iMemberDao) {
+		this.memberDao = iMemberDao;
+	}
+	
+	// Sign_Up
+	public int doSignUp(MemberDto memberDto) {
+		System.out.println("[MemberService] doSignUp()");
+		
+		int result = memberDao.insertNewMember(memberDto);
+		/*
+		if (result > 0) {
+			System.out.println("[MemberService] NEW MEMBER SIGN_UP SUCCESS");
+		
+		} else {
+			System.out.println("[MemberService] NEW MEMBER SIGN_UP FAIL");
+			
+		}
+		*/
+		
+		switch (result) {
+		case MEMBER_SIGN_UP_SUCCESS:
+			System.out.println("[MemberService] MEMBER_SIGN_UP_SUCCESS");	// =1
+			
+			break;
+			
+		case MEMBER_SIGN_UP_FAIL:
+			System.out.println("[MemberService] MEMBER_SIGN_UP_FAIL");		// =0
+			
+			break;
+			
+		default:
+			System.out.println("[MemberService] MEMBER_SIGN_UP_FAIL");
+			
+			break;
+			
+		}
+
+		return result;
+	}
+
+	// Sign_In
+	public boolean doSignIn(MemberDto memberDto) {
+		System.out.println("[MemberService] doSignIn()");
+		
+		// ID, PW
+		MemberDto selectedMemberDto = 
+				memberDao.selectMemberByMemId(memberDto.getMemId());	// By => WHERE
+		/*
+		if (selectedMemberDto != null) {
+			System.out.println("[MemberService] MEMBER SIGN_IN SUCCESS");
+			return MEMBER_SIGN_IN_SUCCESS;
+			
+		} else {
+			System.out.println("[MemberService] MEMBER SIGN_IN FAIL");
+			return MEMBER_SIGN_IN_FAIL;
+		}
+		*/
+		
+		if (selectedMemberDto != null) {
+			if (selectedMemberDto.getMemPw().equals(memberDto.getMemPw())) {
+				System.out.println("[MemberService] MEMBER SIGN_IN SUCCESS");
+			
+				return MEMBER_SIGN_IN_SUCCESS;
+				
+			} else {
+				System.out.println("[MemberService] MEMBER SIGN_IN FAIL");
+				System.out.println("[MemberService] PW NG");
+				
+				return MEMBER_SIGN_IN_FAIL;
+			}
+			
+		} else {
+			System.out.println("[MemberService] MEMBER SIGN_IN FAIL");
+			System.out.println("[MemberService] ID NG");
+			
+			return MEMBER_SIGN_IN_FAIL;
+			
+		}
+	
+	}
+
+	// Modify
+	public int doModify(MemberDto memberDtoForModify) {
+		System.out.println("[MemberService] doModify()");
+		
+		memberDtoForModify.setMemId(SessionClass.getInstance().getSignInedMemId());
+		
+		int result = memberDao.updateMembere(memberDtoForModify);
+		
+		if (result > 0) {
+			System.out.println("[MemberService] MEMBER MODIFY SUCCESS");
+		
+		} else {
+			System.out.println("[MemberService] MEMBER MODIFY FAIL");
+		}
+		
+		return result;
+	}
+
+	// DELETE
+	public int doRemove() {
+		System.out.println("[MemberService] doRemove()");
+		
+		int result = memberDao.deleteMemberByMemId(SessionClass.getInstance().getSignInedMemId());
+
+		if (result > 0) {
+			System.out.println("[MemberService] MEMBER DELETE SUCCESS");
+			
+		} else {
+			System.out.println("[MemberService] MEMBER DELETE FAIL");
+			
+		}
+		
+		return result;
+	}
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+package com.office.dbex.session;
+
+public class SessionClass {
+	
+	private static SessionClass session;
+	
+	private String signInedMemId = null;
+	
+	private SessionClass() {}
+	
+	public static SessionClass getInstance() {
+		
+		if (session == null) {
+			session = new SessionClass();
+		}
+		
+		return session;
+	}
+
+	
+	public String getSignInedMemId() {
+		return signInedMemId;
+	}
+	public void setSignInedMemId(String signInedMemId) {
+		this.signInedMemId = signInedMemId;
+	}
+	
+
+}
+

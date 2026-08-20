@@ -1,0 +1,26 @@
+1. Java Web 기본
+
+Web Application
+HTTP
+Web Server / WAS
+Apache Tomcat
+Servlet
+
+
+2. JSP / MVC
+
+JSP
+Model 1
+Model 2
+MVC Pattern
+Client → Web Server → DB
+JSP View
+
+
+3. Spring
+
+Framework
+Spring Legacy
+Spring Boot
+Spring Security
+전자정부표준프레임워크
