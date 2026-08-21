@@ -1,0 +1,100 @@
+20260821
+
+
+##@WebServlet("*.dw")  란? -> Servlet부분?
+
+------------------------------------------------------------------------
+####코드 해석 -> URL와 URI부분?
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String requestURI = request.getRequestURI();
+		System.out.println("requestURI : " + requestURI );
+		// requestURI : /MemberPjt/member_signup_confirm.dw
+		
+		String contextPath = request.getContextPath();
+		System.out.println("contextPath : " + contextPath);
+		// contextPath : /MemberPjt
+		
+		String command = requestURI.substring(contextPath.length());
+		System.out.println("command : " + command);
+		// command : /member_signup_confirm.dw
+		
+	}
+	
+	
+여기서부터 시작
+여기서부터 시작
+여기서부터 시작
+여기서부터 시작
+여기서부터 시작
+
+
+url mapping 사진 참조
+url mapping 사진 참조
+url mapping 사진 참조
+url mapping 사진 참조
+url mapping 사진 참조
+
+의미적기
+의미적기
+의미적기
+의미적기
+의미적기
+	
+------------------------------------------------------------------------
+
+MemberController에 있는 @WebServlet을 web.xml로 애너테이션?
+
+->MemberController의 @WebServlet 애너테이션으로 설정하던 서블릿 매핑 정보를 web.xml에 직접 작성하는 방식
+
+
+[ web.xml ]에 추가해야 @WebServlet와 같이 사용할 수 있다.
+
+<servlet>
+    <servlet-name>MemberController</servlet-name>
+    <servlet-class>com.office.dbex.member.MemberController</servlet-class>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>MemberController</servlet-name>
+    <url-pattern>/member/*</url-pattern>
+</servlet-mapping>
+
+
+차이
+방식					설정 위치				예
+애너테이션 방식		Java 클래스			@WebServlet("/member/*")
+web.xml 방식			XML 설정 파일			<servlet>, <servlet-mapping>
+
+
+@WebServlet <-> web.xml의 <servlet> + <servlet-mapping>
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+처음 찍은 사진 ppt만들어서 미정리코드 앞에 사진으로 넣기
+(D는 dto, MemberController박스 아래에 view ok와 view ng박스 추가)
+
+------------------------------------------------------------------------
+RequestDispatcher?
+
+------------------------------------------------------------------------
+java.sql.SQLException: No suitable driver found for jdbc:mysql://127.0.0.1:3306/db_member
+
+위의 에러?
+
+------------------------------------------------------------------------
+StringBuffer?
+
+------------------------------------------------------------------------
+jsp에서 자바코드 쓰는거
+
+concat() : ?
+
+------------------------------------------------------------------------
+tomcat에서 session은?
+
+------------------------------------------------------------------------
