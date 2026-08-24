@@ -1,4 +1,4 @@
-[이론 정리]
+[ 이론 정리 ]
 
 [git, github의 경우: "notepad_git_github" 참조할 것]
 
