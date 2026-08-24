@@ -1,5 +1,89 @@
-MemberController
+[ DB_MEMBER / TBL_MEMBER ]
 
+------------------------------------------------------------------------
+-- CREATE DATABASE
+CREATE DATABASE DB_MEMBER;
+SHOW DATABASES;
+USE DB_MEMBER;
+
+-- CREATE TABLE
+CREATE TABLE TBL_MEMBER(
+	memNo		INT				NOT NULL	AUTO_INCREMENT,
+	memId		VARCHAR(50)		NOT NULL	UNIQUE,
+	memPw		VARCHAR(100)	NOT NULL,
+	memMail		VARCHAR(50),
+	memPhone	VARCHAR(50),
+	memRegDate	TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+	memModDate	TIMESTAMP DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY(MEMNO)
+)
+
+SHOW TABLES;
+
+INSERT INTO TBL_MEMBER(memId, memPw, memMail, memPhone) 
+VALUES('gildong', 1234, 'gildong@gmail.com', '010-1234-5678');
+					
+SELECT * FROM TBL_MEMBER;
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ IMemberDao ]
+
+------------------------------------------------------------------------
+package mempjtcom.office.ex;
+
+public interface IMemberDao {
+	
+	final public String DRIVER = "com.mysql.cj.jdbc.Driver";
+	final public String URL = "jdbc:mysql://localhost:3306/db_member";
+	final public String USER = "root";	
+	final public String PASSWORD = "1234";
+	
+	public int insertNewMember(MemberDto memberDto);
+
+	public MemberDto selectMemberByMemId(String memId);
+
+	public int updateMemberByMemNo(MemberDto memberDto);
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ MemberConfig ]
+
+------------------------------------------------------------------------
+package mempjtcom.office.ex;
+
+public class MemberConfig {
+
+	final static public String MEMBER_SIGNUP_FORM = "/member_signup_form.mem";
+	final static public String MEMBER_SIGNUP_CONFIRM = "/member_signup_confirm.mem";
+	
+	final static public String MEMBER_SIGNIN_FORM = "/member_signin_form.mem";
+	final static public String MEMBER_SIGNIN_CONFIRM = "/member_signin_confirm.mem";
+	
+	final static public String MEMBER_MODIFY_FORM = "/member_modify_form.mem";
+	final static public String MEMBER_MODIFY_CONFIRM = "/member_modify_confirm.mem";
+	
+	final static public String DEFAULT_VIEW_PATH = "views";
+	
+	final static public String DEFAULT_VIEW_SUFFIX = ".jsp";
+	
+	final static public String SINGINED_MEMBERID = "signinedMemId";
+	
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ MemberController ]
+
+------------------------------------------------------------------------
 package mempjtcom.office.ex;
 
 import java.io.IOException;
@@ -12,191 +96,162 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+
 @WebServlet("*.mem")
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	
+
     public MemberController() {
-    	super();
+        super();
     }
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		StringBuffer stringBuffer = request.getRequestURL();
-		System.out.println("stringBuffer : " + stringBuffer.toString());
-		// stringBuffer : http://localhost:8090/mempjt/member_signup_form.mem
+		System.out.println("stringBuffer: " + stringBuffer.toString());
+		// stringBuffer: http://localhost:8090/mempjt/member_signup_form.mem
 		
-		String requestURI = request.getRequestURI();
-		System.out.println("requestURI : " + requestURI);
-		// requestURI : /mempjt/member_signup_form.mem
+		String requestURI = request.getRequestURI();		// /mempjt/member_signup_form.mem
+		System.out.println("requestURI: " + requestURI);
+		// requestURI: /mempjt/member_signup_form.mem
 		
-		String contextPath = request.getContextPath();
-		System.out.println("contextPath : " + contextPath);
-		// contextPath : /mempjt
+		String contextPath = request.getContextPath();		// /mempjt
+		System.out.println("contextPath: " + contextPath);
+		// contextPath: /mempjt
 		
-		String command = requestURI.substring(contextPath.length());
-		System.out.println("command : " + command);
-		// command : /member_signup_form.mem
+		String command = requestURI.substring(contextPath.length());  // /member_signup_form.mem
+		System.out.println("command: " + command);
+		// command: /member_signup_form.mem
 		
 		String nextPage = null;
 		MemberService memberService = null;
 		
 		switch (command) {
-//		case "/member_signup_form.mem":
+		// case "/member_signup_form.mem":
 		case MemberConfig.MEMBER_SIGNUP_FORM:
-			//sign-up_form
-			
-//			nextPage = MemberConfig.DEFAULT_VIEW_PATH + "/member_signup_form" + MemberConfig.DEFAULT_VIEW_SEFFIX;
+			// sign-up form
+			// nextPage = MemberConfig.DEFAULT_VIEW_PATH + "/member_signup_form" + MemberConfig.DEFAULT_VIEW_SUFFIX;
 			nextPage = generateViewName("/member_signup_form");
 			
 			break;
 			
-//		case "/member_signup_confirm.mem":
+		// case "/member_signup_confirm.mem":
 		case MemberConfig.MEMBER_SIGNUP_CONFIRM:
-			//sign-up_confirm
+			// sign-up confirm
 			memberService = new MemberService(new MemberDao());
 			int result = memberService.addNewMember(request, response);
 			
 			if (result > 0) {
-				System.out.println("[MemberController] NEW MEMBER SIGNUP SUCCESS");
-//				nextPage = MemberConfig.DEFAULT_VIEW_PATH + "/member_signup_ok" + MemberConfig.DEFAULT_VIEW_SEFFIX;
+				System.out.println("[MemberController] NEW MEMBER SIGNUP SUCCESS!!");
+				// nextPage = MemberConfig.DEFAULT_VIEW_PATH + "/member_signup_ok" + MemberConfig.DEFAULT_VIEW_SUFFIX;
 				nextPage = generateViewName("/member_signup_ok");
 				
 			} else {
-				System.out.println("[MemberController] NEW MEMBER SIGNUP FAIL");
-//				nextPage = MemberConfig.DEFAULT_VIEW_PATH + "/member_signup_ng" + MemberConfig.DEFAULT_VIEW_SEFFIX;
+				System.out.println("[MemberController] NEW MEMBER SIGNUP FAIL!!");
+				// nextPage = MemberConfig.DEFAULT_VIEW_PATH + "/member_signup_ng" + MemberConfig.DEFAULT_VIEW_SUFFIX;
 				nextPage = generateViewName("/member_signup_ng");
 			}
 			
 			break;
-			
+		
 		case MemberConfig.MEMBER_SIGNIN_FORM:
+			// sign-in form
 			
-			// sign-in-form
 			nextPage = generateViewName("/member_signin_form");
 			
 			break;
 			
 		case MemberConfig.MEMBER_SIGNIN_CONFIRM:
+			// sign-in confirm
 			
-			// sign-in-confirm
 			memberService = new MemberService(new MemberDao());
 			String signinMemId = memberService.searchMember(request, response);
 			
 			if (signinMemId != null) {
-				System.out.println("[MemberController] MEMBER SIGNIN SUCCESS");
+				System.out.println("[MemberController] MEMBER SIGNIN SUCCESS!!");
 				
 				nextPage = generateViewName("/member_signin_ok");
 				
 				HttpSession session = request.getSession();
-				session.setAttribute("signinedMemId", signinMemId);
+				session.setAttribute(MemberConfig.SINGINED_MEMBERID, signinMemId);
 				
 				
 			} else {
-				System.out.println("[MemberController] MEMBER SIGNIN FAIL");
+				System.out.println("[MemberController] MEMBER SIGNIN FAIL!!");
 				
 				nextPage = generateViewName("/member_signin_ng");
 				
 			}
 			
 			break;
+			
+		case MemberConfig.MEMBER_MODIFY_FORM:
+			// modify
+			
+			memberService = new MemberService(new MemberDao());
+			
+			HttpSession session = request.getSession();
+			String signinedMemId = String.valueOf(session.getAttribute(MemberConfig.SINGINED_MEMBERID));
+			
+			MemberDto currentSigninedMember = memberService.getCurrentSigninedMember(signinedMemId);
+			request.setAttribute("currentSigninedMember", currentSigninedMember);
+			
+			nextPage = generateViewName("/member_modify_form");
+			
+			break;
+			
+		case MemberConfig.MEMBER_MODIFY_CONFIRM:
+			// modify confirm
+			
+			memberService = new MemberService(new MemberDao());
+			int resultForModify = memberService.modifyMemberByMemNo(request, response);
+			
+			if (resultForModify > 0) {
+				System.out.println("[MemberController] MEMBER MODIFY SUCCESS!!");
+				nextPage = generateViewName("/member_modify_ok");
+				
+			} else {
+				System.out.println("[MemberController] MEMBER MODIFY FAIL!!");
+				nextPage = generateViewName("/member_modify_ng");
+				
+			}
+
+			break;
+			
 		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(nextPage);
 		dispatcher.forward(request, response);
+		
+		
 	}
-
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		doGet(request, response);
 	}
 	
-	// 뷰 이름을 생성
+	// 뷰 이름 생산
 	private String generateViewName(String viewName) {
 		
-//		return MemberConfig.DEFAULT_VIEW_PATH + viewName + MemberConfig.DEFAULT_VIEW_SEFFIX;
+		// return MemberConfig.DEFAULT_VIEW_PATH + viewName + MemberConfig.DEFAULT_VIEW_SUFFIX;
 		return MemberConfig.DEFAULT_VIEW_PATH
 				.concat(viewName)
-				.concat(MemberConfig.DEFAULT_VIEW_SEFFIX);
+				.concat(MemberConfig.DEFAULT_VIEW_SUFFIX);
 		
 	}
 
 }
 
-========================================================================
-========================================================================
-MemberService
 
-package mempjtcom.office.ex;
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ MemberDao ]
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-public class MemberService {
-	
-	private IMemberDao memberDao;
-	
-	public MemberService(IMemberDao memberDao) {
-		this.memberDao = memberDao;
-		
-	}
-
-	public int addNewMember(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("[MemberService] addNewMember()");
-		
-		String memId = request.getParameter("memId");
-		String memPw = request.getParameter("memPw");
-		String memMail = request.getParameter("memMail");
-		String memPhone = request.getParameter("memPhone");
-		
-		MemberDto memberDto = new MemberDto(memId, memPw, memMail, memPhone);
-		
-		memberDao = new MemberDao();
-	    int result = memberDao.insertNewMember(memberDto);
-	    
-	    if (result > 0) {
-	    	System.out.println("[MemberService] NEW MEMBER SIGNUP SUCCESS");
-	    	
-	    } else {
-	    	System.out.println("[MemberService] NEW MEMBER SIGNUP FAIL");
-	    }
- 		
-		return result;
-	}
-
-	public String searchMember(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("[MemberService] searchMember()");
-		
-		String memId = request.getParameter("memId");
-		String memPw = request.getParameter("memPw");
-		
-		MemberDto selectedMemberDtoByMemId = memberDao.selectMemberByMemId(memId);
-		
-		if (selectedMemberDtoByMemId != null) {
-			
-			if (selectedMemberDtoByMemId.getMemPw().equals(memPw)) {
-				System.out.println("[MemberService] MEMBER SIGNIN SUCCESS");
-				return selectedMemberDtoByMemId.getMemId();
-				
-			} else {
-				System.out.println("[MemberService] MEMBER SIGNIN FAIL");
-				return null;
-			}
-			
-		} else {
-			System.out.println("[MemberService] MEMBER SIGNIN FAIL");
-			return null;
-		}
-	}
-}
-
-========================================================================
-========================================================================
-MemberDao
-
+------------------------------------------------------------------------
 package mempjtcom.office.ex;
 
 import java.sql.Connection;
@@ -207,7 +262,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MemberDao implements IMemberDao {
-
+	
 	@Override
 	public int insertNewMember(MemberDto memberDto) {
 		System.out.println("[MemberDao] insertNewMember()");
@@ -217,28 +272,27 @@ public class MemberDao implements IMemberDao {
 		int result = -1;
 		
 		try {
-			// 1.드라이버 로딩 at 메모리
+			// 1. 드라이버 로딩 at 메모리
 			Class.forName(DRIVER);
 			
-			// 2.다리 건설
+			// 2. 다리 건설 == Connection
 			conn = DriverManager.getConnection(URL, USER, PASSWORD);
 			
-			// 3.작업명세서(SQL)
-			String sql = "insert into tbl_member(memId, memPw, memMail, memPhone) "
-					+ "VALUES(?, ?, ?, ?)";
+			// 3. 작업 명세서 == SQL
+			String sql =  "INSERT INTO tbl_member(memId, memPw, memMail, memPhone) "
+						+ "VALUES(?, ?, ?, ?)";
 			
-			// 4.일꾼 섭외 == PreparedStatement
+			// 4. 일꾼 섭외 == PreparedStatment
 			pstmt = conn.prepareStatement(sql);
 			
-			// 5.일꾼에게 데이터 주입
+			// 5. 일꾼한테 데이터 주입 == set
 			pstmt.setString(1, memberDto.getMemId());
 			pstmt.setString(2, memberDto.getMemPw());
 			pstmt.setString(3, memberDto.getMemMail());
 			pstmt.setString(4, memberDto.getMemPhone());
 			
-			// 6.작업지시
+			// 6. 작업 지시!!
 			result = pstmt.executeUpdate();		// 생성된 행(row) 개수 반환
-			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -251,41 +305,43 @@ public class MemberDao implements IMemberDao {
 				
 			} catch (Exception e2) {
 				e2.printStackTrace();
+				
 			}
+			
 		}
 		
 		return result;
+		
 	}
 
-	
 	@Override
 	public MemberDto selectMemberByMemId(String id) {
 		System.out.println("[MemberDao] selectMemberByMemId()");
-
+		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		List<MemberDto> memberDtos = new ArrayList<MemberDto>();
 		
 		try {
-			// 1.드라이버 로딩 at 메모리
+			// 1. 드라이버 로딩 at 메모리
 			Class.forName(DRIVER);
 			
-			// 2.다리 건설
+			// 2. 다리 건설 == Connection
 			conn = DriverManager.getConnection(URL, USER, PASSWORD);
 			
-			// 3.작업명세서(SQL)
-			String sql = "SELECT * FROM TBL_MEMBER "
-						+ "WHERE memId =?";
+			// 3. 작업 명세서 == SQL
+			String sql =  "SELECT * FROM TBL_MEMBER "
+						+ "WHERE memId = ?";
 			
-			// 4.일꾼 섭외 == PreparedStatement
+			// 4. 일꾼 섭외 == PreparedStatment
 			pstmt = conn.prepareStatement(sql);
 			
-			// 5.일꾼에게 데이터 주입
+			// 5. 일꾼한테 데이터 주입 == set
 			pstmt.setString(1, id);
 			
-			// 6.작업지시
-			rs = pstmt.executeQuery();		// 생성된 행(row) 개수 반환
+			// 6. 작업 지시!!
+			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
 				
@@ -307,14 +363,15 @@ public class MemberDao implements IMemberDao {
 								memModDate);
 				
 				memberDtos.add(dto);
+				
 			}
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			
 		} finally {
 			
-			// 7.외부자원 해제
 			try {
 				if (rs != null) rs.close();
 				if (pstmt != null) pstmt.close();
@@ -324,36 +381,84 @@ public class MemberDao implements IMemberDao {
 				e2.printStackTrace();
 				
 			}
+			
 		}
 		
+//		if (memberDtos.size() > 0) {
+//			return memberDtos.get(0);
+//		} else {
+//			return null;
+//		}
+		
 		return memberDtos.size() > 0 ? memberDtos.get(0) : null;
+		
+	}
+
+	@Override
+	public int updateMemberByMemNo(MemberDto memberDto) {
+		System.out.println("[MemberDao] updateMemberByMemNo()");
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int result = -1;
+		
+		try {
+			// 1. 드라이버 로딩 at 메모리
+			Class.forName(DRIVER);
+			
+			// 2. 다리 건설 == Connection
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+			
+			// 3. 작업 명세서 == SQL
+			String sql =  "UPDATE "
+							+ "tbl_member "
+						+ "SET "
+							+ "memPw = ?, "
+							+ "memMail = ?, "
+							+ "memPhone = ? "
+						+ "WHERE "
+							+ "memNo = ?";
+			
+			// 4. 일꾼 섭외 == PreparedStatment
+			pstmt = conn.prepareStatement(sql);
+			
+			// 5. 일꾼한테 데이터 주입 == set
+			pstmt.setString(1, memberDto.getMemPw());
+			pstmt.setString(2, memberDto.getMemMail());
+			pstmt.setString(3, memberDto.getMemPhone());
+			pstmt.setInt(4, memberDto.getMemNo());
+			
+			// 6. 작업 지시!!
+			result = pstmt.executeUpdate();		// 생성된 행(row) 개수 반환
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			
+			try {
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+				
+			} catch (Exception e2) {
+				e2.printStackTrace();
+				
+			}
+			
+		}
+		
+		return result;
+		
 	}
 
 }
 
-========================================================================
-========================================================================
-IMemberDao
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ MemberDto ]
 
-package mempjtcom.office.ex;
-
-public interface IMemberDao {
-	
-	final public String DRIVER = "com.mysql.cj.jdbc.Driver";
-	final public String URL = "jdbc:mysql://localhost:3306/db_member";
-	final public String USER = "root";	
-	final public String PASSWORD = "1234";
-	
-	public int insertNewMember(MemberDto memberDto);
-
-	public MemberDto selectMemberByMemId(String memId);
-
-}
-
-========================================================================
-========================================================================
-MemberDto
-
+------------------------------------------------------------------------
 package mempjtcom.office.ex;
 
 public class MemberDto {
@@ -443,93 +548,145 @@ public class MemberDto {
 
 }
 
-========================================================================
-========================================================================
-MemberConfig
 
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ MemberService ]
+
+------------------------------------------------------------------------
 package mempjtcom.office.ex;
 
-public class MemberConfig {
-	
-	final static public String MEMBER_SIGNUP_FORM = "/member_signup_form.mem";
-	final static public String MEMBER_SIGNUP_CONFIRM = "/member_signup_confirm.mem";
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-	final static public String MEMBER_SIGNIN_FORM = "/member_signin_form.mem";
-	final static public String MEMBER_SIGNIN_CONFIRM = "/member_signin_confirm.mem";
+public class MemberService {
+
+	private IMemberDao memberDao;
 	
-	final static public String DEFAULT_VIEW_PATH = "views";
+	public MemberService(IMemberDao memberDao) {
+		this.memberDao = memberDao;
+	}
 	
-	final static public String DEFAULT_VIEW_SEFFIX = ".jsp";
-	
+	public int addNewMember(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("[MemberService] addNewMember()");
+		
+		String memId = request.getParameter("memId");
+		String memPw = request.getParameter("memPw");
+		String memMail = request.getParameter("memMail");
+		String memPhone = request.getParameter("memPhone");
+		
+		MemberDto memberDto = new MemberDto(memId, memPw, memMail, memPhone);
+		
+		memberDao = new MemberDao();
+		int result = memberDao.insertNewMember(memberDto);
+		
+		if (result > 0) {
+			System.out.println("[MemberService] NEW MEMBER SIGNUP SUCCESS!!");
+			
+		} else {
+			System.out.println("[MemberService] NEW MEMBER SIGNUP FAIL!!");
+			
+		}
+		
+		return result;
+		
+	}
+
+	public String searchMember(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("[MemberService] searchMember()");
+		
+		String memId = request.getParameter("memId");
+		String memPw = request.getParameter("memPw");
+		
+		// MemberDto memberDto = new MemberDto(memId, memPw);
+		
+		MemberDto selectedMemberDtoByMemId = memberDao.selectMemberByMemId(memId);
+		
+		if (selectedMemberDtoByMemId != null) {
+			
+			if (selectedMemberDtoByMemId.getMemPw().equals(memPw)) {
+				System.out.println("[MemberService] MEMBER SIGNIN SUCCESS!!");
+				return selectedMemberDtoByMemId.getMemId();
+				
+			} else {
+				System.out.println("[MemberService] MEMBER SIGNIN FAIL!!");
+				return null;
+				
+			}
+			
+		} else {
+			System.out.println("[MemberService] MEMBER SIGNIN FAIL!!");
+			return null;
+			
+		}
+		
+	}
+
+	public MemberDto getCurrentSigninedMember(String signinedMemId) {
+		System.out.println("[MemberService] getCurrentSigninedMember()");
+		
+		MemberDto signinedMemberDto = memberDao.selectMemberByMemId(signinedMemId);
+		
+		return signinedMemberDto;
+		
+	}
+
+	public int modifyMemberByMemNo(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("[MemberService] modifyMemberByMemNo()");
+		
+		int memNo = Integer.parseInt(request.getParameter("memNo"));
+//		String memId = request.getParameter("memId");
+		
+		HttpSession session = request.getSession();
+		Object object = session.getAttribute(MemberConfig.SINGINED_MEMBERID);
+		String memId = String.valueOf(object);
+		
+		String memPw = request.getParameter("memPw");
+		String memMail = request.getParameter("memMail");
+		String memPhone = request.getParameter("memPhone");
+		
+		MemberDto memberDto = new MemberDto(memNo, memId, memPw, memMail, memPhone, null, null);
+		int result = memberDao.updateMemberByMemNo(memberDto);
+		
+		if (result > 0) {
+			System.out.println("[MemberService] MEMBER UPDATE SUCCESS!!");
+			
+		} else {
+			System.out.println("[MemberService] MEMBER UPDATE FAIL!!");
+			
+		}
+		
+		return result;
+		
+	}
+
 }
 
-========================================================================
-========================================================================
-web.xml
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ nav.jsp ]
 
-<?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" id="WebApp_ID" version="6.0">
-  <display-name>mempjt</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.xhtml</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.xhtml</welcome-file>
-  </welcome-file-list>
-</web-app>
-========================================================================
-========================================================================
-index.jsp
-
+------------------------------------------------------------------------
 <%@page import="mempjtcom.office.ex.MemberConfig"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<jsp:include page="./views/include/title.jsp" />
-</head>
-<body>
 
-	<h2>MY HOME</h2>
+<div>
+	<a href="<%=request.getContextPath() %>/">HOME</a>
+	&nbsp;&nbsp; | &nbsp;&nbsp;
 	
-	<jsp:include page="./views/include/nav.jsp" />
-
-</body>
-</html>
-========================================================================
-========================================================================
-title.jsp
-
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<title>OUT MEMBER SERVICE</title>
-
-========================================================================
-========================================================================
-nav.jsp
-
-<%@page import="mempjtcom.office.ex.MemberConfig"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-
-	<div>
-		<a href="<%= request.getContextPath() %>/">HOME</a>
-		&nbsp;&nbsp; | &nbsp;&nbsp;
-		
-		<%
+	<%
 		String signinedMemId = null;
-		if (session.getAttribute("signinedMemId") != null) {
+		if (session.getAttribute("signinedMemId") !=
+				null) {
 			signinedMemId = String.valueOf(session.getAttribute("signinedMemId"));
 	%>
 			<a href="<%=request.getContextPath().concat(MemberConfig.MEMBER_SIGNUP_FORM) %>">SIGN-OUT</a>
 			&nbsp;&nbsp; | &nbsp;&nbsp;
-			<a href="<%=request.getContextPath().concat(MemberConfig.MEMBER_SIGNUP_FORM) %>">MODIFY</a>
+			<a href="<%=request.getContextPath().concat(MemberConfig.MEMBER_MODIFY_FORM) %>">MODIFY</a>
 			&nbsp;&nbsp; | &nbsp;&nbsp;
 			<a href="<%=request.getContextPath().concat(MemberConfig.MEMBER_SIGNUP_FORM) %>">DELETE</a>
 			&nbsp;&nbsp; | &nbsp;&nbsp;
@@ -544,11 +701,14 @@ nav.jsp
 	%>
 	
 	
-	</div>
-========================================================================
-========================================================================
-member_signup_form.jsp
+</div>
 
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ member_modify_form.jsp ]
+
+------------------------------------------------------------------------
 <%@page import="mempjtcom.office.ex.MemberConfig"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -560,22 +720,25 @@ member_signup_form.jsp
 </head>
 <body>
 
-	<h2>MEMBER SIGNUP FORM</h2>
+	<h2>MEMBER MODIFY FORM</h2>
 	
 	<jsp:include page="./include/nav.jsp" />
 	
 	<div>
 		
 		<form
-			action= <%= request.getContextPath().concat(MemberConfig.MEMBER_SIGNUP_CONFIRM) %>
-			name="member_signup_form" 
+			action= <%= request.getContextPath().concat(MemberConfig.MEMBER_MODIFY_CONFIRM) %>
+			name="member_modify_form" 
 			method="post">
 			
-			<input type="text" name="memId" placeholder="Input new member ID"> <br>
-			<input type="password" name="memPw" placeholder="Input new member PW"> <br>
-			<input type="email" name="memMail" placeholder="Input new member MAIL"> <br>
-			<input type="text" name="memPhone" placeholder="Input new member PHONE"> <br>
-			<input type="submit" value="SIGN-UP">
+			<input type="hidden" name="memNo" value="${currentSigninedMember.memNo}">
+			<input type="hidden" name="memId" value="${currentSigninedMember.memId}">
+			
+			<input type="text" value="${currentSigninedMember.memId}" readonly disabled> <br>
+			<input type="password" name="memPw" value="${currentSigninedMember.memPw}" placeholder="Input member PW"> <br>
+			<input type="email" name="memMail" value="${currentSigninedMember.memMail}" placeholder="Input member MAIL"> <br>
+			<input type="text" name="memPhone" value="${currentSigninedMember.memPhone}" placeholder="Input member PHONE"> <br>
+			<input type="submit" value="MODIFY">
 			<input type="reset" value="RESET">
 			
 		</form>
@@ -584,10 +747,13 @@ member_signup_form.jsp
 
 </body>
 </html>
-========================================================================
-========================================================================
-member_signup_ok.jsp
 
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ member_modify_ok.jsp ]
+
+------------------------------------------------------------------------
 <%@page import="mempjtcom.office.ex.MemberConfig"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -599,22 +765,25 @@ member_signup_ok.jsp
 </head>
 <body>
 
-	<h2>MEMBER SIGNUP FORM</h2>
+	<h2>MEMBER MODIFY FORM</h2>
 	
 	<jsp:include page="./include/nav.jsp" />
 	
 	<div>
 		
-		<h1>NEW MEMBER SIGNUP OK</h1>
+		<h1>MEMBER MODIFY OK</h1>
 		
 	</div>
 
 </body>
 </html>
-========================================================================
-========================================================================
-member_signup_ng.jsp
 
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ member_modify_ng.jsp ]
+
+------------------------------------------------------------------------
 <%@page import="mempjtcom.office.ex.MemberConfig"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -626,104 +795,13 @@ member_signup_ng.jsp
 </head>
 <body>
 
-	<h2>MEMBER SIGNUP FORM</h2>
+	<h2>MEMBER MODIFY FORM</h2>
 	
 	<jsp:include page="./include/nav.jsp" />
 	
 	<div>
 		
-		<h1>NEW MEMBER SIGNUP NG</h1>
-		
-	</div>
-
-</body>
-</html>
-========================================================================
-========================================================================
-member_signin_form.jsp
-
-<%@page import="mempjtcom.office.ex.MemberConfig"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<jsp:include page="./include/title.jsp" />
-</head>
-<body>
-
-	<h2>MEMBER SIGNIN FORM</h2>
-	
-	<jsp:include page="./include/nav.jsp" />
-	
-	<div>
-		
-		<form
-			action= <%= request.getContextPath().concat(MemberConfig.MEMBER_SIGNIN_CONFIRM) %>
-			name="member_signin_form" 
-			method="post">
-			
-			<input type="text" name="memId" placeholder="Input member ID"> <br>
-			<input type="password" name="memPw" placeholder="Input member PW"> <br>
-			<input type="submit" value="SIGN-IN">
-			<input type="reset" value="RESET">
-			
-		</form>
-		
-	</div>
-
-</body>
-</html>
-========================================================================
-========================================================================
-member_signin_ok.jsp
-
-<%@page import="mempjtcom.office.ex.MemberConfig"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<jsp:include page="./include/title.jsp" />
-</head>
-<body>
-
-	<h2>MEMBER SIGNIN FORM</h2>
-	
-	<jsp:include page="./include/nav.jsp" />
-	
-	<div>
-		
-		<h1>NEW MEMBER SIGNIN OK</h1>
-		
-	</div>
-
-</body>
-</html>
-========================================================================
-========================================================================
-member_signin_ng.jsp
-
-<%@page import="mempjtcom.office.ex.MemberConfig"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<jsp:include page="./include/title.jsp" />
-</head>
-<body>
-
-	<h2>MEMBER SIGNIN FORM</h2>
-	
-	<jsp:include page="./include/nav.jsp" />
-	
-	<div>
-		
-		<h1>NEW MEMBER SIGNIN NG</h1>
+		<h1>MEMBER MODIFY NG</h1>
 		
 	</div>
 

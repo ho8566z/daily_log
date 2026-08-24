@@ -1,0 +1,754 @@
+-- -------------------------- 백신 접종 현황 DB --------------------------
+------------------------------------------------------------------------
+[ db_flu / tbl_fv_type ]
+
+------------------------------------------------------------------------
+
+-- DB 생성
+CREATE DATABASE db_flu;
+USE db_flu;
+SHOW DATABASES;
+
+-- 백신 타입 테이블 생성
+CREATE TABLE tbl_fv_type(
+	fv_type_no			 	INT   			NOT NULL		AUTO_INCREMENT		COMMENT '백신 번호',
+	fv_type					VARCHAR(20)		NOT NULL  							COMMENT '백신 타입',
+	fv_type_manuf_country	VARCHAR(20)		NOT NULL  							COMMENT '백신 제조국',
+	fv_type_manuf_date		VARCHAR(20)		NOT NULL							COMMENT '백신 제조일',
+	PRIMARY KEY(FV_TYPE_NO)
+);
+
+DESC tbl_fv_type;
+SELECT * FROM tbl_fv_type;
+
+
+INSERT INTO tbl_fv_type(fv_type, fv_type_manuf_country, fv_type_manuf_date) 
+VALUES('A', '한국', '2023-01-10');
+
+INSERT INTO tbl_fv_type(fv_type, fv_type_manuf_country, fv_type_manuf_date) 
+VALUES('B', '미국', '2023-01-15');
+
+INSERT INTO tbl_fv_type(fv_type, fv_type_manuf_country, fv_type_manuf_date) 
+VALUES('C', '영국', '2023-02-07');
+
+INSERT INTO tbl_fv_type(fv_type, fv_type_manuf_country, fv_type_manuf_date) 
+VALUES('D', '스웨덴', '2023-01-17');
+
+INSERT INTO tbl_fv_type(fv_type, fv_type_manuf_country, fv_type_manuf_date) 
+VALUES('E', '덴마크', '2022-12-22');
+
+
+------------------------------------------------------------------------
+[ db_flu / tbl_fv_location ]
+
+------------------------------------------------------------------------
+-- 백신 접종처 테이블 생성
+create table tbl_fv_location(
+	fv_location_no			INT			NOT NULL	COMMENT '접종처 번호',
+	fv_location_name		VARCHAR(20)	NOT NULL	COMMENT '접종처 이름',
+	fv_location_addr		VARCHAR(30)	NOT NULL	COMMENT '접종처 주소',
+	fv_location_phone		VARCHAR(20)	NOT NULL	COMMENT '접종처 연락처',
+	fv_location_manager		VARCHAR(20)	NOT NULL	COMMENT '접종처 담당자',
+	PRIMARY KEY(fv_location_no)
+);
+
+ALTER TABLE tbl_fv_location 
+MODIFY COLUMN fv_location_no VARCHAR(20)	NOT NULL	COMMENT '접종처 번호';
+
+
+DESC tbl_fv_location;
+SELECT * FROM tbl_fv_location;
+
+
+INSERT INTO tbl_fv_location(fv_location_no, fv_location_name, fv_location_addr, fv_location_phone, fv_location_manager) 
+VALUES(1001, 'A접종처', 'AAA시 aaa구 471-013', '010-8410-8426', 'A담당')
+
+INSERT INTO tbl_fv_location(fv_location_no, fv_location_name, fv_location_addr, fv_location_phone, fv_location_manager) 
+VALUES(1002, 'B접종처', 'BBB시 bbb구 789-123', '010-9417-8523', 'B담당')
+
+INSERT INTO tbl_fv_location(fv_location_no, fv_location_name, fv_location_addr, fv_location_phone, fv_location_manager) 
+VALUES(1003, 'C접종처', 'CCC시 ccc구 456-789', '010-6901-4785', 'C담당')
+
+INSERT INTO tbl_fv_location(fv_location_no, fv_location_name, fv_location_addr, fv_location_phone, fv_location_manager) 
+VALUES(1004, 'D접종처', 'DDD시 ddd구 120-345', '010-2369-0123', 'D담당')
+
+INSERT INTO tbl_fv_location(fv_location_no, fv_location_name, fv_location_addr, fv_location_phone, fv_location_manager) 
+VALUES(1005, 'E접종처', 'EEE시 eee구 678-901', '010-4782-9514', 'E담당')
+
+
+------------------------------------------------------------------------
+[ db_flu / tbl_social_number ]
+
+------------------------------------------------------------------------
+-- 주민번호 테이블
+CREATE TABLE tbl_social_number(
+	ss_number		VARCHAR(20)		NOT NULL	COMMENT '주민등록 번호',
+	ss_name			VARCHAR(20)		NOT NULL	COMMENT '이름',
+	ss_addr			VARCHAR(30)		NOT NULL	COMMENT '주소',
+	ss_phone		VARCHAR(20)		NOT NULL	COMMENT '연락처',
+	ss_reg_date		TIMESTAMP					COMMENT '등록일',
+	PRIMARY KEY(ss_number)
+);
+
+
+DESC tbl_social_number;
+SELECT * FROM tbl_social_number;
+
+INSERT INTO tbl_social_number(ss_number, ss_name, ss_addr, ss_phone, ss_reg_date) 
+VALUES('720520-1018547', '홍딜동', 'AAA시 BBB구 CCC동 123-10', '010-458-8541', '2022-10-15')
+
+DELETE FROM tbl_social_number WHERE ss_number = '720520-1018547';
+
+INSERT INTO tbl_social_number 
+VALUES('720210-2084561', '박찬호', 'DDD시 EEE구 FFF동 456-20', '010-412-9514', '2022-10-16')
+
+INSERT INTO tbl_social_number 
+VALUES('941230-1075214', '박세리', 'GGG시 HHH구 III동 789-30', '010-958-7536', '2022-10-17')
+
+INSERT INTO tbl_social_number 
+VALUES('950215-2050128', '이병규', 'JJJ시 KKK구 LLL동 987-40', '010-528-1478', '2022-10-18')
+
+INSERT INTO tbl_social_number 
+VALUES('??????-???????', '손흥민', 'MMM시 NNN구 OOO동 654-50', '010-296-5236', '2022-10-19')
+
+
+------------------------------------------------------------------------
+[ db_flu / tbl_flu_vaccin_person ]
+
+------------------------------------------------------------------------
+-- 접종 현황 테이블
+CREATE TABLE tbl_flu_vaccin_person(
+	fvp_no				INT				NOT NULL		AUTO_INCREMENT		COMMENT '접종자 번호',
+	fvp_name			VARCHAR(20)		NOT NULL							COMMENT '접종자 이름',
+	ss_number			VARCHAR(20)		NOT NULL							COMMENT '주민등록 번호',
+	fvp_mail			VARCHAR(30)		NOT NULL							COMMENT '접종자 메일',
+	fvp_phone			VARCHAR(30)		NOT NULL							COMMENT '접종자 연락처',
+	fvp_location_no		VARCHAR(20)		NOT NULL							COMMENT '접종처 번호',
+	fv_type				VARCHAR(20)		NOT NULL							COMMENT '백신 타입',
+	fvp_reg_date		TIMESTAMP DEFAULT CURRENT_TIMESTAMP()				
+	PRIMARY KEY(fvp_no)
+);
+
+ALTER TABLE tbl_flu_vaccin_person ADD COLUMN fvp_mod_date TIMESTAMP 
+DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP() COMMENT ' 수정일'
+
+
+DESC tbl_flu_vaccin_person;
+SELECT * FROM tbl_flu_vaccin_person;
+
+
+-- tbl_flu_vaccin_person + tbl_fv_location
+
+SELECT * FROM tbl_flu_vaccin_person fp 
+JOIN tbl_fv_location fl 
+ON fp.fvp_location_no = fl.fv_location_no 
+JOIN tbl_fv_type ft 
+ON fp.fv_type = ft.fv_type 
+WHERE fvp_name = '홍길동';
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ VaccineController ]
+
+------------------------------------------------------------------------
+package com.office.ex;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("*.vc")
+public class VaccineController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+	private String CLASS_NAME = "[VaccineController] ";
+	
+    public VaccineController() {
+        super();
+    }
+
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String requestURI = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		String command = requestURI.substring(contextPath.length());
+		String nextPage = null;
+		VaccineService vaccineService = null;
+		
+		switch (command) {
+		case VaccineConfig.VACCINE_RESISTER_FORM:
+			System.out.println(CLASS_NAME.concat(VaccineConfig.VACCINE_RESISTER_FORM));
+			
+			nextPage = generateView("vaccine_register_form");
+			
+			break;
+			
+		case VaccineConfig.VACCINE_RESISTER_CONFIRM:
+			System.out.println(CLASS_NAME.concat(VaccineConfig.VACCINE_RESISTER_CONFIRM));
+			
+			vaccineService = new VaccineService();
+			int resultForRegiste = vaccineService.registeVaccineInjection(request, response);
+			
+			if (resultForRegiste > 0) {
+				System.out.println(CLASS_NAME.concat("VACCINE INJECTION SUCCESS!!"));
+				nextPage = generateView("vaccine_register_ok");
+				
+			} else {
+				System.out.println(CLASS_NAME.concat("VACCINE INJECTION FAIL!!"));
+				nextPage = generateView("vaccine_register_ng");
+			}
+			
+			break;
+			
+		case VaccineConfig.VACCINE_LIST:
+			System.out.println(CLASS_NAME.concat(VaccineConfig.VACCINE_LIST));
+			
+			break;
+		}
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher(nextPage);
+		dispatcher.forward(request, response);
+		
+	}
+
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		doGet(request, response);
+	}
+	
+	private String generateView(String viewName) {
+
+		return VaccineConfig.VIEW_PREFIX
+				.concat(viewName)
+				.concat(VaccineConfig.VIEW_SUFFIX);
+		
+	}
+	
+	
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ VaccineService ]
+
+------------------------------------------------------------------------
+package com.office.ex;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+public class VaccineService {
+
+	final private String CLASS_NAME = "[VaccineService] ";
+	
+	private VaccineDao vaccineDao = new VaccineDao();
+	
+	public int registeVaccineInjection(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println(CLASS_NAME.concat("registeVaccineInjection()"));
+		
+		String fvp_name = request.getParameter("fvp_name");
+		String ss_number = request.getParameter("ss_number");
+		String fvp_mail = request.getParameter("fvp_mail");
+		String fvp_phone = request.getParameter("fvp_phone");
+		String fvp_location_no = request.getParameter("fvp_location_no");
+		String fv_type = request.getParameter("fv_type");
+		
+		VaccineDto vaccineDto = 
+				new VaccineDto(fvp_name, ss_number, fvp_mail, fvp_phone, fvp_location_no, fv_type);
+		
+		int result = vaccineDao.insertVaccineInjection(vaccineDto);
+		
+		if (result > 0) {
+			System.out.println(CLASS_NAME.concat("VACCINE INJECTION SUCCESS!!"));
+			
+		} else {
+			System.out.println(CLASS_NAME.concat("VACCINE INJECTION FAIl!!"));
+			
+		}
+		
+		return result;
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ VaccineDao ]
+
+------------------------------------------------------------------------
+package com.office.ex;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
+public class VaccineDao implements IVaccineDao {
+
+	final private String CLASS_NAME = "[VaccineDao] ";
+	
+	@Override
+	public int insertVaccineInjection(VaccineDto vaccineDto) {
+		System.out.println(CLASS_NAME.concat("insertVaccineInjection()"));
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int result = -1;
+		
+		try {
+			Class.forName(DRIVER);
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+			String sql = "INSERT INTO tbl_flu_vaccin_person("
+							+ "fvp_name, "
+							+ "ss_number, "
+							+ "fvp_mail, "
+							+ "fvp_phone, "
+							+ "fvp_location_no, "
+							+ "fv_type) "
+						+ "VALUES(?, ?, ?, ?, ?, ?)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, vaccineDto.getFvp_name());
+			pstmt.setString(2, vaccineDto.getSs_number());
+			pstmt.setString(3, vaccineDto.getFvp_mail());
+			pstmt.setString(4, vaccineDto.getFvp_phone());
+			pstmt.setString(5, vaccineDto.getFvp_location_no());
+			pstmt.setString(6, vaccineDto.getFv_type());
+			result = pstmt.executeUpdate();
+					
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+				
+			} catch (Exception e2) {
+				e2.printStackTrace();
+				
+			}
+			
+		}
+		
+		return result;
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ VaccineDto ]
+
+------------------------------------------------------------------------
+package com.office.ex;
+
+public class VaccineDto {
+	
+	private int fvp_no;
+	private String fvp_name;
+	private String ss_number;
+	private String fvp_mail;
+	private String fvp_phone;
+	private String fvp_location_no;
+	private String fv_type;
+	private String fvp_reg_date;
+	private String fvp_mod_date;
+	
+	
+	public VaccineDto() {
+		
+	}
+	
+	
+	public VaccineDto(String fvp_name, String ss_number, String fvp_mail, String fvp_phone, String fvp_location_no,
+			String fv_type) {
+		this.fvp_name = fvp_name;
+		this.ss_number = ss_number;
+		this.fvp_mail = fvp_mail;
+		this.fvp_phone = fvp_phone;
+		this.fvp_location_no = fvp_location_no;
+		this.fv_type = fv_type;
+	}
+
+
+	public VaccineDto(int fvp_no, String fvp_name, String ss_number, String fvp_mail, String fvp_phone,
+			String fvp_location_no, String fv_type, String fvp_reg_date, String fvp_mod_date) {
+		this.fvp_no = fvp_no;
+		this.fvp_name = fvp_name;
+		this.ss_number = ss_number;
+		this.fvp_mail = fvp_mail;
+		this.fvp_phone = fvp_phone;
+		this.fvp_location_no = fvp_location_no;
+		this.fv_type = fv_type;
+		this.fvp_reg_date = fvp_reg_date;
+		this.fvp_mod_date = fvp_mod_date;
+	}
+	
+	
+	public int getFvp_no() {
+		return fvp_no;
+	}
+	public void setFvp_no(int fvp_no) {
+		this.fvp_no = fvp_no;
+	}
+	public String getFvp_name() {
+		return fvp_name;
+	}
+	public void setFvp_name(String fvp_name) {
+		this.fvp_name = fvp_name;
+	}
+	public String getSs_number() {
+		return ss_number;
+	}
+	public void setSs_number(String ss_number) {
+		this.ss_number = ss_number;
+	}
+	public String getFvp_mail() {
+		return fvp_mail;
+	}
+	public void setFvp_mail(String fvp_mail) {
+		this.fvp_mail = fvp_mail;
+	}
+	public String getFvp_phone() {
+		return fvp_phone;
+	}
+	public void setFvp_phone(String fvp_phone) {
+		this.fvp_phone = fvp_phone;
+	}
+	public String getFvp_location_no() {
+		return fvp_location_no;
+	}
+	public void setFvp_location_no(String fvp_location_no) {
+		this.fvp_location_no = fvp_location_no;
+	}
+	public String getFv_type() {
+		return fv_type;
+	}
+	public void setFv_type(String fv_type) {
+		this.fv_type = fv_type;
+	}
+	public String getFvp_reg_date() {
+		return fvp_reg_date;
+	}
+	public void setFvp_reg_date(String fvp_reg_date) {
+		this.fvp_reg_date = fvp_reg_date;
+	}
+	public String getFvp_mod_date() {
+		return fvp_mod_date;
+	}
+	public void setFvp_mod_date(String fvp_mod_date) {
+		this.fvp_mod_date = fvp_mod_date;
+	}
+	
+	
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ VaccineConfig ]
+
+------------------------------------------------------------------------
+package com.office.ex;
+
+public class VaccineConfig {
+
+	final static public String HOME = "/";
+	
+	final static public String VACCINE_RESISTER_FORM = "/vaccine_resister_form.vc";
+	final static public String VACCINE_RESISTER_CONFIRM = "/vaccine_resister_confirm.vc";
+	
+	final static public String VACCINE_LIST = "/vaccine_list.vc";
+	
+	final static public String VIEW_PREFIX = "views/";
+	final static public String VIEW_SUFFIX = ".jsp";
+	
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ IVaccineDao ]
+
+------------------------------------------------------------------------
+package com.office.ex;
+
+public interface IVaccineDao extends IVaccineConfig {
+	
+	public int insertVaccineInjection(VaccineDto vaccineDto);
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ IVaccineConfig ]
+
+------------------------------------------------------------------------
+
+package com.office.ex;
+
+public interface IVaccineConfig {
+
+	final public String DRIVER = "com.mysql.cj.jdbc.Driver";
+	final public String URL = "jdbc:mysql://127.0.0.1:3306/db_flu";
+	final public String USER = "root";
+	final public String PASSWORD = "1234";
+	
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ index.jsp ]
+
+------------------------------------------------------------------------
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>VACCINE MANAGEMENT SYSTEM</title>
+</head>
+<body>
+
+	<h1>백신 접종 현황 홈</h1>
+	
+	<jsp:include page="./views/include/nav.jsp" />
+
+</body>
+</html>
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ nav.jsp ]
+
+------------------------------------------------------------------------
+<%@page import="com.office.ex.VaccineConfig"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<div>
+	<a href="<%= request.getContextPath().concat(VaccineConfig.HOME) %>">HOME</a>
+	&nbsp;&nbsp; | &nbsp;&nbsp;
+	<a href="<%= request.getContextPath().concat(VaccineConfig.VACCINE_RESISTER_FORM) %>">VACCINE REGISTER</a>
+	&nbsp;&nbsp; | &nbsp;&nbsp;
+	<a href="<%= request.getContextPath().concat(VaccineConfig.VACCINE_LIST) %>">VACCINE LIST</a>
+	&nbsp;&nbsp; | &nbsp;&nbsp;
+</div>
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ vaccine_register_form.jsp ]
+
+------------------------------------------------------------------------
+<%@page import="com.office.ex.VaccineConfig"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>VACCINE MANAGEMENT SYSTEM</title>
+
+<style type="text/css">
+
+	table {
+		width: 800px;
+		border-collapse: collapse;
+	}
+	
+	td {
+		padding: 10px;
+		border: 1px solid #dadada;
+	}
+	
+	td:first-child {
+		width: 200px;
+		text-align: right;
+	}
+	
+	tr:last-child td {
+		text-align: center;
+	}
+
+</style>
+
+<script>
+
+function vaccineForm() {
+	console.log('vaccineForm() CALLED!!');
+	
+	let form = document.vaccine_register_form;
+	if (form.fvp_name.value === '') {
+		alert('Please Enter NAME!!');
+		form.fvp_name.focus();
+		
+	} else if (form.ss_number.value === '') {
+		alert('Please Enter SOCIAL NUMBER!!');
+		form.ss_number.focus();
+		
+	} else if (form.fvp_mail.value === '') {
+		alert('Please Enter MAIL!!');
+		form.fvp_mail.focus();
+		
+	} else if (form.fvp_phone.value === '') {
+		alert('Please Enter PHONE!!');
+		form.fvp_phone.focus();
+		
+	} else if (form.fvp_location_no.value === '') {
+		alert('Please Select LOCATION!!');
+		form.fvp_location_no.focus();
+		
+	} else if (form.fv_type.value === '') {
+		alert('Please Select TYPE!!');
+		form.fv_type.focus();
+		
+	} else {
+		form.submit();
+		
+	}
+	
+}
+
+</script>
+
+</head>
+<body>
+
+	<h1>백신 접종 현황 - 등록화면</h1>
+	
+	<jsp:include page="./include/nav.jsp" />
+
+	<form
+		action="<%= request.getContextPath().concat(VaccineConfig.VACCINE_RESISTER_CONFIRM) %>"
+		name="vaccine_register_form"
+		method="post">
+		  
+		 <table>
+		 	<tr>
+		 		<td>접종자 이름</td>
+		 		<td><input type="text" name="fvp_name" placeholder="ENTER NAME!!"></td>
+		 	</tr>
+		 	<tr>
+		 		<td>주민등록 번호</td>
+		 		<td><input type="text" name="ss_number" placeholder="ENTER SOCIAL NUMBER!!"></td>
+		 	</tr>
+		 	<tr>
+		 		<td>접종자 메일</td>
+		 		<td><input type="email" name="fvp_mail" placeholder="ENTER MAIL!!"></td>
+		 	</tr>
+		 	<tr>
+		 		<td>접종자 연락처</td>
+		 		<td><input type="text" name="fvp_phone" placeholder="ENTER PHONE!!"></td>
+		 	</tr>
+		 	<tr>
+		 		<td>접종처 번호</td>
+		 		<td>
+		 			<select name="fvp_location_no">
+		 				<option value="">-- 접종처 선택 --</option>
+		 				<option value="1001">A접종처</option>
+		 				<option value="1002">B접종처</option>
+		 				<option value="1003">C접종처</option>
+		 				<option value="1004">D접종처</option>
+		 				<option value="1005">E접종처</option>
+		 			</select>
+		 		</td>
+		 	</tr>
+		 	<tr>
+		 		<td>백신 타입</td>
+		 		<td>
+		 			<select name="fv_type">
+		 				<option value="">-- 백신타입 선택 --</option>
+		 				<option value="A">A타입</option>
+		 				<option value="B">B타입</option>
+		 				<option value="C">C타입</option>
+		 				<option value="D">D타입</option>
+		 				<option value="E">E타입</option>
+		 			</select>
+		 		</td>
+		 	</tr>
+		 	<tr>
+		 		<td colspan="2">
+		 			<input type="button" value="REGISTE" onclick="vaccineForm();">
+		 			<input type="reset" value="RESET">
+		 		</td>
+		 	</tr>
+		 </table>
+	
+	</form>
+
+</body>
+</html>
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ vaccine_register_ok.jsp ]
+
+------------------------------------------------------------------------
+<%@page import="com.office.ex.VaccineConfig"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>VACCINE MANAGEMENT SYSTEM</title>
+
+</head>
+<body>
+
+	<h1>백신 접종 현황 - 등록 성공</h1>
+	
+	<jsp:include page="./include/nav.jsp" />
+
+</body>
+</html>
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ vaccine_register_ng.jsp ]
+
+------------------------------------------------------------------------
+<%@page import="com.office.ex.VaccineConfig"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>VACCINE MANAGEMENT SYSTEM</title>
+
+</head>
+<body>
+
+	<h1>백신 접종 현황 - 등록 실패</h1>
+	
+	<jsp:include page="./include/nav.jsp" />
+
+</body>
+</html>
+
