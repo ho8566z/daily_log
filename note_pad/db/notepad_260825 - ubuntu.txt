@@ -1,0 +1,28 @@
+20260825
+
+
+##TABLE JOIN
+
+-- tbl_flu_vaccin_person + tbl_fv_location
+
+SELECT * FROM tbl_flu_vaccin_person fp 
+JOIN tbl_fv_location  fl 
+ON fp.fvp_location_no = fl.fv_location_no 
+join tbl_fv_type ft 
+on fp.fv_type = ft.fv_type;
+
+
+SELECT * FROM tbl_flu_vaccin_person fp 
+JOIN tbl_fv_location fl 
+ON fp.fvp_location_no = fl.fv_location_no 
+JOIN tbl_fv_type ft 
+ON fp.fv_type = ft.fv_type 
+WHERE fvp_name = '홍길동';
+
+------------------------------------------------------------------------
+각각의 테이블 별로 DTO를 만들어서 메인 DTO에서 객체 생성해서 관리하는 방법
+
+------------------------------------------------------------------------
+오브젝트 : 최상위 클래스
+
+------------------------------------------------------------------------
