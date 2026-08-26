@@ -1,0 +1,329 @@
+/* ============================= */
+/* 기본 설정 */
+/* ============================= */
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #242424;
+}
+
+a {
+    text-decoration: none;
+    color: #242424;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+
+/* ============================= */
+/* Header */
+/* ============================= */
+
+header {
+    width: 100%;
+    background-color: #f5f5f5;
+}
+
+header div.header_wrap {
+    width: 900px;
+    height: 50px;
+    line-height: 50px;
+    margin: 0 auto;
+
+    font-weight: bold;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+
+/* ============================= */
+/* Navigation */
+/* ============================= */
+
+nav {
+    width: 100%;
+    background-color: #dbdbdb;
+}
+
+nav div.nav_wrap {
+    width: 1500px;
+    height: 70px;
+    line-height: 70px;
+
+    margin: 0 auto;
+    text-align: center;
+}
+
+nav div.nav_wrap a {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1em;
+
+    margin: 0 60px;
+}
+
+
+/* ============================= */
+/* Member Modify */
+/* ============================= */
+
+body > div {
+    width: 900px;
+
+    margin: 100px auto;
+
+    text-align: center;
+}
+
+
+/* 제목 */
+
+h1 {
+    width: 900px;
+
+    margin: 50px auto 30px;
+
+    text-align: center;
+}
+
+
+/* ============================= */
+/* Modify Form */
+/* ============================= */
+
+form[name="member_modify_form"] {
+    width: 400px;
+
+    margin: 0 auto;
+}
+
+
+/* 입력창 */
+
+form[name="member_modify_form"] input[type="text"],
+form[name="member_modify_form"] input[type="password"],
+form[name="member_modify_form"] input[type="email"] {
+    width: 100%;
+    height: 40px;
+
+    padding: 0 10px;
+    margin-bottom: 10px;
+
+    border: 1px solid #ccc;
+    border-radius: 4px;
+
+    font-size: 14px;
+}
+
+
+/* 회원 ID 표시 */
+
+form[name="member_modify_form"] input[disabled] {
+    background-color: #f5f5f5;
+    color: #777;
+}
+
+
+/* ============================= */
+/* Modify / Reset Button */
+/* ============================= */
+
+form[name="member_modify_form"] input[type="submit"],
+form[name="member_modify_form"] input[type="reset"] {
+    width: 48%;
+    height: 40px;
+
+    margin-top: 5px;
+
+    border: none;
+    border-radius: 4px;
+
+    background-color: #555;
+    color: #fff;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+/* 버튼 Hover */
+
+form[name="member_modify_form"] input[type="submit"]:hover,
+form[name="member_modify_form"] input[type="reset"]:hover {
+    background-color: #333;
+}
+
+
+/* ============================= */
+/* Delete Button */
+/* ============================= */
+
+.delete_btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+
+    background-color: #d9534f;
+    color: #fff;
+
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.delete_btn:hover {
+    background-color: #c9302c;
+    color: #fff;
+    text-decoration: none;
+}
+
+
+/* ============================= */
+/* Footer */
+/* ============================= */
+
+footer {
+    width: 100%;
+    background-color: #f5f5f5;
+}
+
+footer div.footer_wrap {
+    width: 900px;
+    height: 70px;
+    line-height: 70px;
+
+    margin: 0 auto;
+
+    text-align: center;
+}
+
+
+
+
+
+/*==============================================================*/
+/*==============================================================*/
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #242424;
+}
+
+/* 링크 */
+a {
+    text-decoration: none;
+    color: #242424;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+/* HEADER */
+header {
+    width: 100%;
+    background-color: #f5f5f5;
+}
+
+header .header_wrap {
+    width: 900px;
+    height: 70px;
+    line-height: 70px;
+    margin: 0 auto;
+
+    font-weight: bold;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+
+/* NAV */
+nav {
+    width: 100%;
+    background-color: #dbdbdb;
+}
+
+nav .nav_wrap {
+    width: 1500px;
+    height: 70px;
+    line-height: 70px;
+    margin: 0 auto;
+
+    text-align: center;
+}
+
+nav .nav_wrap a {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin: 0 60px;
+}
+
+
+/* SECTION */
+section {
+    width: 100%;
+}
+
+section .section_wrap {
+    width: 900px;
+    min-height: 900px;
+
+    margin: 0 auto;
+    padding-top: 300px;
+
+    text-align: center;
+}
+
+section .section_wrap h1 {
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+section .section_wrap p {
+    font-size: 1.1em;
+    color: #777;
+}
+
+
+/* FOOTER */
+footer {
+    width: 100%;
+    background-color: #f5f5f5;
+}
+
+footer .footer_wrap {
+    width: 900px;
+    height: 70px;
+    line-height: 70px;
+    margin: 0 auto;
+
+    text-align: center;
+    color: #777;
+}
+
+/*==============================================================*/
+/*==============================================================*/
+
+nav .nav_wrap a {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin: 0 20px;
+}

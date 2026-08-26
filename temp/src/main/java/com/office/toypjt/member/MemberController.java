@@ -1,11 +1,16 @@
 package com.office.toypjt.member;
 
+import java.io.IOException;
+
+import com.office.toypjt.ToyPjtConfig;
+
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import jakarta.servlet.http.HttpSession;
 
 
 @WebServlet("*.mem")
@@ -18,7 +23,6 @@ public class MemberController extends HttpServlet {
         super();
        
     }
-
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
@@ -37,6 +41,7 @@ public class MemberController extends HttpServlet {
 		String nextPage = null;
 		MemberService memberService = null;
 		
+//		request.getSession().setAttribute(MemberConfig.SINGINED_MEMBERID, "gildong");
 		
 		switch (command) {
 			
@@ -60,19 +65,57 @@ public class MemberController extends HttpServlet {
 				System.out.println(CLASS_NAME.concat(MemberConfig.MEMBER_MODIFY_FORM));
 				
 				// modify_form
+				memberService = new MemberService(new MemberDao());
+				
+				HttpSession session = request.getSession();
+				String signinedMemId = String.valueOf(session.getAttribute(MemberConfig.SINGINED_MEMBERID));
+				
+				MemberDto currentSigninedMember = memberService.getCurrentSigninedMember(signinedMemId);
+				request.setAttribute("currentSigninedMember", currentSigninedMember);
+				
+				nextPage = generateViewName("/member_modify_form");
+				
 				break;
 			
 			case MemberConfig.MEMBER_MODIFY_CONFIRM:
 				System.out.println(CLASS_NAME.concat(MemberConfig.MEMBER_MODIFY_CONFIRM));
 			
 				// modify_confirm
+				memberService = new MemberService(new MemberDao());
+				int resultForModify = memberService.modifyMemberByMemNo(request, response);
+				
+				if (resultForModify > 0) {
+					System.out.println(CLASS_NAME.concat("MEMBER MODIFY SUCCESS"));
+					nextPage = generateViewName("/member_modify_ok");
+				
+				} else {
+					System.out.println(CLASS_NAME.concat("MEMBER MODIFY FAIL"));
+					nextPage = generateViewName("/member_modify_ng");
+					
+				}
+				
 				break;
 			
 			case MemberConfig.MEMBER_DELETE:
 				System.out.println(CLASS_NAME.concat(MemberConfig.MEMBER_DELETE));
 				
 				// delete
-				break;
+				memberService = new MemberService(new MemberDao());
+				int resultForDelete = memberService.removeMemberByMemId(request, response);
+				
+				if (resultForDelete > 0) {
+					System.out.println(CLASS_NAME.concat("MEMBER DELETE SUCCESS"));
+					
+					request.getSession().invalidate();
+					
+				} else {
+					System.out.println(CLASS_NAME.concat("MEMBER DELETE FAIL"));
+					
+				}
+				
+				response.sendRedirect(request.getContextPath().concat(ToyPjtConfig.HOME));
+				
+				return;
 			
 		}
 		

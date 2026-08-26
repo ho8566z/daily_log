@@ -16,6 +16,7 @@ public class MemoController extends HttpServlet {
    
     public MemoController() {
         super();
+    }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		

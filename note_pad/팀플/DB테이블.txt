@@ -1,0 +1,59 @@
+-- DB_MEMO ---------------------------------------------------------------
+CREATE DATABASE DB_MEMO;
+
+USE DB_MEMO;
+
+SHOW TABLES;
+
+
+-- TBL_MEMBER ------------------------------------------------------------
+CREATE TABLE TBL_MEMBER(
+	memNo		INT				NOT NULL	AUTO_INCREMENT	COMMENT '회원번호',
+	memId		VARCHAR(50)		NOT NULL	UNIQUE			COMMENT '회원 아이디',
+	memPw		VARCHAR(100)	NOT NULL					COMMENT '회원 비밀번호',
+	memMail		VARCHAR(50)									COMMENT '회원 이메일',
+	memPhone	VARCHAR(50)									COMMENT '회원 연락처',
+	memRegDate	TIMESTAMP DEFAULT CURRENT_TIMESTAMP()		COMMENT	'회원 등록일',
+	memModDate	TIMESTAMP DEFAULT CURRENT_TIMESTAMP() 
+							ON UPDATE CURRENT_TIMESTAMP 	COMMENT '회원 수정일',
+	PRIMARY KEY(memNo)
+)
+
+DESC TBL_MEMBER;
+SELECT * FROM TBL_MEMBER;
+
+
+INSERT INTO TBL_MEMBER(memId, memPw, memMail, memPhone, memRegDate, memModDate) 
+VALUES('gildong', '1234', 'gildong@gmail.com', '010-1234-5678', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO TBL_MEMBER(memId, memPw, memMail, memPhone, memRegDate, memModDate) 
+VALUES('chanho', '5678', 'chanho@naver.com', '010-1111-2222', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO TBL_MEMBER(memId, memPw, memMail, memPhone, memRegDate, memModDate) 
+VALUES('saeri', '9012', 'saeri@naver.com', '010-3333-4444', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+
+-- TBL_MEMO --------------------------------------------------------------
+CREATE TABLE TBL_MEMO(
+	memoNo		INT				NOT NULL	AUTO_INCREMENT	COMMENT '메모번호',
+	memId		VARCHAR(50)		NOT NULL					COMMENT '회원 아이디',
+	memoTitle	VARCHAR(50)		NOT NULL					COMMENT '메모 제목',
+	memoComent	VARCHAR(100)	NOT NULL					COMMENT '메모 내용',
+	memoRegDate	TIMESTAMP DEFAULT CURRENT_TIMESTAMP()		COMMENT	'메모 등록일',	
+	memoModDate	TIMESTAMP DEFAULT CURRENT_TIMESTAMP() 
+							ON UPDATE CURRENT_TIMESTAMP 	COMMENT '메모 수정일',
+	PRIMARY KEY(memoNo)
+)
+
+DESC TBL_MEMO;
+SELECT * FROM TBL_MEMO;
+
+
+INSERT INTO TBL_MEMO(memId, memoTitle, memoComent, memoRegDate, memoModDate) 
+VALUES('gildong', '박정호의 예비군', '박정호의 예비군이 계획적인 이유 101가지', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO TBL_MEMO(memId, memoTitle, memoComent, memoRegDate, memoModDate) 
+VALUES('gildong', '이규찬의 쿠데타', '이규찬의 쿠데타가 계획적인 이유 101가지', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO TBL_MEMO(memId, memoTitle, memoComent, memoRegDate, memoModDate) 
+VALUES('chanho', '장난감 프로젝트', 'TOY PJT는 과연 오늘 끝날 수 있을런지?', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
