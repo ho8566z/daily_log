@@ -1,0 +1,199 @@
+------------------------------------------------------------------------
+
+CalAssembler -> MainClass -> MyCalculator -> ICalculator(CalAdd, CalSub, CalMul, CalDiv)
+
+[ 위의 구조를 노션 정리할 때, 구조가 어떻게 이루어져있는지 그림으로 만들기 ]
+
+------------------------------------------------------------------------
+[ CalAssembler ]
+
+package com.office.dw;
+
+public class CalAssembler {
+	
+	MyCalculator myCalculator;
+	CalAdd calAdd;
+	CalSub calSub;
+	CalMul calMul;
+	CalDiv calDiv;
+	
+	public CalAssembler() {
+		myCalculator = new MyCalculator();
+		calAdd = new CalAdd();
+		calSub = new CalSub();
+		calMul = new CalMul();
+		calDiv = new CalDiv();
+		
+		assemble();
+	}
+
+	private void assemble() {
+		
+		myCalculator.calculate(10, 5, calAdd);
+		myCalculator.calculate(10, 5, calSub);
+		myCalculator.calculate(10, 5, calMul);
+		myCalculator.calculate(10, 5, calDiv);
+	}
+	
+}
+
+------------------------------------------------------------------------
+[ MainClass ]
+
+package com.office.dw;
+
+public class MainClass {
+	
+	public static void main(String[] args) {
+		
+//		MyCalculator myCalculator = new MyCalculator();
+//		myCalculator.calculate(10, 5, new CalAdd());
+//		myCalculator.calculate(10, 5, new CalSub());
+//		myCalculator.calculate(10, 5, new CalMul());
+//		myCalculator.calculate(10, 5, new CalDiv());
+		
+		// IoC : 제어의 역전
+		new CalAssembler();
+		
+	}
+
+}
+
+------------------------------------------------------------------------
+[ MyCalculator ]
+
+package com.office.dw;
+
+public class MyCalculator {
+	
+	/*
+	 * MyCalculator는 CalAdd, CalSub, CalMul, CalDiv의 기능을 이용하지만,
+	 * 스프링에서는 각각의 기능을 이용하는게 아닌, 의존한다고 할 수 있다.
+	 * 
+	 * MyCalculator는 CalAdd, CalSub, CalMul, CalDiv의 기능을 이용한다.
+	 * ->
+	 * MyCalculator는 CalAdd, CalSub, CalMul, CalDiv의 기능에 의존한다.
+	 */
+	
+	
+	// 전략패턴
+	public void calculate(int firstNum, int secondNum, ICalculator calculator) {
+		int value = calculator.doOperation(firstNum, secondNum);
+		System.out.println("result : " + value);
+	}
+	
+	/*
+	public void calAdd(int firstNum, int secondNum, CalAdd calAdd) {
+		
+//		ICalculator iCalculator = new CalAdd();
+//		int value = iCalculator.doOperation(firstNum, secondNum);
+		
+		int value = calAdd.doOperation(firstNum, secondNum);
+		System.out.println("result : " + value);
+		
+	}
+	
+	public void calSub(int firstNum, int secondNum, CalSub calSub) {
+			
+//		ICalculator iCalculator = new CalSub();
+//		int value = iCalculator.doOperation(firstNum, secondNum);
+		
+		int value = calSub.doOperation(firstNum, secondNum);
+		System.out.println("result : " + value);
+			
+		}
+	
+	public void calMul(int firstNum, int secondNum, CalMul calMul) {
+		
+//		ICalculator iCalculator = new CalMul();
+//		int value = iCalculator.doOperation(firstNum, secondNum);
+		
+		int value = calMul.doOperation(firstNum, secondNum);
+		System.out.println("result : " + value);
+		
+	}
+	
+	public void calDiv(int firstNum, int secondNum, CalDiv calDiv) {
+		
+//		ICalculator iCalculator = new CalDiv();
+//		int value = iCalculator.doOperation(firstNum, secondNum);
+		
+		int value = calDiv.doOperation(firstNum, secondNum);
+		System.out.println("result : " + value);
+		
+	}
+	*/
+}
+
+------------------------------------------------------------------------
+[ ICalculator ]
+
+package com.office.dw;
+
+public interface ICalculator {
+	
+	public int doOperation(int firstNum, int secondNum);
+
+}
+
+------------------------------------------------------------------------
+[ CalAdd ]
+
+package com.office.dw;
+
+public class CalAdd implements ICalculator {
+
+	@Override
+	public int doOperation(int firstNum, int secondNum) {
+
+		return firstNum + secondNum;
+	}
+
+}
+
+------------------------------------------------------------------------
+[ CalSub ]
+
+package com.office.dw;
+
+public class CalSub implements ICalculator {
+
+	@Override
+	public int doOperation(int firstNum, int secondNum) {
+
+		return firstNum - secondNum;
+	}
+
+}
+
+------------------------------------------------------------------------
+[ CalMul ]
+
+package com.office.dw;
+
+public class CalMul implements ICalculator {
+
+	@Override
+	public int doOperation(int firstNum, int secondNum) {
+
+		return firstNum * secondNum;
+	}
+
+}
+
+------------------------------------------------------------------------
+[ CalDiv ]
+
+package com.office.dw;
+
+public class CalDiv implements ICalculator {
+
+	@Override
+	public int doOperation(int firstNum, int secondNum) {
+
+		return secondNum !=0 ? (firstNum / secondNum) : 0;
+	}
+
+}
+
+------------------------------------------------------------------------

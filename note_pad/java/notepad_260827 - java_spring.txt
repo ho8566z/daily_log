@@ -1,0 +1,184 @@
+20260827
+
+
+협업
+	-기획
+		-요구사항명세서 -> 기능명세서 -> 테이블명세서 -> 스키마 -> 기능구현
+	
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+[ Model(1) -> Model(2)-MVC패턴 
+	-> Spring Frame_Work-MVC패턴(Spring Legacy / Spring Boot) ]
+
+------------------------------------------------------------------------
+web 이란?
+
+하이퍼 텍스트 : 인터텟 문서에 있는 문서와 문서를 클릭만으로 쉽게 이동하는 것이다.
+
+스태틱 페이지(정적 페이지) : 클라이언트의 요청 발생시 항상 변화없는 웹페이지이다.
+(HTML)
+
+다이나믹 페이지(동적 페이지) : 검색, 로그인, 신용카드 결제와 같은 클라이언트의 요청에 따라 항상 변화하는 웹페이지이다.
+(ASP, PHP, JSP 등)
+
+JSP(Java Server Page) : 서버에서 실행되는 웹 페이지 기술로, HTML 코드 안에 Java 코드를 작성하여 동적인 웹 페이지를 생성할 수 있다.
+JSP 파일은 클라이언트의 요청이 들어오면 서버에서 서블릿(Servlet)으로 변환·컴파일되어 실행된다.
+서블릿으로 변환된 JSP는 사용자의 요청을 처리하고, 필요한 데이터를 DB 등에서 가져와 HTML 문서를 동적으로 생성한 후 클라이언트(웹 브라우저)에 응답한다.
+
+Java Beans
+	-JSP의 표준 액션 태그를 통해 접근할 수 있는 일반적인 Java 객체이다.
+	-JSP 파일 내에서 사용할 수 있는 데이터 저장 및 전달용 객체라고 생각하면 이해하기 쉽다.
+	-JSP에서 데이터를 주고받을 때 자주 사용되며, 뷰(JSP)와 데이터 및 로직을 분리하는 데 도움을 준다.
+	-재사용하기 쉽도록 일정한 규칙에 따라 작성하며, 일반적으로 기본 생성자와 private 멤버 변수, getter/setter 메서드를 사용한다.
+
+비즈니스 로직 : 클라이언트의 특정 요청에 대해 웹 애플리케이션이 처리해야 하는 실제 업무와 처리 과정을 의미한다.
+(예를 들어 사용자가 id와 pw를 입력하여 로그인을 시도하면, 웹 애플리케이션은 입력받은 회원 정보가 DB에 저장된 정보와 일치하는지 확인하고, 로그인 성공 또는 실패 결과를 처리하는 과정이 비즈니스 로직에 해당한다.)
+
+프레젠테이션 로직 : 클라이언트의 특정 요청에 대해서 웹 애플리케이션이 사용자에게 결과를 보여주거나 사용자의 입력을 전달하기 위해 처리해야 하는 화면 관련 과정이다.
+(사용자가 id, pw를 입력해서 로그인을 시도할 때, 웹 애플리케이션에서는 로그인 화면의 입력값을 서버에 전달하고, 로그인 처리 결과에 따라 성공 또는 실패 메시지를 화면에 표시하는 과정이 프레젠테이션 로직에 해당한다.)
+
+디자인 패턴 : 소프트웨어 개발에서 자주 발생하는 문제를 해결하기 위해 만들어진 재사용 가능한 설계 방법이다. 대표적으로 23가지의 디자인 패턴이 있으며, 각각 특정한 상황에서 객체와 클래스의 관계 및 구조를 효율적으로 구성할 수 있도록 한다.
+(ex : 어댑터 패턴은 서로 호환되지 않는 인터페이스를 가진 객체들이 함께 동작할 수 있도록 연결해주는 디자인 패턴이다.)
+
+JDK(Java Development Kit)
+	-Java 프로그램을 개발하고 실행하기 위해 필요한 도구들을 모아놓은 개발 키트이다. 
+	-Java 소스 코드를 컴파일하는 javac, 프로그램을 실행하는 java 등의 개발 도구가 포함되어 있다.
+
+------------------------------------------------------------------------
+
+[ 클라이언트 (요청)-> 웹서버 (위임)-> 웹 어플리케이션 서버 (질의)-> DB ]
+[ 클라이언트 <-(응답) 웹서버 <-(반환) 웹 어플리케이션 서버 <-(응답) DB ]
+
+클라이언트 : 서버에 요청하고, 서비스를 제공받는 사용자 위치
+(브라우저가 대표적, 명령 프롬프트, 스마트폰 등)
+
+웹 서버 : 클라이언트의 요청이 스태틱 페이지인 경우, 웹서버에서 클라이언트에게 응답한다.
+(Apache Server, IIS, Nginx 등)
+
+웹 어플리케이션 서버 : 클라이언트의 요청이 다이나믹 페이지인 경우, DB에 질의하고, 응답받아서 웹서버에 반환하고 클라이언트에게 응답한다.
+(Tomcat, JBoss, Jeus)
+
+톰캣 - 컨테이너? : ???...""개념 정리할 것""
+
+------------------------------------------------------------------------
+Spring MVC 란?
+
+[ Client (1. 요청)-> "DispatcherServlet" (2. 요청)-> HandlerMapping
+
+HandlerMapping (3. Controller)-> "DispatcherServlet" (4. 요청)-> HandlerAdapter
+
+HandlerAdapter (5. 요청)-> Controller
+
+Controller (6. model & view name)-> HandlerAdapter (7. model & view name)-> "DispatcherServlet"
+
+"DispatcherServlet" (8. view name)-> ViewResolver (9. view)-> "DispatcherServlet"
+
+"DispatcherServlet" (10. model)-> View (11. 응답)-> Client ]
+
+참조
+1. https://catsbi.oopy.io/f52511f3-1455-4a01-b8b7-f10875895d5b
+2. https://ss-o.tistory.com/160
+
+
+각각의 역할에 대한 ""개념 정리할 것""(DispatcherServlet가 중심적인 역할으로 매우 중요)
+
+------------------------------------------------------------------------
+스프링 프레임워크 : ???...""개념 정리할 것""
+
+공식 홈페이지 : https://spring.io/
+
+Microservices : Quickly deliver production‑grade features with independently evolvable microservices.
+(???...""해석하고, 개념 정리할 것"")
+
+Serverless : The ultimate flexibility. Scale up on demand and scale to zero when there’s no demand.
+(???...""해석하고, 개념 정리할 것"")
+
+Batch : Automated tasks. Offline processing of data at a time to suit you.
+(???...""해석하고, 개념 정리할 것"")
+
+------------------------------------------------------------------------
+Spring의 기본 개념(DI, IoC)
+
+DI(Dependency Injection / 의존 객체 주입) : ???...""개념 정리할 것""
+
+IoC(Inversion of Control / 제어의 역전) : ???...""개념 정리할 것""
+참고 : https://steady-coding.tistory.com/600
+
+------------------------------------------------------------------------
+spring legacy 란?
+
+------------------------------------------------------------------------
+코드 -(컴파일러)-> 바이트 코드(.class(java)) -> 빌드(build) -> 실행(run)
+
+빌드 툴 : ant, maven, gradle
+
+maven -> Spring Legacy
+gradle -> Spring Boot
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+Java + maven 프로젝트
+
+[ maven 프로젝트 / porm.xml ]
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+		https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>spring5</groupId>
+  <artifactId>ch03_pjt_01</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  <dependencies>
+     <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>5.2.9.RELEASE</version>
+     </dependency>
+  </dependencies>
+  
+  <build>
+     <plugins>
+        <plugin>
+           <artifactId>maven-compiler-plugin</artifactId>
+           <version>3.1</version>
+           <configuration>
+              <source>11</source>
+              <target>11</target>
+              <encoding>utf-8</encoding>
+           </configuration>
+        </plugin>
+     </plugins>
+  </build>
+  
+</project>
+
+------------------------------------------------------------------------
+[ maven 프로젝트 / applicationContext.xml ]
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd"> 
+	
+	<bean id="transportationWalk" class="ch03_pjt_01.TransportationWalk" />
+	
+</beans>
+
+
+
+(maven프로젝트의 porm.xml 태그의 표준화를 Maven 웹사이트에 정리된 '네임 스페이스'에서 가져온다.)
+
+------------------------------------------------------------------------
+Maven Repository 홈페이지 : https://mvnrepository.com/
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+Local DB, Dev DB(like.깃허브), Real DB(상용)
