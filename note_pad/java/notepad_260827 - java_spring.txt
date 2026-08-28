@@ -78,7 +78,7 @@ Controller (6. model & view name)-> HandlerAdapter (7. model & view name)-> "Dis
 
 참조
 1. https://catsbi.oopy.io/f52511f3-1455-4a01-b8b7-f10875895d5b
-2. https://ss-o.tistory.com/160
+2. https://programmer-may.tistory.com/161
 
 
 각각의 역할에 대한 ""개념 정리할 것""(DispatcherServlet가 중심적인 역할으로 매우 중요)
