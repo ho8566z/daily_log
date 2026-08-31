@@ -1,0 +1,621 @@
+[ HomeController ]
+
+package com.office.firstpjt;
+
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+/**
+ * Handles requests for the application home page.
+ */
+@Controller
+public class HomeController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+	
+	/**
+	 * Simply selects the home view to render by returning its name.
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String home(Locale locale, Model model) {
+		logger.info("Welcome home! The client locale is {}.", locale);
+		
+		Date date = new Date();
+		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+		
+		String formattedDate = dateFormat.format(date);
+		
+		model.addAttribute("serverTime", formattedDate );
+		
+		return "home";
+	}
+	
+}
+
+------------------------------------------------------------------------
+[ MemberController ]
+
+package com.office.firstpjt.member;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+public class MemberController {
+	
+//	@Autowired
+//	MemberService memberService;
+	
+	private final MemberService memberService;
+	
+	@Autowired		// 생략가능
+	public MemberController(MemberService memberService) {
+		this.memberService = memberService;
+	}
+
+	// 회원가입
+	@RequestMapping("/signUp")
+	public String signUp() {
+		System.out.println("[MemberController] signUp() called");
+		
+		return "sign_up";
+	}
+	
+	// 회원가입 확인
+	/*
+	@RequestMapping(value="/signUpConfirm", method=RequestMethod.POST)
+	public String signUpConfirm(
+			@RequestParam String m_Id,
+			@RequestParam String m_Pw,
+			@RequestParam String m_Mail,
+			@RequestParam String m_Phone,
+			@RequestParam String m_Age) {
+		System.out.println("[MemberController] signUpConfirm() called");
+		
+		System.out.println("m_Id : " + m_Id);
+		System.out.println("m_Pw : " + m_Pw);
+		System.out.println("m_Mail : " + m_Mail);
+		System.out.println("m_Phone : " + m_Phone);
+		System.out.println("m_Age : " + m_Age);
+		
+		return "";
+	}
+	*/
+	
+	// 회원가입 확인(+MemberDto)
+	@RequestMapping(value="/signUpConfirm", method=RequestMethod.POST)
+	public String signUpConfirm(MemberDto memberDto) {
+		System.out.println("[MemberController] signUpConfirm() called");
+		
+		System.out.println("m_Id : " + memberDto.getM_Id());
+		System.out.println("m_Pw : " + memberDto.getM_Pw());
+		System.out.println("m_Mail : " + memberDto.getM_Mail());
+		System.out.println("m_Phone : " + memberDto.getM_Phone());
+		System.out.println("m_Age : " + memberDto.getM_Age());
+		
+		// 1.new로 새로운 객체 생성
+//		MemberService memberService = new MemberService();
+//		memberService.SignUpConfirm(memberDto);
+		
+		// 2.xml을 이용해 IoC컨테이너 활용해 bean생성
+//		@Autowired
+//		MemberService memberService;
+		memberService.signUpConfirm(memberDto);
+		
+		// 3.애너테이션을 활용해 bean생성(MemberService에서)
+//		@Service
+//		public class MemberService {}
+		
+		return "sign_up_ok";
+	}
+	
+	
+	// 로그인
+	@RequestMapping("/signIn")
+	public String signIn() {
+		System.out.println("[MemberController] signIn() called");
+		
+		return "sign_in";
+		
+	}
+	
+	// 로그인 확인
+	@RequestMapping(value="/signInConfirm", method=RequestMethod.POST)
+	public String signInConfirm(MemberDto memberDto) {
+		System.out.println("[MemberController] signInConfirm()");
+		
+		memberService.signUpConfirm(memberDto);
+		
+		return "sign_in_ok";
+		
+	}
+	
+	
+	
+}
+
+------------------------------------------------------------------------
+[ MemberService ]
+
+package com.office.firstpjt.member;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+//@Component
+public class MemberService {
+
+	final private MemberDao memberDao;
+	
+	@Autowired		// 의존 객체 자동 주입(DI, Dependency Injection)
+	public MemberService(MemberDao memberDao) {
+		this.memberDao = memberDao;
+	}
+	
+	public int signUpConfirm(MemberDto memberDto) {
+		System.out.println("[MemberService] signUpConfirm()");
+		
+		System.out.println("M_id: " + memberDto.getM_Id());
+		System.out.println("M_pw: " + memberDto.getM_Pw());
+		System.out.println("M_mail: " + memberDto.getM_Mail());
+		System.out.println("M_phone: " + memberDto.getM_Phone());
+		System.out.println("M_age: " + memberDto.getM_Age());
+		
+		memberDao.insertMember(memberDto);
+		
+		return 0;
+		
+	}
+	
+	public void signInConfirm(MemberDto memberDto) {
+		System.out.println("[MemberService] signUpConfirm()");
+		
+		memberDao.selectMember(memberDto);
+	}
+	
+	
+}
+
+------------------------------------------------------------------------
+[ MemberDao ]
+
+package com.office.firstpjt.member;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.stereotype.Repository;
+
+//@Service
+//@Component
+@Repository
+public class MemberDao {
+	
+	final private Map<String, MemberDto> MEMBER_DB = new HashMap<String, MemberDto>();
+
+	public void insertMember(MemberDto memberDto) {
+		System.out.println("[MemberDao] insertMember()");
+		
+		System.out.println("Dao-M_id: " + memberDto.getM_Id());
+		System.out.println("Dao-M_pw: " + memberDto.getM_Pw());
+		System.out.println("Dao-M_mail: " + memberDto.getM_Mail());
+		System.out.println("Dao-M_phone: " + memberDto.getM_Phone());
+		System.out.println("Dao-M_age: " + memberDto.getM_Age());
+		
+		MEMBER_DB.put(memberDto.getM_Id(), memberDto);
+		
+		printAllMember();
+		
+	}
+	
+	private void printAllMember() {
+		System.out.println("[MemberDao] printAllMember()");
+		
+		Set<String> keys = MEMBER_DB.keySet();
+		Iterator<String> iterator =keys.iterator();
+		
+		while (iterator.hasNext()) {
+			String m_id = iterator.next();
+			MemberDto memberDto = MEMBER_DB.get(m_id);
+			
+			System.out.println("Dao2-M_id : " + memberDto.getM_Id());
+			System.out.println("Dao2-M_pw : " + memberDto.getM_Pw());
+			System.out.println("Dao2-M_mail : " + memberDto.getM_Mail());
+			System.out.println("Dao2-M_phone : " + memberDto.getM_Phone());
+			System.out.println("Dao2-M_age : " + memberDto.getM_Age());
+		}
+		
+	}
+
+	public void selectMember(MemberDto memberDto) {
+		System.out.println("[MemberDao] selectMember()");
+		
+		MemberDto selectedMemberDto = MEMBER_DB.get(memberDto.getM_Id());
+		/*
+		if (selectedMemberDto != null) {
+			if (selectedMemberDto.getM_Pw().equals(memberDto.getM_Pw())) {
+				System.out.println("SIGN IN SUCCESS");
+			} else {
+				System.out.println("SIGN IN FAIL");
+			}
+		} else {
+			System.out.println("SIGN IN FAIL");
+		}
+		*/
+		
+		if (selectedMemberDto != null && 
+				selectedMemberDto.getM_Pw().equals(memberDto.getM_Pw())) {
+			System.out.println("SIGN IN SUCCESS!!");
+			
+		} else {
+			System.out.println("SIGN IN FAIL!!");
+			
+		}
+		
+	}
+	
+}
+
+------------------------------------------------------------------------
+[ MemberDto ]
+
+package com.office.firstpjt.member;
+
+public class MemberDto {
+	
+	private String m_Id;
+	private String m_Pw;
+	private String m_Mail;
+	private String m_Phone;
+	private Integer m_Age;
+	
+	public String getM_Id() {
+		return m_Id;
+	}
+	public void setM_Id(String m_Id) {
+		this.m_Id = m_Id;
+	}
+	public String getM_Pw() {
+		return m_Pw;
+	}
+	public void setM_Pw(String m_Pw) {
+		this.m_Pw = m_Pw;
+	}
+	public String getM_Mail() {
+		return m_Mail;
+	}
+	public void setM_Mail(String m_Mail) {
+		this.m_Mail = m_Mail;
+	}
+	public String getM_Phone() {
+		return m_Phone;
+	}
+	public void setM_Phone(String m_Phone) {
+		this.m_Phone = m_Phone;
+	}
+	public Integer getM_Age() {
+		return m_Age;
+	}
+	public void setM_Age(Integer m_Age) {
+		this.m_Age = m_Age;
+	}
+	
+}
+
+------------------------------------------------------------------------
+[ pom.xml ]
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.office</groupId>
+	<artifactId>firstpjt</artifactId>
+	<name>firstpjt_service_dao</name>
+	<packaging>war</packaging>
+	<version>1.0.0-BUILD-SNAPSHOT</version>
+	<properties>
+		<java-version>11</java-version>
+		<org.springframework-version>5.2.9.RELEASE</org.springframework-version>
+		<org.aspectj-version>1.6.10</org.aspectj-version>
+		<org.slf4j-version>1.6.6</org.slf4j-version>
+	</properties>
+	<dependencies>
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${org.springframework-version}</version>
+			<exclusions>
+				<!-- Exclude Commons Logging in favor of SLF4j -->
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				 </exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+				
+		<!-- AspectJ -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>	
+		
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${org.slf4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${org.slf4j-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${org.slf4j-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jdmk</groupId>
+					<artifactId>jmxtools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- @Inject -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+				
+		<!-- Servlet -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+	
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+			<scope>test</scope>
+		</dependency>        
+	</dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <additionalProjectnatures>
+                        <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+                    </additionalProjectnatures>
+                    <additionalBuildcommands>
+                        <buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
+                    </additionalBuildcommands>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>true</downloadJavadocs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <compilerArgument>-Xlint:all</compilerArgument>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <mainClass>org.test.int1.Main</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+------------------------------------------------------------------------
+[ servlet-context.xml ]
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<context:component-scan base-package="com.office.firstpjt" />
+	
+	<!-- 
+	<beans:bean id="memberService" class="com.office.firstpjt.member.MemberService" />
+	 -->
+	 
+	 
+	 
+</beans:beans>
+
+------------------------------------------------------------------------
+[ home.jsp ]
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page session="false" %>
+<html>
+<head>
+	<title>Home</title>
+</head>
+<body>
+<h1>
+	Hello world!  
+</h1>
+
+<P>  The time on the server is ${serverTime}. </P>
+</body>
+</html>
+
+------------------------------------------------------------------------
+[ sign_up.jsp ]
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<form 
+		action="/firstpjt/signUpConfirm"
+		method="post">
+		
+		ID: <input type="text" name="m_Id"><br>
+		PW: <input type="password" name="m_Pw"><br>
+		MAIL: <input type="email" name="m_Mail"><br>
+		PHONE: <input type="text" name="m_Phone"><br>
+		AGE: <input type="number" name="m_Age"><br>
+		<input type="submit" value="SIGN UP">
+		<input type="reset" value="RESET">
+		
+	</form>
+
+</body>
+</html>
+------------------------------------------------------------------------
+[ sign_up_ok.jsp ]
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<h1>SIGN IN : SUCCESS</h1>
+
+</body>
+</html>
+------------------------------------------------------------------------
+[ sign_in.jsp ]
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<form 
+		action="/first/signInConfirm" 
+		method="post">
+		
+		ID : <input type="text" name="m_id"><br>
+		PW : <input type="password" name="m_pw"><br>
+		<input type="submit" value="SIGN IN">
+		<input type="reset" value="RESET">
+	</form>
+
+</body>
+</html>
+------------------------------------------------------------------------
+[ sign_in_ok.jsp ]
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<h1>SIGN UP : SUCCESS</h1>
+
+</body>
+</html>

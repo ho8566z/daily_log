@@ -1,0 +1,254 @@
+20260831
+
+
+Spring Legacy : Context_Path(O)
+Spring Boot : Context_Path(X)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ 도서대출 서비스 ]
+
+jsp에서 css 연결하는방법 : /resources/~~~
+
+-> JSTL 이란?
+
+참조 : https://yunamom.tistory.com/179
+
+------------------------------------------------------------------------
+ex)
+@RequestMapping
+	value = "/createAccountConfirm"
+	method = RequestMethod.POST
+	
+-> @GetMapping / @PostMapping / @UpdateMapping
+
+------------------------------------------------------------------------
+jsp 파일에서는 js코드를 입력할 수 있지만, js파일에 jsp 코드를 입력할 수 없기 때문에 jsp 파일에서 js코드를 입력해 이용한다.
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+JDBC와 Connection Pool
+
+순수 JDBC
+	-실무에서는 순수 JDBC 코드를 직접 사용하는 방식은 상대적으로 적게 사용된다.
+		-DB 연결, SQL 실행, 예외 처리, 자원 해제 등의 코드를 반복적으로 작성해야 한다.
+		-이러한 반복 작업을 줄이기 위해 JdbcTemplate, MyBatis, JPA 등의 기술을 사용한다.
+	
+Tomcat과 Application -(O)-> DB
+Tomcat과 Application <-(X)- DB
+
+	-애플리케이션이 필요할 때마다 매번 새로운 DB Connection을 생성하는 대신, Connection Pool이 여러 개의 Connection 객체를 미리 생성하거나 관리하고 있다가 필요할 때 제공한다.
+	-작업이 끝난 Connection은 완전히 제거하는 것이 아니라 다시 Connection Pool로 반환하여 재사용할 수 있다.
+
+------------------------------------------------------------------------
+[ jdbc-context.xml ]
+-데이터베이스 연결 정보를 설정하고, Connection Pool 기능을 제공하는 DataSource 객체를 Spring Bean으로 등록하는 설정 파일
+
+	<!-- connection bean(객체) -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+       <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+       <property name="url" value="jdbc:mysql://localhost:3306/db_library"/>
+       <property name="username" value="root"/>
+       <property name="password" value="1234"/>
+   
+       <!-- Connection Pool 설정 -->
+       <property name="initialSize" value="5"/>
+       <property name="maxTotal" value="10"/>
+       <property name="maxIdle" value="2"/>
+       <property name="minIdle" value="2"/>
+   </bean>
+   
+   
+dataSource 란?
+	-DB Connection을 제공하고 관리하는 DataSource 객체의 Bean ID
+   
+BasicDataSource 란?
+	-Apache Commons DBCP2가 제공하는 DataSource 구현체이다.
+	-DriverManagerDataSource와 달리 Connection Pool 기능을 제공한다.
+
+
+initialSize
+	-<property name="initialSize" value="5"/>
+	-애플리케이션이 시작될 때 처음 생성하는 Connection의 개수이다.
+
+maxTotal
+	-<property name="maxTotal" value="10"/>
+	-Connection Pool에서 관리할 수 있는 최대 Connection 개수이다.
+	-동시에 많은 요청이 발생해도 Connection은 최대 10개까지 생성·관리된다.
+
+maxIdle
+	-<property name="maxIdle" value="5"/>
+	-사용하지 않고 Pool에 대기하는 Connection의 최대 개수이다.
+
+minIdle
+	-<property name="minIdle" value="2"/>
+	-Pool에 대기 상태로 유지하려는 Connection의 최소 개수이다.
+
+
+------------------------------------------------------------------------
+
+- 1번째로 찍은 사진 참조
+
+
+(JDBC, JDBCTemplate, MyBatis, JPA)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+<!-- connection bean(객체) -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	
+	</bean>
+	
+dataSource : Bean의 이름(id)
+
+------------------------------------------------------------------------
+| 부분                | 의미             |
+| ----------------- | -------------- |
+| `bean`            | Spring이 관리할 객체 |
+| `id="dataSource"` | 해당 객체의 이름      |
+| `class="..."`     | 실제 생성할 객체의 클래스 |
+
+------------------------------------------------------------------------
+jdbc-context.xml
+
+① dataSource Bean 생성
+        ↓
+DriverManagerDataSource 객체
+        ↓
+DB 연결 정보 설정
+        ↓
+Spring Container에 "dataSource"라는 이름으로 저장
+
+
+② jdbcTemplate Bean 생성
+        ↓
+ref="dataSource"
+        ↓
+dataSource Bean 주입
+        ↓
+JdbcTemplate이 DB 연결에 사용
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ web.xml ] <- 개별 context.xml을 web.xml에 인식시키는 코드
+
+<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
+<context-param>
+	<param-name>contextConfigLocation</param-name>
+	<param-value>
+		/WEB-INF/spring/root-context.xml
+		/WEB-INF/spring/jdbc-context.xml
+	</param-value>
+</context-param>
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+[ BookRentalPjt / AdminMemberDao ] <-동적인 코딩
+
+package com.office.library.admin.member;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class AdminMemberDao {
+	
+	final String CLASS_NAME = "[AdminMemberDao] ";
+	
+	@Autowired
+	JdbcTemplate jdbcTemplate;
+
+	public boolean isAdminMember(String a_m_id) {
+		System.out.println(CLASS_NAME.concat("isAdminMember()"));
+		
+		String sql = "SELECT COUNT(*) FROM tbl_admin_member "
+					+ "WHERE a_m_id = ?";
+		
+		int result = jdbcTemplate.queryForObject(sql, Integer.class, a_m_id);
+
+		return result > 0? true : false;
+
+	}
+
+	public int insertAdminAcount(AdminMemberDto adminMemberDto) {
+		System.out.println(CLASS_NAME.concat("insertAdminAcount()"));
+		
+		// Super Admin
+		
+		// 정적인 코딩
+		/*
+		String sql = "INSERT INTO tbl_admin_member("
+						+ "a_m_approval, a_m_id, a_m_pw, "
+						+ "a_m_name, a_m_gender, "
+						+ "a_m_part, a_m_position, "
+						+ "a_m_mail, a_m_phone) "
+					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		
+		int result = jdbcTemplate.update(sql,
+				1,
+				adminMemberDto.getA_m_id(),
+				adminMemberDto.getA_m_pw(),
+				adminMemberDto.getA_m_name(),
+				adminMemberDto.getA_m_gender(),
+				adminMemberDto.getA_m_part(),
+				adminMemberDto.getA_m_position(),
+				adminMemberDto.getA_m_mail(),
+				adminMemberDto.getA_m_phone());
+		*/
+		
+		// 동적인 코딩
+		List<String> args = new ArrayList<String>();
+		
+		String sql = "INSERT INTO tbl_admin_member(";
+		if (adminMemberDto.getA_m_id().equals("super admin")) {
+			sql += "a_m_approval, ";
+			args.add("1");
+		}
+		
+		sql += "a_m_id, ";
+		args.add(adminMemberDto.getA_m_id());
+		
+		sql += "a_m_pw, ";
+		args.add(adminMemberDto.getA_m_pw());
+		
+		sql += "a_m_name, ";
+		args.add(adminMemberDto.getA_m_name());
+		
+		sql += "a_m_gender, ";
+		args.add(adminMemberDto.getA_m_gender());
+		
+		sql += "a_m_part, ";
+		args.add(adminMemberDto.getA_m_part());
+		
+		sql += "a_m_position, ";
+		args.add(adminMemberDto.getA_m_position());
+		
+		sql += "a_m_mail, ";
+		args.add(adminMemberDto.getA_m_mail());
+		
+		sql += "a_m_phone) ";
+		args.add(adminMemberDto.getA_m_phone());
+		
+		if (adminMemberDto.getA_m_id().equals("super admin")) {
+			sql += "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		} else {
+			sql += "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+		}
+		
+		int result = jdbcTemplate.update(sql, args.toArray());
+		
+		return result;
+	}
+
+}
