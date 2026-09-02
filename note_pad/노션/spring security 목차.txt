@@ -1,0 +1,44 @@
+1. Spring Security 개념
+
+Spring Security란?
+Spring Security의 목적
+인증(Authentication)
+인가(Authorization)
+인증과 인가의 차이
+Spring Security Core
+의존성(Dependency) 및 라이브러리 관계
+
+
+2. Spring Security 구조 및 동작
+
+Spring Security 전체 구조
+Security Filter
+Security Filter Chain
+인증 처리 흐름
+인가 처리 흐름
+security-context.xml
+Spring Security와 Spring MVC의 관계
+세션(Session)과 Security Context
+
+
+3. Spring Security 기능 및 구현
+
+비밀번호 암호화
+단방향 암호화
+해싱(Hashing)
+BCrypt
+PasswordEncoder
+BCryptPasswordEncoder
+encode()
+matches()
+로그인 인증
+사용자 인증
+로그인 처리
+인증 객체
+권한 관리
+Role
+Authority
+URL 접근 권한
+로그아웃
+인증 실패 처리
+인가 실패 처리
