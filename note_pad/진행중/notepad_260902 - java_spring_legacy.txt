@@ -1,0 +1,157 @@
+20260902
+
+
+db에서 데이터를 데이터를 내림차순하는 방법 3가지(ASC : 오름차순, DESC : 내림차순)
+1. 뷰(View)에서 해결하기
+	-View를 생성할 때 정렬 조건을 지정하거나, View를 조회하는 쿼리에서 ORDER BY를 사용한다.
+2.	SQL 쿼리에서 해결하기
+	-ORDER BY 컬럼명 DESC를 사용하여 조회 결과를 내림차순으로 정렬한다.
+3. Java/JDBC 코드에서 해결하기
+	-DB에서 정렬하지 않고 Java에서 조회된 데이터를 정렬하는 방법이다.
+	-예를 들어 List를 sort() 등을 이용해 정렬할 수 있다.
+
+
+-1번째 사진 참조, 이미지 만들기
+
+------------------------------------------------------------------------
+String sql = "SELECT * FROM tbl_admin_member "
+			+ "ORDER BY a_m_no DESC";
+			
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+새로운 비밀번호를 발급하는 기능 구상도
+
+------------------------------------------------------------------------
+JavaMailSenderImpl 란?
+
+smtp.gmail.com 란?
+
+
+<!-- JavaMailSenderImpl 객체 -->
+<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+  <property name="host" value="smtp.gmail.com" />
+  <property name="port" value="587" />
+  <property name="username" value="ho8566z@gmail.com" />  <!-- 개인 수신 가능한 메일 주소 작성 -->
+  <property name="password" value="hlvzjdqblmaqokyf" />    <!-- 생성된 앱 비밀번호 입력 -->
+  <property name="javaMailProperties">
+	 <props>
+		<prop key="mail.smtp.auth">true</prop>
+		<prop key="mail.smtp.starttls.enable">true</prop>
+	 </props>
+  </property>
+</bean>
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+새로운 비밀번호를 만드는 코드(로직)
+
+
+private String createNewPassword() {
+	System.out.println(CLASS_NAME.concat("createNewPassword()"));
+	
+	char[] chars = new char[] {
+			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+			'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 
+			'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 
+			'u', 'v', 'w', 'x', 'y', 'z'
+			};
+
+	  StringBuffer stringBuffer = new StringBuffer();
+	  SecureRandom secureRandom = new SecureRandom();
+	  secureRandom.setSeed(new Date().getTime());
+	  
+	  int index = 0;
+	  int length = chars.length;
+	  for (int i = 0; i < 8; i++) {
+		 index = secureRandom.nextInt(length);
+	  
+		 if (index % 2 == 0) 	// 짝수 or 홀수 파악
+			stringBuffer.append(String.valueOf(chars[index]).toUpperCase());	// index가 짝수면 대문자
+		 else
+			stringBuffer.append(String.valueOf(chars[index]).toLowerCase());	// index가 홀수면 소문자
+	  
+	  }
+	  
+	  System.out.println(CLASS_NAME.concat("NEW PASSWORD: " + stringBuffer.toString()));
+	
+	return stringBuffer.toString();
+}
+	
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+StringBuffer 란?
+
+------------------------------------------------------------------------
+SecureRandom 란?
+secureRandom.setSeed() 란?
+
+------------------------------------------------------------------------
+메일을 보내는 방법
+
+private void sendNewPasswordByMail(String toMailAddr, String newPassword) {
+	System.out.println(CLASS_NAME.concat("sendNewPasswordByMail()"));
+	
+	final MimeMessagePreparator mimeMessagePreparator = new MimeMessagePreparator() {
+		 
+		 @Override
+		 public void prepare(MimeMessage mimeMessage) throws Exception {
+			final MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+//	            mimeMessageHelper.setTo("ho8566z@gamil.com");
+			mimeMessageHelper.setTo(toMailAddr);
+			mimeMessageHelper.setSubject("[한국 도서관] 새 비밀번호 안내입니다.");
+			mimeMessageHelper.setText("새 비밀번호 : " + newPassword, true);
+			
+		 }
+		 
+	  };
+	  javaMailSenderImpl.send(mimeMessagePreparator);
+	
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+메일을 보내기 위한 pom.xml 코드
+
+<!-- SEND MAIL -->
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
+<dependency>
+	<groupId>org.springframework</groupId>
+	<artifactId>spring-context-support</artifactId>
+	<version>${org.springframework-version}</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
+<dependency>
+	<groupId>com.sun.mail</groupId>
+	<artifactId>javax.mail</artifactId>
+	<version>1.6.2</version>
+</dependency>
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+MimeMessagePreparator 란?
+
+MimeMessageHelper 란?
+
+------------------------------------------------------------------------
+javaMailSenderImpl 란?
+
+------------------------------------------------------------------------
+바이너리 파일과 db의 저장?
+
+enctype="multipart/form-data">의 코드와 바이너리 파일의 저장?
+
+
+바이너리 파일의 저장 위치?
+
+
+------------------------------------------------------------------------
+enctype 이란?
+참고 : https://www.tcpschool.com/html-tag-attrs/form-enctype -> 속성값
+
+------------------------------------------------------------------------
+
+<context:component-scan base-package="com.office.library" /> 코드와 패키지 분기?
+
+------------------------------------------------------------------------

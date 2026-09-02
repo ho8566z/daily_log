@@ -1,0 +1,212 @@
+20260901
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+jdbc-context.xml에서
+
+org.apache.commons.dbcp2.BasicDataSource 는?
+	-Apache Commons DBCP2에서 제공하는 DataSource 구현 클래스로, 주로 DB Connection Pool을 생성하고 관리하는 역할을 한다.
+	-BasicDataSource 객체는 DB 연결 정보를 가지고 있으며, 여러 개의 Connection 객체를 미리 생성하거나 관리한다.
+
+| 구성	| 의미 
+| org.apache.commons.dbcp2	| Apache Commons DBCP2 라이브러리의 패키지
+| BasicDataSource	 | DB Connection Pool을 관리하는 DataSource 구현 클래스
+| DataSource	| 데이터베이스 연결 정보를 제공하고 관리하기 위한 인터페이스
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+[ 비밀번호 암호화 → Spring Security Core ]
+	-의존성(Dependency) 또는 라이브러리 관계
+
+
+단방향 암호화 는?
+	-비밀번호를 원래 값으로 되돌릴 수 없도록 변환하는 방식이다.
+	-로그인할 때는 복호화하지 않고, 입력한 비밀번호와 DB에 저장된 암호화된 비밀번호를 비교하여 일치 여부를 확인한다.
+
+
+Spring Security Core는?
+	-Spring Security의 핵심 기능을 제공하는 라이브러리이다.
+	-내부에는 인증·인가뿐만 아니라 비밀번호 처리에 사용하는 기능도 포함되어 있다.
+
+db의 pw는 '단방향 암호화' -> spring security core
+	-회원가입 시 사용자의 비밀번호를 DB에 그대로 저장하지 않고 단방향 암호화(해싱) 처리한 값을 저장할 때 Spring Security Core를 사용할 수 있다.
+
+------------------------------------------------------------------------
+security-context.xml에서
+org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder 는?
+	-비밀번호를 BCrypt 방식으로 해싱하고 검증하는 PasswordEncoder 구현 클래스이다.
+
+| 구성	| 의미
+| org.springframework.security.crypto	| Spring Security의 암호화 관련 패키지
+| bcrypt	| BCrypt 비밀번호 해싱 방식
+| BCryptPasswordEncoder	| BCrypt 방식으로 비밀번호를 해싱하고 검증하는 클래스
+
+
+------------------------------------------------------------------------
+[ DAO에서 @@Autowired ]
+
+BCryptPasswordEncoder -> PasswordEncoder
+
+	-BCryptPasswordEncoder는 PasswordEncoder 인터페이스의 구현 클래스이다.
+	-따라서 DAO에서는 보통 구현 클래스인 BCryptPasswordEncoder를 직접 사용하기보다 PasswordEncoder 타입으로 주입받아 사용할 수 있다.
+	-그리고 회원가입 시 사용자가 입력한 비밀번호를 encode()로 BCrypt 해싱한 후 SQL 파라미터에 저장한다.
+
+------------------------------------------------------------------------
+PasswordEncoder를 적용한 암호화 코드
+
+sql += "a_m_pw, ";
+		args.add(passwordEncoder.encode(adminMemberDto.getA_m_pw()));
+		
+		
+adminMemberDto.getA_m_pw()
+        ↓
+사용자가 입력한 원본 비밀번호
+        ↓
+passwordEncoder.encode()
+        ↓
+BCryptPasswordEncoder가 비밀번호 해싱
+        ↓
+암호화된 비밀번호를 args에 추가
+        ↓
+DB에 저장
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+IoC Container는 DI 시 기본적으로 Bean의 이름만 보고 주입하는 것이 아니라, 타입을 기준으로 의존성을 주입한다.
+	-IoC Container에 다음 Bean이 등록되어 있다면, Spring은 passwordEncoder라는 변수명만 보고 주입하는 것이 아니라, PasswordEncoder 타입과 호환되는 Bean을 찾아 주입한다.
+	-다만 타입이 같은 Bean이 여러 개라면 @Qualifier나 Bean 이름 등을 이용해 대상을 구분할 수 있다.
+	
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+하나의 웹사이트에 2개 이상의 메서드를 연결하는 방법
+(하나의 Controller에서 /admin과 /admin/ 두 가지 URL을 동일한 메서드에 매핑하는 방식)
+
+@RequestMapping("/admin")
+
+@RequestMapping(value={"", "/"}, method=RequestMethod.GET)
+
+-> "admin/" AND "/admin/" 2가지 전부 연결되어 사용 가능
+
+
+[ AdminHomeController ] 코드 전문
+
+package com.office.library.admin;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping("/admin")
+public class AdminHomeController {
+
+	@RequestMapping(value={"", "/"}, method=RequestMethod.GET)
+	public String home() {
+		System.out.println("[AdminHomeController] home()");
+	
+		String nextPage = "admin/home";
+		
+		return nextPage;
+	
+	}
+
+}
+	-Spring MVC는 클래스와 메서드의 @RequestMapping을 결합하여 최종 URL을 결정한다.
+	-따라서 다음 두 요청이 모두 home() 메서드로 연결되며, home() 메서드에서 "return "admin/home";" 을 반환하므로 최종적으로 admin/home 뷰를 출력한다.
+	
+	
+| 메서드 매핑	| 클래스 매핑과 결합	| 결과
+| ""	| /admin + ""	| /admin
+| /	| /admin + /	| /admin/
+	
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+Anonymous Class(익명 클래스) 란?
+	-이름이 없는 클래스를 일회성으로 생성하여 사용하는 방법이다.
+	-일반적으로 클래스를 별도로 만들지 않고, 특정 클래스나 인터페이스를 상속 또는 구현하면서 객체를 바로 생성할 때 사용한다.
+	
+[ 이전 ]
+
+jdbcTemplate.query(sql, new RowMapper<AdminMemberDto>() {
+
+	@Override
+	public AdminMemberDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+});
+
+------------------------------------------------------------------------
+[ 이후 ]
+
+public AdminMemberDto selectAdmin(String a_m_id) {
+	System.out.println(CLASS_NAME.concat("selectAdmin()"));
+	
+	String sql = "SELECT * FROM tbl_admin_member "
+				+ "WHERE a_m_id = ? AND a_m_approval > 0";
+	
+	List<AdminMemberDto> adminMemberDtos = new ArrayList<AdminMemberDto>();
+	
+	adminMemberDtos = jdbcTemplate.query(sql, new RowMapper<AdminMemberDto>() {
+
+		@Override
+		public AdminMemberDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+			
+			AdminMemberDto adminMemberDto = new AdminMemberDto();
+			
+			adminMemberDto.setA_m_no(rs.getInt("a_m_no"));
+			adminMemberDto.setA_m_approval(rs.getInt("a_m_approval"));
+			adminMemberDto.setA_m_id(rs.getString("a_m_id"));
+			adminMemberDto.setA_m_pw(rs.getString("a_m_pw"));
+			adminMemberDto.setA_m_name(rs.getString("a_m_name"));
+			adminMemberDto.setA_m_gender(rs.getString("a_m_gender"));
+			adminMemberDto.setA_m_part(rs.getString("a_m_part"));
+			adminMemberDto.setA_m_position(rs.getString("a_m_position"));
+			adminMemberDto.setA_m_mail(rs.getString("a_m_mail"));
+			adminMemberDto.setA_m_phone(rs.getString("a_m_phone"));
+			adminMemberDto.setA_m_reg_date(rs.getString("a_m_reg_date"));
+			adminMemberDto.setA_m_mod_date(rs.getString("a_m_mod_date"));
+			
+			return adminMemberDto;
+		}
+		
+	});
+	
+	return adminMemberDtos.size() > 0 ? adminMemberDtos.get(0) : null;
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+e.printStackTrace(); 는?
+	-예외(Exception)가 발생했을 때 예외의 발생 원인과 발생 위치를 콘솔에 출력하는 메서드이다.
+
+try {
+    // 예외가 발생할 수 있는 코드
+} catch (Exception e) {
+    e.printStackTrace();
+}
+	-e는 발생한 예외 객체(Exception 객체)이다.
+	
+	
+출력되는 정보에는 일반적으로 다음 내용이 포함된다.
+	-예외 종류
+	-예외 메시지
+	-예외가 발생한 코드의 위치
+	-예외가 발생하기까지의 호출 경로(Stack Trace)
+	
+	
