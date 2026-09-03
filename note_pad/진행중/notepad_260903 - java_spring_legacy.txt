@@ -1,0 +1,556 @@
+20260903
+
+
+1. 상태값에 따른 텍스트 출력
+	<c:choose>
+		<c:when test="${item.b_rantal_able eq '0'}"><c:out value='대출중' /></c:when>
+		<c:when test="${item.b_rantal_able eq '1'}"><c:out value='대출가능' /></c:when>
+		<c:otherwise><c:out value='X' /></c:otherwise>
+	</c:choose>	
+	
+	-b_rantal_able의 값에 따라 대출중 / 대출가능 / X를 화면에 출력한다.
+	
+
+2. 상태값에 따른 <option> 선택
+	<select name="b_rantal_able">
+		<option value="">SELECT BOOK RANTAL ABLE.</option>
+		<option value="0" <c:if test="${bookDto.b_rantal_able eq '0' }"> selected </c:if>>UNABLE</option>
+		<option value="1" <c:if test="${bookDto.b_rantal_able eq '1' }"> selected </c:if>>ABLE</option>
+	</select>
+	
+	-bookDto.b_rantal_able의 값에 따라 <select>의 해당 <option>에 selected 속성을 추가하여 현재 상태를 선택된 값으로 표시한다.
+
+
+------------------------------------------------------------------------
+
+UploadFileService 이란?
+	-사용자가 업로드한 파일을 실제 서버 저장소에 저장하는 기능을 담당하는 사용자 정의 클래스이다.
+	-Spring에서 기본적으로 제공하는 객체라기보다, 프로젝트에서 파일 저장 기능을 분리하기 위해 직접 만든 클래스로 볼 수 있다.
+	-Controller에서 직접 저장하지 않는 이유
+		-파일 저장 로직(업로드 기능)을 Controller에 직접 작성할 수도 있지만, 역할이 많아질 수 있기 때문에 별도의 클래스인 UploadFileService로 분리해 역할을 나눈다.
+
+
+	file.getOriginalFilename() 이란?
+		-사용자가 업로드한 파일의 원본 파일명을 반환하는 MultipartFile의 메서드이다.
+		-사용자가 새로운 파일을 선택했는지 확인하는 것이 목적이다.
+	
+
+-관련 코드-
+// SAVE FILE
+if (!file.getOriginalFilename().equals("")) {
+	
+	String savedFileName = uploadFileService.upload(file);
+	if (savedFileName != null) {
+		bookDto.setB_thumbnail(savedFileName);
+		
+	}
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+JdbcTemplate 의존성 주입 이란?
+
+final private JdbcTemplate jdbcTemplate;
+
+public BookDao(JdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+}
+
+	-BookDao가 직접 JdbcTemplate 객체를 생성하지 않고, Spring이 생성하고 관리하는 JdbcTemplate 객체를 생성자를 통해 주입받는 방식이다.
+	-Spring이 JdbcTemplate을 Bean으로 관리하고, BookDao가 생성될 때 필요한 JdbcTemplate을 생성자 매개변수로 전달한다.
+	
+	
+	-queryForObject() 이란?
+		-jdbcTemplate에서 SQL 조회 결과가 하나의 값 또는 하나의 객체일 때 사용하는 JdbcTemplate의 조회 메서드이다.
+	
+	
+-관련 코드-
+int result = jdbcTemplate.queryForObject(sql, Integer.class, b_isbn);
+
+
+	-jdbcTemplate.update() 이란?
+
+
+-관련 코드-
+try {
+	result = jdbcTemplate.update(sql, 
+				bookDto.getB_thumbnail(), 
+				bookDto.getB_name(), 
+				bookDto.getB_author(), 
+				bookDto.getB_pulisher(), 
+				bookDto.getB_pulish_year(), 
+				bookDto.getB_isbn(), 
+				bookDto.getB_call_number(), 
+				bookDto.getB_rantal_able()
+				);
+	
+} catch (Exception e) {
+	e.printStackTrace();
+	
+}
+
+	Integer.class 란?
+		-SQL 실행 결과를 어떤 타입으로 반환받을지 지정하며, COUNT(*)의 결과는 숫자이므로 Integer.class를 사용한다.
+
+
+query()와 update() 차이
+
+query() : 데이터 조회
+	-SQL의 조회 결과를 가져온다.
+	-{ SELECT * FROM tbl_book }
+	-데이터를 읽어올 때 주로 사용한다.
+
+
+update() : 데이터 변경
+	-데이터를 조회하는 것이 아니라 DB의 데이터를 변경한다.
+	-{ UPDATE tbl_book
+		SET b_name = ?
+		WHERE b_no = ? }
+	-데이터가 변경되고, update()는 영향받은 행의 수를 반환한다.
+	
+
+메서드	| 주로 사용하는 SQL	| 목적	| 반환
+query()		| SELECT	| 데이터 조회		| 주로 List<T>
+update()	| INSERT, UPDATE, DELETE	| 데이터 변경		| 영향받은 행의 수 int
+	
+
+------------------------------------------------------------------------
+args를 이용한 동적 SQL 구성
+
+-관련 코드-
+public int updateBook(BookDto bookDto) {
+	System.out.println(CLASS_NAME.concat("updateBook()"));
+	
+	List<String> args = new ArrayList<String>();
+	
+	String sql = "UPDATE tbl_book SET ";
+			if (bookDto.getB_thumbnail() != null) {
+				sql += "b_thumbnail = ?, ";
+				args.add(bookDto.getB_thumbnail());
+			}
+			
+			sql += "b_name = ?, ";
+			args.add(bookDto.getB_name());
+			
+			sql += "b_author = ?, ";
+			args.add(bookDto.getB_author());
+	
+			sql += "b_pulisher = ?, ";
+			args.add(bookDto.getB_pulisher());
+			
+			sql += "b_pulish_year = ?, ";
+			args.add(bookDto.getB_pulish_year());
+			
+			sql += "b_isbn = ?, ";
+			args.add(bookDto.getB_isbn());
+			
+			sql += "b_call_number = ?, ";
+			args.add(bookDto.getB_call_number());
+			
+			sql += "b_rantal_able = ? ";
+			args.add(Integer.toString(bookDto.getB_rantal_able()));
+			
+			sql += "WHERE b_no = ?";
+			args.add(Integer.toString(bookDto.getB_no()));
+			
+	int result = -1;
+	try {
+		
+		result = jdbcTemplate.update(sql, args.toArray());
+		
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+
+	return result;
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+GetMapping 페이지에 접근하기 전에 로그인 여부를 확인하는 Controller 메서드
+
+@GetMapping("/modifyAccountForm")
+public String modifyAccountForm(HttpSession session) {
+	System.out.println(CLASS_NAME.concat("modifyAccountForm()"));
+	
+	if (session.getAttribute("loginedAdminMemberId") == null) {
+		return "redirect:/admin/member/loginForm";
+	}
+	
+	String nextPage = "admin/book/modify_account_form";
+	
+	return nextPage;
+	
+}
+
+
+
+관리자 계정 수정 페이지 요청
+        ↓
+GET /modifyAccountForm
+        ↓
+HttpSession에서 로그인 정보 확인
+        ↓
+loginedAdminMemberId 존재?
+    ┌───────┴───────┐
+   없음             있음
+    ↓                ↓
+로그인 페이지       계정 수정 페이지
+Redirect
+
+
+
+HttpSession & session
+
+	HttpSession 이란?
+		-사용자별 상태나 데이터를 서버 측에서 일정 기간 유지하기 위한 객체이다.
+		-HTTP는 기본적으로 무상태(Stateless) 방식이기 때문에, 서버는 각각의 요청을 기본적으로 독립적으로 처리한다.
+		
+		
+		setAttribute()	| 세션에 데이터 저장
+		getAttribute()	| 세션에서 데이터 조회
+		removeAttribute()	| 특정 세션 데이터 삭제
+		invalidate()	| 세션 전체 삭제
+		
+		
+	Session이란?
+		-Session(세션)은 동일한 사용자의 여러 요청을 하나의 연결된 상태로 관리하기 위한 상태 유지 방식이다.
+		-HTTP는 기본적으로 Stateless(무상태) 프로토콜이다.
+		-다음과 같이 요청이 이루어져도 서버는 기본적으로 각각의 요청을 독립적으로 처리한다.
+		
+		HttpSession과의 관계
+			-Session은 상태를 유지하는 개념이고, Java 웹 환경에서는 이를 구현하고 관리하기 위한 객체로 HttpSession을 사용한다.
+		
+
+public String modifyAccountForm(HttpSession session)
+
+	-Spring MVC가 현재 사용자의 세션 객체를 메서드의 매개변수로 전달한다.
+	-세션에는 로그인한 사용자의 정보를 저장할 수 있다.
+
+
+로그인 여부 확인
+
+if (session.getAttribute("loginedAdminMemberId") == null) {
+    return "redirect:/admin/member/loginForm";
+}
+
+	-세션에서 loginedAdminMemberId라는 데이터를 가져와 그리고 값이 null인지 확인한다.
+	-로그인하지 않은 사용자가 계정 수정 페이지 URL에 직접 접근하는 것을 막는 역할을 한다.
+	
+	
+redirect(리다이렉트) 란?
+	-서버가 클라이언트에게 다른 URL로 다시 요청하도록 하는 방식이다.
+	
+	세션에 로그인 정보가 없다면
+		-@GetMapping 페이지 접근 차단하고, 로그인 페이지로 Redirect한다.
+
+	반대로 로그인 정보가 존재하면
+		-View를 반환하여 해당 페이지를 보여준다.
+		
+
+return "redirect:/admin/member/loginForm";
+
+	-redirect:를 사용하면 단순히 JSP 화면을 반환하는 것이 아니라 클라이언트에게 다른 URL로 다시 요청하도록 응답한다.
+	
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+@Configuration 란?
+	-해당 클래스가 Spring의 설정(Configuration)을 담당하는 클래스임을 나타내는 애너테이션이다.
+	-@Configuration이 붙은 클래스는 주로 Spring Bean을 생성하고 설정하기 위한 Java 기반 설정 클래스로 사용된다.
+	
+
+@Bean 이란?
+	-메서드가 반환하는 객체를 Spring Container가 관리하는 Bean으로 등록하도록 하는 애너테이션이다.
+	-@Bean이 붙어 있기 때문에 Spring은 반환된 BasicDataSource 객체를 Bean으로 등록하고 관리한다.
+	
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+Java언어로 xml 코딩하는법, Bean생성을 java로
+
+------------------------------------------------------------------------
+file-context.xml -> MultipartResolverConfig.java
+
+[ 이전 : file-context.xml ]
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+		
+	<bean 
+		id="multipartResolver" 
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	
+		<property name="maxUploadSize" value="10240000" />
+		<property name="defaultEncoding" value="utf-8" />
+	
+	</bean>
+		
+</beans>
+
+
+------------------------------------------------------------------------
+[ 이후 : MultipartResolverConfig.java ]
+
+package com.office.library.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+@Configuration
+public class MultipartResolverConfig {
+	
+	final private String CLASS_NAME = "[MultipartResolverConfig] ";
+	
+	@Bean
+	public CommonsMultipartResolver multipartResolver() {
+		System.out.println(CLASS_NAME.concat("multipartResolver()"));
+		
+		CommonsMultipartResolver commonsMultipartResolver = 
+				new CommonsMultipartResolver();
+		
+		commonsMultipartResolver.setMaxUploadSize(10240000);
+		commonsMultipartResolver.setDefaultEncoding("UTF-8");
+		
+		return commonsMultipartResolver;
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+jdbc-context.xml -> jdbcTemplateConfig.java
+
+[ 이전 : jdbc-context.xml ]
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+   xmlns:tx="http://www.springframework.org/schema/tx"
+   xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+      
+	<!-- connection bean(객체)
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/db_library" />
+		<property name="username" value="root" />
+		<property name="password" value="1234" />
+	</bean>
+	-->
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+       <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+       <property name="url" value="jdbc:mysql://localhost:3306/db_library"/>
+       <property name="username" value="root"/>
+       <property name="password" value="1234"/>
+   
+       <!-- Connection Pool 설정 -->
+       <property name="initialSize" value="5"/>
+       <property name="maxTotal" value="10"/>
+       <property name="maxIdle" value="2"/>
+       <property name="minIdle" value="2"/>
+   </bean>
+	
+	<!-- JDBCTemplate  bean(객체) -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+</beans>
+
+
+------------------------------------------------------------------------
+[ 이후 : jdbcTemplateConfig.java ]
+
+package com.office.library.config;
+
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+@Configuration
+public class jdbcTemplateConfig {
+
+	final private String CLASS_NAME = "[jdbcTemplateConfig] ";
+	
+	@Bean
+	public BasicDataSource dataSource() {
+		System.out.println(CLASS_NAME.concat("basicDataSource(0"));
+		
+		BasicDataSource basicDataSource = new BasicDataSource();
+		
+		basicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+		basicDataSource.setUrl("jdbc:mysql://localhost:3306/db_library");
+		basicDataSource.setUsername("root");
+		basicDataSource.setPassword("1234");
+		
+		basicDataSource.setInitialSize(5);
+		basicDataSource.setMaxTotal(10);
+		basicDataSource.setMaxIdle(2);
+		basicDataSource.setMinIdle(2);
+		
+		return basicDataSource;
+
+	}
+	
+	@Bean
+	public JdbcTemplate jdbcTemplate() {
+		System.out.println(CLASS_NAME.concat("jdbcTemplate()"));
+		
+		JdbcTemplate jdbcTemplate = new JdbcTemplate();
+		jdbcTemplate.setDataSource(dataSource());
+		
+		return jdbcTemplate;
+		
+		
+	}
+	
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+mail-context.xml -> MailSenderConfig.java
+
+[ 이전 : mail-context.xml ]
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+      
+   <!-- JavaMailSenderImpl 객체 -->
+   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+      <property name="host" value="smtp.gmail.com" />
+      <property name="port" value="587" />
+      <property name="username" value="ho8566z@gmail.com" />  <!-- 개인 수신 가능한 메일 주소 작성 -->
+      <property name="password" value="hlvzjdqblmaqokyf" />    <!-- 생성된 앱 비밀번호 입력 -->
+      <property name="javaMailProperties">
+         <props>
+            <prop key="mail.smtp.auth">true</prop>
+            <prop key="mail.smtp.starttls.enable">true</prop>
+         </props>
+      </property>
+   </bean>
+   
+</beans>
+
+
+------------------------------------------------------------------------
+[ 이후 : MailSenderConfig.java ]
+
+package com.office.library.config;
+
+import java.util.Properties;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+@Configuration
+public class MailSenderConfig {
+	
+final private String CLASS_NAME = "[MailSenderConfig] ";
+	
+	@Bean
+	public JavaMailSenderImpl mailSenderImpl() {
+		System.out.println(CLASS_NAME.concat("mailSenderImpl()"));
+		
+		JavaMailSenderImpl mailSenderImpl = new JavaMailSenderImpl();
+		
+		mailSenderImpl.setHost("smtp.gmail.com");
+		mailSenderImpl.setPort(587);
+		mailSenderImpl.setUsername("ho8566z@gmail.com");
+		mailSenderImpl.setPassword("hlvzjdqblmaqokyf");
+		
+		Properties properties = new Properties();
+		properties.setProperty("mail.smtp.auth", "true");
+		properties.setProperty("mail.smtp.starttls.enable", "true");
+		
+		mailSenderImpl.setJavaMailProperties(properties);
+		
+		return mailSenderImpl;
+		
+	}
+
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+security-context.xml -> SecurityConfig.java
+
+[ 이전 : security-context.xml ]
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<bean 
+		id="bCryptPasswordEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+	
+	</bean>
+
+</beans>
+
+
+------------------------------------------------------------------------
+[ 이후 : SecurityConfig.java ]
+
+package com.office.library.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+@Configuration
+public class SecurityConfig {
+
+final private String CLASS_NAME = "[SecurityConfig] ";
+	
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		System.out.println(CLASS_NAME.concat("bCryptPasswordEncoder()"));
+		
+		return new BCryptPasswordEncoder();
+		
+	}
+	
+}
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
