@@ -1,0 +1,236 @@
+20260904
+
+
+lombok(롬북) 프레임워크 란?
+
+Java에서 반복적으로 작성해야 하는 코드를 줄여주는 라이브러리이다.
+
+Java 클래스에서는 필드에 대한 getter, setter, 생성자 등을 직접 작성해야 하는 경우가 많지만, Lombok을 사용하면 어노테이션만으로 이러한 반복 코드를 자동으로 생성할 수 있다.
+
+
+@Getter : Getter 메서드 자동 생성
+@Setter : Setter 메서드 자동 생성
+@ToString : toString() 메서드 자동 생성
+@NoArgsConstructor : 기본 생성자 자동 생성
+@AllArgsConstructor : 모든 필드를 매개변수로 받는 생성자 자동 생성
+@RequiredArgsConstructor : 필요한 필드를 매개변수로 받는 생성자 자동 생성
+@Data : @Getter, @Setter, @ToString 등을 한 번에 적용
+
+공식 홈페이지 : https://projectlombok.org/
+
+
+
+pom.xml에 Lombok 의존성 등록 코드
+
+<!-- LOMBOK -->
+<!-- Source: https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+<dependency>
+	<groupId>org.projectlombok</groupId>
+	<artifactId>lombok</artifactId>
+	<version>1.18.24</version>
+	<scope>provided</scope>
+</dependency>
+
+------------------------------------------------------------------------
+
+session.invalidate(); 이란?
+
+현재 사용자의 세션(Session)을 무효화하는 메서드이다.
+
+서버에 저장되어 있던 현재 세션의 모든 데이터(세션 속성)를 삭제하고 해당 세션을 종료한다.
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+BeanPropertyRowMapper 란?
+
+Spring JDBC에서 제공하는 RowMapper의 구현 클래스로, SQL 조회 결과인 ResultSet의 컬럼 값을 Java 객체의 프로퍼티(필드)에 자동으로 매핑해주는 클래스이다.
+
+RowMapper를 구현하면 각 컬럼을 일일이 DTO의 필드에 설정해야 하지만, BeanPropertyRowMapper를 사용하면 이러한 매핑 코드를 직접 작성하지 않아도 된다.
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+RowMapper와 BeanPropertyRowMapper를 이용한 조회 결과 매핑
+
+[ 이전 : RowMapper를 사용한 코드 ]
+
+public UserMemberDto selectUser(String u_m_id) {
+	System.out.println(CLASS_NAME.concat("selectUser()"));
+	
+	String sql = "SELECT * FROM tbl_user_member "
+				+ "WHERE u_m_id = ?";
+	
+	List<UserMemberDto> userMemberDtos = new ArrayList<UserMemberDto>();
+	
+	try {
+		userMemberDtos = jdbcTemplate.query(sql, new RowMapper<UserMemberDto>() {
+
+			@Override
+			public UserMemberDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				
+				UserMemberDto userMemberDto = new UserMemberDto();
+				
+				userMemberDto.setU_m_no(rs.getInt("u_m_no"));
+				userMemberDto.setU_m_id(rs.getString("u_m_id"));
+				userMemberDto.setU_m_pw(rs.getString("u_m_pw"));
+				userMemberDto.setU_m_name(rs.getString("u_m_name"));
+				userMemberDto.setU_m_gender(rs.getString("u_m_gender"));
+				userMemberDto.setU_m_mail(rs.getString("u_m_mail"));
+				userMemberDto.setU_m_phone(rs.getString("u_m_phone"));
+				userMemberDto.setU_m_reg_date(rs.getString("u_m_reg_date"));
+				userMemberDto.setU_m_mod_date(rs.getString("u_m_mod_date"));
+				
+				return userMemberDto;
+				
+			}
+			
+		}, u_m_id);
+		
+	} catch (Exception e) {
+		e.printStackTrace();
+	
+	}
+	
+	return userMemberDtos.size() > 0 ? userMemberDtos.get(0) : null;
+}
+
+------------------------------------------------------------------------
+[ 이후 : BeanPropertyRowMapper를 사용한 코드 ]
+
+public UserMemberDto selectUser(String u_m_id) {
+	System.out.println(CLASS_NAME.concat("selectUser()"));
+	
+	String sql = "SELECT * FROM tbl_user_member "
+				+ "WHERE u_m_id = ?";
+	
+	List<UserMemberDto> userMemberDtos = new ArrayList<UserMemberDto>();
+	
+	try {
+		
+		// 모든 멤버필드를 맵핑할때만 사용한다.
+		RowMapper<UserMemberDto> rowMapper = BeanPropertyRowMapper.newInstance(UserMemberDto.class);
+		userMemberDtos = jdbcTemplate.query(sql, rowMapper, u_m_id);
+		
+	} catch (Exception e) {
+		e.printStackTrace();
+	
+	}
+	
+	return userMemberDtos.size() > 0 ? userMemberDtos.get(0) : null;
+}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+패키지와 클래스 이름이 중복될 때 Bean 이름 직접 설정하는 방법
+
+
+@Controller("admin.BookController")
+@RequestMapping("/book/admin")   // /book/admin/registerBookForm
+public class BookController {}
+
+@Controller("user.BookController")
+@RequiredArgsConstructor
+@RequestMapping("/user/book")
+public class BookController {}
+
+------------------------------------------------------------------------
+@Service("admin.BookService")
+public class BookService {"
+
+@Service("user.BookService")
+@RequiredArgsConstructor
+public class BookService {}
+
+------------------------------------------------------------------------
+@Repository("admin.BookDao")
+public class BookDao {}
+
+@Repository("user.BookDao")
+public class BookDao {}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+동일한 클래스 이름의 Bean 충돌을 방지하기 위한 사용자 정의 BeanNameGenerator
+
+[ servlet-context.xml ]
+
+<context:component-scan base-package="com.office.library" name-generator="com.office.library.config.LibraryBeanNameGenerator" />
+
+------------------------------------------------------------------------
+[ LibraryBeanNameGenerator ]
+
+package com.office.library.config;
+
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanNameGenerator;
+
+public class LibraryBeanNameGenerator implements BeanNameGenerator {
+
+	@Override
+	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
+		
+		System.out.println("definition.getBeanClassName : " + definition.getBeanClassName());
+		
+		return definition.getBeanClassName();
+	}
+
+}
+
+------------------------------------------------------------------------
+[ LibraryBeanNameGenerator의 Bean 이름 생성 결과 ]
+
+definition.getBeanClassName : com.office.library.HomeController
+definition.getBeanClassName : com.office.library.admin.AdminHomeController
+definition.getBeanClassName : com.office.library.admin.member.AdminMemberController
+definition.getBeanClassName : com.office.library.admin.member.AdminMemberDao
+definition.getBeanClassName : com.office.library.admin.member.AdminMemberService
+definition.getBeanClassName : com.office.library.book.admin.BookController
+definition.getBeanClassName : com.office.library.book.admin.BookDao
+definition.getBeanClassName : com.office.library.book.admin.BookService
+definition.getBeanClassName : com.office.library.book.admin.util.UploadFileService
+definition.getBeanClassName : com.office.library.book.user.BookController
+definition.getBeanClassName : com.office.library.book.user.BookDao
+definition.getBeanClassName : com.office.library.book.user.BookService
+definition.getBeanClassName : com.office.library.config.MailSenderConfig
+definition.getBeanClassName : com.office.library.config.MultipartResolverConfig
+definition.getBeanClassName : com.office.library.config.SecurityConfig
+definition.getBeanClassName : com.office.library.config.jdbcTemplateConfig
+definition.getBeanClassName : com.office.library.user.UserHomeController
+definition.getBeanClassName : com.office.library.user.member.UserMemberController
+definition.getBeanClassName : com.office.library.user.member.UserMemberDao
+definition.getBeanClassName : com.office.library.user.member.UserMemberService
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+@RequestParam의 required 속성
+
+public ModelAndView searchBookConfirm(
+	@RequestParam(value="b_name", required=false) String b_name) {}
+			
+	required=false는?
+	
+	해당 요청 파라미터가 반드시 전달되지 않아도 된다는 의미이다.
+	
+	요청에서 b_name이라는 파라미터가 없어도 오류를 발생시키지 않고, b_name 변수에 null을 저장하도록 한다.
+	
+	
+	required=true인 경우
+	
+	@RequestParam(value="b_name") String b_name
+	
+	value="b_name"과 같이 요청하면 정상 처리되지만, b_name이 없으면 요청 파라미터가 필수이므로 오류가 발생할 수 있다.
+	
+	
+	required=false인 경우
+	
+	@RequestParam(value="b_name", required=false) String b_name
+	
+	b_name 파라미터를 선택적으로 전달할 수 있도록 설정한다.
+
+	따라서 다음과 같이 b_name이 전달되는 요청과 전달되지 않는 요청을 모두 처리할 수 있다.
+	
+------------------------------------------------------------------------
+------------------------------------------------------------------------
