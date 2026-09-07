@@ -1,0 +1,143 @@
+========================================================================
+[ Java 핵심 API와 데이터 처리 ]
+
+Enum
+
+Generic
+
+Collection Framework
+
+List
+
+Set
+
+Map
+
+Lamda
+
+Stream
+
+------------------------------------------------------------------------
+[ Java 고급 기능과 시스템 처리 ]
+
+파일 처리
+
+직렬화(Serialization)
+
+날짜와 시간 API(java.time)
+
+멀티스레드(Thread)
+
+네트워크(Socket)
+
+------------------------------------------------------------------------
+[ 데이터베이스와 프로젝트 빌드 관리 ]
+
+Gradle
+
+
+========================================================================
+[ JSP / MVC ]
+
+Model 1 방식이란?
+
+Model 2 방식이란?
+
+
+[ Spring ]
+
+전자정부표준프레임워크
+
+------------------------------------------------------------------------
+{ JSP(JavaServer Pages) }
+
+( JSP 기본 문법 )
+
+JSP 파일 구조
+
+Scriptlet
+
+Expression
+
+Declaration
+
+Directive
+
+
+(JSP 표현 및 태그)
+
+EL
+
+JSTL
+
+
+
+{ JSP View }
+
+( JSP View 개념 )
+
+JSP의 View 역할
+
+Servlet → JSP 데이터 전달
+
+
+( 데이터 전달 및 페이지 이동 )
+
+request.setAttribute()
+
+request.getAttribute()
+
+Forward
+
+Redirect
+
+
+========================================================================
+[ Spring 기본 ]
+
+Spring Framework
+
+Spring Framework의 특징
+
+ApplicationContext
+
+
+[ Spring MVC ]
+
+Service
+
+전체 실행 흐름
+
+
+[ Spring 데이터 연동 ]
+
+DataSource
+
+JdbcTemplate
+
+Connection Pool
+
+Transaction
+
+MyBatis 연동
+
+
+========================================================================
+[ Spring Legacy 개요 ]
+
+Spring Framework 개념
+
+Spring Legacy와 Spring Boot의 차이
+
+의존성 관리
+
+
+[ Spring MVC 구조 ]
+
+MVC 전체 실행 흐름
+
+요청(Request)과 응답(Response)
+
+Controller와 View의 연결
+
+========================================================================
