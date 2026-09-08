@@ -1,0 +1,179 @@
+BookRentalPjt
+├──src
+│	├── main
+│	│   ├── java
+│	│   │   └── com
+│	│   │       └── office
+│	│   │           └── library
+│	│   │               │
+│	│   │               ├── HomeController.java
+│	│   │               │
+│	│   │               ├── admin
+│	│   │               │   ├── AdminHomeController.java
+│	│   │               │   │
+│	│   │               │   └── member
+│	│   │               │       ├── AdminMemberController.java
+│	│   │               │       ├── AdminMemberDao.java
+│	│   │               │       ├── AdminMemberDto.java
+│	│   │               │       ├── AdminMemberLoginInterceptor.java
+│	│   │               │       └── AdminMemberService.java
+│	│   │               │
+│	│   │               ├── book
+│	│   │               │   ├── BookDto.java
+│	│   │               │   ├── HopeBookDto.java
+│	│   │               │   ├── RentalBookDto.java
+│	│   │               │   │
+│	│   │               │   ├── admin
+│	│   │               │   │   ├── BookController.java
+│	│   │               │   │   ├── BookDao.java
+│	│   │               │   │   ├── BookService.java
+│	│   │               │   │   │
+│	│   │               │   │   └── util
+│	│   │               │   │       └── UploadFileService.java
+│	│   │               │   │
+│	│   │               │   └── user
+│	│   │               │       ├── BookController.java
+│	│   │               │       ├── BookDao.java
+│	│   │               │       └── BookService.java
+│	│   │               │
+│	│   │               ├── config
+│	│   │               │   ├── LibraryBeanNameGenerator.java
+│	│   │               │   ├── MailSenderConfig.java
+│	│   │               │   ├── MultipartResolverConfig.java
+│	│   │               │   ├── SecurityConfig.java
+│	│   │               │   └── jdbcTemplateConfig.java
+│	│   │               │
+│	│   │               └── user
+│	│   │                   ├── UserHomeController.java
+│	│   │                   │
+│	│   │                   └── member
+│	│   │                       ├── UserMemberController.java
+│	│   │                       ├── UserMemberDao.java
+│	│   │                       ├── UserMemberDto.java
+│	│   │                       ├── UserMemberLoginInterceptor.java
+│	│   │                       └── UserMemberService.java
+│	│   │
+│	│   ├── resources
+│	│   │   └── log4j.xml
+│	│   │
+│	│   └── webapp
+│	│       ├── WEB-INF
+│	│       │   ├── spring
+│	│       │   │   └── appServlet
+│	│       │   │       └── servlet-context.xml
+│	│       │   │
+│	│       │   ├── views
+│	│       │   │   ├── home.jsp
+│	│       │   │   │
+│	│       │   │   ├── include
+│	│       │   │   │   ├── footer.jsp
+│	│       │   │   │   ├── header.jsp
+│	│       │   │   │   └── title.jsp
+│	│       │   │   │
+│	│       │   │   ├── admin
+│	│       │   │   │   ├── home.jsp
+│	│       │   │   │   │
+│	│       │   │   │   ├── include
+│	│       │   │   │   │   ├── book_detail_js.jsp
+│	│       │   │   │   │   ├── create_account_form_js.jsp
+│	│       │   │   │   │   ├── find_password_js.jsp
+│	│       │   │   │   │   ├── login_form_js.jsp
+│	│       │   │   │   │   ├── modify_account_form_js.jsp
+│	│       │   │   │   │   ├── modify_book_form_js.jsp
+│	│       │   │   │   │   ├── nav.jsp
+│	│       │   │   │   │   ├── nav_js.jsp
+│	│       │   │   │   │   ├── register_book_form_js.jsp
+│	│       │   │   │   │   └── register_hope_book_form_js.jsp
+│	│       │   │   │   │
+│	│       │   │   │   ├── book
+│	│       │   │   │   │   ├── book_detail.jsp
+│	│       │   │   │   │   ├── delete_book_ng.jsp
+│	│       │   │   │   │   ├── delete_book_ok.jsp
+│	│       │   │   │   │   ├── hope_books.jsp
+│	│       │   │   │   │   ├── modify_book_form.jsp
+│	│       │   │   │   │   ├── modify_book_ng.jsp
+│	│       │   │   │   │   ├── modify_book_ok.jsp
+│	│       │   │   │   │   ├── register_book_form.jsp
+│	│       │   │   │   │   ├── register_book_ng.jsp
+│	│       │   │   │   │   ├── register_book_ok.jsp
+│	│       │   │   │   │   ├── register_hope_book_form.jsp
+│	│       │   │   │   │   └── search_book.jsp
+│	│       │   │   │   │
+│	│       │   │   │   └── member
+│	│       │   │   │       ├── create_account_form.jsp
+│	│       │   │   │       ├── create_account_ng.jsp
+│	│       │   │   │       ├── create_account_ok.jsp
+│	│       │   │   │       ├── find_password_form.jsp
+│	│       │   │   │       ├── find_password_ok.jsp
+│	│       │   │   │       ├── listup_admins.jsp
+│	│       │   │   │       ├── login_form.jsp
+│	│       │   │   │       ├── login_ng.jsp
+│	│       │   │   │       ├── login_ok.jsp
+│	│       │   │   │       ├── modify_account_form.jsp
+│	│       │   │   │       ├── modify_account_ng.jsp
+│	│       │   │   │       └── modify_account_ok.jsp
+│	│       │   │	│
+│	│       │   │   └── user
+│	│       │   │       ├── home.jsp
+│	│       │   │       │
+│	│       │   │       ├── include
+│	│       │   │       │   ├── create_account_form_js.jsp
+│	│       │   │       │   ├── login_js.jsp
+│	│       │   │       │   ├── modify_account_form_js.jsp
+│	│       │   │       │   ├── nav.jsp
+│	│       │   │       │   ├── nav_js.jsp
+│	│       │   │       │   └── request_hope_book_form_js.jsp
+│	│       │   │       │
+│	│       │   │       ├── book
+│	│       │   │       │   ├── book_detail.jsp
+│	│       │   │       │   ├── bookshelf.jsp
+│	│       │   │       │   ├── list_hope_book.jsp
+│	│       │   │       │   ├── rental_book_history.jsp
+│	│       │   │       │   ├── rental_book_ng.jsp
+│	│       │   │       │   ├── rental_book_ok.jsp
+│	│       │   │       │   ├── request_hope_book_form.jsp
+│	│       │   │       │   ├── request_hope_book_ng.jsp
+│	│       │   │       │   ├── request_hope_book_ok.jsp
+│	│       │   │       │   └── search_book.jsp
+│	│       │   │       │
+│	│       │   │       └── member
+│	│       │   │           ├── create_account_form.jsp
+│	│       │   │           ├── create_account_ng.jsp
+│	│       │   │           ├── create_account_ok.jsp
+│	│       │   │           ├── login_form.jsp
+│	│       │   │           ├── login_ng.jsp
+│	│       │   │           ├── login_ok.jsp
+│	│       │   │           ├── modify_account_form.jsp
+│	│       │   │           ├── modify_account_ng.jsp
+│	│       │   │           └── modify_account_ok.jsp
+│	│       │   │
+│	│       │   └── web.xml
+│	│       │
+│	│       └── resources
+│	│           ├── css
+│	│           │   ├── admin
+│	│           │   ├── common
+│	│           │   ├── include
+│	│           │   └── user
+│	│           │
+│	│           └── img
+│	│               ├── admin
+│	│               └── user
+│	│
+│	└── test
+│	    └── resources
+│	        └── log4j.xml
+│	 
+└──	sql
+	└── Script-2.sql
+	
+------------------------------------------------------------------------
+
+코드 참조
+https://github.com/ho8566z/Book_Rental_Pjt
+
+------------------------------------------------------------------------
+
+노션 정리
+https://app.notion.com/p/Spring-Legacy-3d500b1cd77d8093999cf2c94f364d5e?source=copy_link
+

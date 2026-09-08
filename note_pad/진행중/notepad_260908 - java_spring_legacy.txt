@@ -1,0 +1,60 @@
+20260908
+
+
+List<Dto>, HashMap을 데이터 타입으로 받을때
+
+------------------------------------------------------------------------
+메서드의 매개변수나 반환 타입으로 받을 때, List<Dto>로 받는 경우
+
+
+List<BookDto>는 같은 타입의 객체를 여러 개 받을 때 사용합니다.
+
+
+public void process(List<BookDto> bookDtos) {
+    // ...
+}
+
+
+List<BookDto> bookDtos = new ArrayList<>();
+
+bookDtos.add(bookDto1);
+bookDtos.add(bookDto2);
+bookDtos.add(bookDto3);
+
+process(bookDtos);
+
+------------------------------------------------------------------------
+메서드의 매개변수나 반환 타입으로 받을 때, HashMap으로 받는 경우
+
+
+HashMap은 키(Key)와 값(Value)의 형태로 서로 다른 데이터를 묶어서 전달할 때 사용합니다.
+
+
+public void process(HashMap<String, Object> data) {
+    // ...
+}
+
+
+HashMap<String, Object> data = new HashMap<>();
+
+data.put("book", bookDto);
+data.put("user", userDto);
+data.put("count", 10);
+
+process(data);
+
+------------------------------------------------------------------------
+List<Dto> vs HashMap
+
+
+|구분     	|List<Dto>       		|HashMap
+|목적     	|같은 타입 여러 개       	|여러 종류의 데이터 묶음
+|접근     	|index             		|key
+|예시     	|bookDtos.get(0) 		| data.get("book")
+|데이터 형태 	|Dto, Dto, Dto   		|"book" → Dto, "count" → Integer
+|타입 안정성 	|높음                	|상대적으로 낮음
+|주 용도   	|목록/검색 결과          	|여러 데이터를 한 번에 전달
+
+
+------------------------------------------------------------------------
+
