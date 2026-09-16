@@ -1,0 +1,33 @@
+지금까지 나온 우분투/Git 관련 명령어들을 상황별로 정리
+
+
+1. GitLab SSH 인증
+
+명령어										설명
+ssh -T git@gitlab.com						GitLab과 SSH 연결 테스트 및 인증 확인
+ssh-keygen -t ed25519 -C "이메일주소"			새 SSH 키 생성
+cat ~/.ssh/id_ed25519.pub					공개키 내용 출력 (GitLab에 등록할 때 복사용)
+ls -al ~/.ssh								SSH 키 파일이 이미 있는지 확인
+
+
+2. 기존 프로젝트를 내 GitLab로 옮기기 (remote 변경)
+
+명령어															설명
+git remote -v													현재 등록된 원격 저장소 주소 확인
+git remote set-url origin <새주소>								기존 origin의 주소만 교체
+git remote remove origin + git remote add origin <새주소>		위와 동일한 효과의 다른 방법
+git push -u origin main											로컬 커밋을 새 remote로 업로드 + 이후 push/pull 기본 대상으로 연결
+
+
+3. 새 프로젝트 clone/pull (Reporter 권한 등)
+명령어														설명
+git clone git@gitlab.com:ho8566z/shop-project-5th.git		프로젝트 전체를 새로 받기 (이때 origin 자동 등록 + main이 origin/main을 자동 추적)
+git pull													clone받은 폴더에서 최신 변경사항만 받아오기 (별도 옵션 불필요)
+git pull origin main										pull 대상을 명시적으로 지정하는 방식 (clone 직후엔 안 써도 됨)
+
+
+4. 상태 확인용
+
+명령어					설명
+git branch -vv			로컬 브랜치가 어떤 원격 브랜치를 추적 중인지 확인
+git --version			git 설치 여부 및 버전 확인
