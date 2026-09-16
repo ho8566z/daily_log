@@ -1,0 +1,143 @@
+#### spring initializr : spring boot 프로젝츠 생성할 수 있는 웹사이트
+
+https://start.spring.io/
+
+- spring initializr 웹사이트
+
+!image.png
+
+---
+
+- JSP : html + css + javascript + JSP 태그/EL/JSTL
+- Thymeleaf : html + css + javascript + Thymeleaf 문법
+
+```java
+<html lang="en"
+        xmlns:th="http://www.thymeleaf.org">
+```
+
+---
+
+#### Flagment(플래그먼트) 란?
+
+- 실행되는 어플리케이션에서 팝업 형식으로 화면을 띄우는 것
+
+---
+
+```java
+dependencies {
+implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+
+// Source: <https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jdbc>
+implementation("org.springframework.boot:spring-boot-starter-jdbc")
+
+// Source: <https://mvnrepository.com/artifact/com.mysql/mysql-connector-j>
+implementation("com.mysql:mysql-connector-j")
+
+// Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
+implementation("org.springframework.boot:spring-boot-starter-security")
+
+developmentOnly 'org.springframework.boot:spring-boot-devtools'
+testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'
+testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+```
+
+위 코드의 색깔부분 개념정리할것
+
+!image.png
+
+- dependencies 결과
+
+!image.png
+
+---
+
+- spring boot security를 gradle로 넣었을때
+
+!image.png
+
+- terminal의 임시 비밀번호를 입력해야 한다.
+
+!image.png
+
+---
+
+#### filterChain 이란?
+
+- filterChain의 경우, 개념만 간단하게
+- PasswordEncoder와 SecurityFilterChain의 관계까지
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+```
+
+```java
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+    http
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(
+                            "/",
+                            "/css/*",
+                            "/img/*",
+                            "/js/*",
+                            "/member/signup",
+                            "/member/signup_confirm",
+                            "/member/signin",
+                            "/member/findpassword",
+                            "/member/findpassword_confirm",
+                            "/member/signin_result").permitAll()
+                    .anyRequest().authenticated()
+
+            );
+
+    http
+            .formLogin(login -> login
+                    .loginPage("/member/signin")
+                    .loginProcessingUrl("/member/signin_confirm")
+                    .usernameParameter("id")
+                    .passwordParameter("pw")
+                    .successHandler((request, response, authentication) -> {
+                        System.out.println("signin successHandler()");
+
+                        User user = (User) authentication.getPrincipal();
+                        String targetURI = "/member/signin_result?loginedID=" + user.getUsername();
+                        response.sendRedirect(targetURI);
+
+                    })
+                    .failureHandler((request, response, exception) -> {
+                        System.out.println("signin failureHandler()");
+
+                        String targetURI = "/member/signin_result";
+                        response.sendRedirect(targetURI);
+
+                    })
+            );
+
+    // http.exceptionHandling(...)은 Spring Security의 예외 처리 설정을 구성합니다.
+    // 지금은 ‘.accessDeniedHandler’를 설정해서 인가(Authorization) 과정에서
+    // 접근 거부(403 Forbidden) 발생 시 MemberAccessDeniedHandler가 동작하도록 합니다.
+    http
+            .logout(logout -> logout
+                    .logoutUrl("/member/signout_confirm")
+                    .logoutSuccessHandler((request, response, authentication) -> {
+                        System.out.println("signout logoutSuccessHandler()");
+
+                        String targetURI = "/";
+                        response.sendRedirect(targetURI);
+
+                    })
+            );
+
+    return http.build();
+}
+```
+
+---
