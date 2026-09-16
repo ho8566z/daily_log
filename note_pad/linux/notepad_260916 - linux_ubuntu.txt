@@ -1,0 +1,266 @@
+#### 리눅스에 JDK 설치
+
+| sudo apt install openjdk-17-jdk | Java(JDK)17 설치 명령 |
+| --- | --- |
+| Java --version | Java 버전 확인 |
+| Javac --version | Javac 버전 확인 |
+- Java와 Javac 버전확인
+
+!image.png
+
+---
+
+#### 실행만 하려면 JRE, 개발하고 실행하려면 JDK
+
+| JRE(Java Runtime Enviroment) | 자바 실행 환경 |
+| --- | --- |
+| JDK(Java Development Kit) | 자바 개발 도구 |
+
+---
+
+#### Window - Java VS. Linux - Java
+
+| Window - Java | Intellij와 같은 Tool에서 사용한다. | 리눅스는 이걸 모른다. |
+| --- | --- | --- |
+| Linux - Java | Ubuntu와 같은 Linux에서 사용한다. | 윈도우는 이걸 모른다. |
+
+---
+
+#### --which와 --version
+
+| which java | java가 어디에 설치되었는지 확인 |
+| --- | --- |
+| which git | git가 어디에 설치되었는지 확인 |
+| java --version | Java 버전 확인 |
+- 새롭게 설치한Java와 기존의 Git의 설치 확인
+
+!image.png
+
+---
+
+#### Git Install과 Setting
+
+| sudo apt install git | Git 설치 명령 |
+| --- | --- |
+| git --version | Git 버전 확인 |
+| git config --global user.name “ho8566z(내 이름)” | Git애 사용자 이름(user.name) 입력하기 |
+| git config --global user.email “ho8566z@gmail.com(내 이메일)” | Git애 사용자 이메일(user.email) 입력하기 |
+| git config --global  --list | Git에 등록된 사용자 이름과 이메일 조회하는 명령 |
+
+---
+
+#### Java의 Version Trouble
+
+| sudo update-alternatives --config java | 한 시스템에 자바 8, 11, 17처럼 여러 버전이 같이 설치돼 있을 때, java -version으로 확인했을 때 원하는 버전이 아니면 이 명령으로 바꿔준다. |
+| --- | --- |
+- sudo update-alternatives --config java 명령 결과
+
+| Selection | Path |  |  | Priority | Status |
+| --- | --- | --- | --- | --- | --- |
+| *0 | /usr/lib/jvm/java-17-openjdk-amd64/bin/java |  |  | 1711 | auto mode |
+| 1 | /usr/lib/jvm/java-11-openjdk-amd64/bin/java |  |  | 1081 | manual mode |
+
+---
+
+#### Git에서 한글 파일명이 깨지지 않도록 설정
+
+```powershell
+git config  --global core.quotepath false
+```
+
+---
+
+- Git의 설치 확인, user의 name, email 등의 설정 확인
+
+!image.png
+
+---
+
+#### 1. Git SSH Key 만들기
+
+| ssh-keygen -t ed25519 -C ”ho8566z@gmail.com” | 1단계: 키 생성 |
+| --- | --- |
+| cat ~/.ssh/id_ed25519.pub | 2단계: 공개키 출력 |
+
+#### 2. GitLab에 공개키 등록
+
+|  | 넣을 것 | 주의 |
+| --- | --- | --- |
+| Key | ssh-ed25519 AAAA… 통째로 | 헷갈림 주의 |
+| Title | 내 컴퓨터처럼 인식하기 쉬운 이름 | 붙여넣으면, 자동으로 채워진다. |
+| Usage type | 기본값 그대로 | 건드리지 않는다. |
+| Expiration date | 비워도 된다. | 만료되면, 다시 만들면 된다. |
+
+---
+
+#### 3. 연결 확인
+
+```powershell
+ssh -T git@gitlab.com
+```
+
+- 방금 등록한 SSH 키가 GitLab과 제대로 연결되는지 테스트하는 명령이다.
+- Git SSH Key만들고, GitLab에 공개키 등록 성공
+
+!image.png
+
+!image.png
+
+- 공개키 등록 성공한 GitLab
+
+!image.png
+
+---
+
+#### 복사가 잘렸을 때
+
+| 증상 | 원인 | 해결 |
+| --- | --- | --- |
+| Permission denied (publickey) | 공개 키가 일부만 복사되었다. | cat 다시 → 끝까지 드래그 |
+| Permission denied (publickey) | Add Key를 안 눌렀다. | 처음부터 다시 |
+| Could not resolve hostname | 인터넷 연결 문제 | 네트워크 확인 |
+
+---
+
+#### 4. 저장소 받기
+
+| cd ~ | ~(home)으로 이동(change directory) |
+| --- | --- |
+| git clone git@gitlab.com:<clone받을 저장소 사용자 이름>/<프로젝트 이름>.git | 프로젝트를 내려받기 위해 사용자 이름과 프로젝트 이름을 입력해 clone 받는다. |
+| cd <프로젝트 이름> | clone받은 프로젝트로 이동(change directory) |
+| ls | 파일과 디렉토리 전체 조회 |
+
+---
+
+#### clone이 안될 때
+
+| 출력 메세지 | 원인 | 해결 방안 |
+| --- | --- | --- |
+| repository not found | 승인이 되지 않았다. | clone받을 사용자의 GitLab에서 승인되지 않았다. |
+| Permission denied (publickey) | 키가 등록되지 않았다. | SSH Key 목록 확인 |
+| Could not resolve hostname | 주소 오타 | gitlab.com 철자 확인 |
+| 한참 멈춰 있다. | 방화벽이 22번을 막았다. | 도움 묘청 |
+| fatal : destination … exists | 이미 받았다. | ls로 확인 |
+
+---
+
+#### git clone 명령 분석
+
+| 부분 | 뜻 |
+| --- | --- |
+| git clone | clone 명령 |
+| git@ | ‘git이라는 사용자로 접속한다’는 표시  |
+| gitlab.com | 서버 주소 |
+| : | 서버 주소와 경로를 나누는 구분자 |
+| <clone받을 저장소 사용자 이름>/<프로젝트 이름> | 누구의, 어떤 저장소인지 |
+| .git | 이게 Git 저장소라는 표시 |
+
+---
+
+#### clone 확인
+
+| cd <프로젝트 이름> | clone받은 프로젝트로 이동(change directory) |
+| --- | --- |
+| ls | 파일과 디렉토리 전체 조회 |
+| cat <보려는 파일 이름> | 보려는 파일 출력 |
+- cat README.md 명령
+
+!image.png
+
+---
+
+#### git log
+
+| git log | 가장 기본적인 커밋 이력 조회. 각 커밋마다 상세 정보를 전부 보여준다. |  |
+| --- | --- | --- |
+| git log --oneline | 커밋마다 해시 앞 7자리 + 커밋 메시지 한 줄만 간단히 보여준다. |  |
+- git log 명령
+
+!image.png
+
+- ls, git log —oneline, git log 명령
+
+!image.png
+
+---
+
+#### HTTPS 방식(SSH와 비교)
+
+|  | SSH | HTTPS |
+| --- | --- | --- |
+| 주소 모양 | git@gitlab.com … | https://gitlab.co/ … |
+| 인증 | 키를 한번 등록, 이후 자동 | 매번 토큰, 비밀번호 |
+| 쓰는 상황 | 개인 PC, 매일 접속 | 공용 PC, 방화벽이 SSH를 막을 때 |
+
+---
+
+#### pull과 fetch
+
+| 명령 | 의미 | 한 마디로 |
+| --- | --- | --- |
+| fetch | 서버의 변경 사항을 확인한다. | 구경만 하기 |
+| pull | 확인 + 내 파일에 바로 반영한다. | fetch의 상위 명령? |
+
+---
+
+#### Git을 사용하는 이유
+
+- 버전 관리
+    - 코드가 변경된 모든 시점의 스냅샷(커밋)을 남겨서, 언제 무엇이 왜 바뀌었는지 추적하고 필요하면 과거 시점으로 되돌릴 수 있다.
+- 협업
+    - 여러 명이 같은 프로젝트를 동시에 작업해도, 브랜치(branch)로 작업을 분리하고 나중에 병합(merge)해서 충돌 없이 합칠 수 있다.
+- 분산 버전 관리(DVCS)
+    - 중앙 서버 없이도 각자의 로컬 컴퓨터에 전체 히스토리 사본이 있어서, 오프라인 작업이 가능하고 특정 서버가 죽어도 데이터가 안전하다.(SVN 같은 중앙집중식과의 차이점)
+- 백업
+    - 로컬 컴퓨터가 고장 나도 원격 저장소(GitLab 등)에 히스토리가 그대로 남아있다.
+
+#### GitLab을 사용하는 이유
+
+- 보안 / 데이터 통제
+    - 소스코드, 이슈, 문서가 외부(GitHub 등 타사 클라우드) 서버가 아닌 회사 내부망에만 저장된다.
+    - 외부 유출 위험이 낮아 금융/공공기관 등 보안이 중요한 곳에서 선호한다.
+- 내부 인프라와의 통합
+    - 사내 인증 시스템(LDAP, SSO 등), 방화벽, 네트워크 정책과 자유롭게 연동 가능하다.
+    - 외부 인터넷 연결 없이 폐쇄망(망분리) 환경에서도 운영 가능하다.
+- 커스터마이징 자유도
+    - 오픈소스이기 때문에 사내 요구사항에 맞게 기능을 직접 수정/확장 가능하다.
+    - CI/CD, 권한 체계 등을 회사 정책에 맞춰 세밀하게 설정 가능하다.
+- 비용 통제
+    - 사용자 수가 많아져도 외부 서비스 구독료 대신 자체 서버 인프라 비용으로 관리 가능하다.
+
+---
+
+## Ubuntu/Git 관련 명령어들을 상황별로 정리
+
+#### 1. GitLab SSH 인증
+
+| 명령어 | 설명 |
+| --- | --- |
+| ssh -T git@gitlab.com | GitLab과 SSH 연결 테스트 및 인증 확인 |
+| ssh-keygen -t ed25519 -C "이메일주소” | 새 SSH 키 생성 |
+| cat ~/.ssh/id_ed25519.pub | 공개키 내용 출력 (GitLab에 등록할 때 복사용) |
+| ls -al ~/.ssh | SSH 키 파일이 이미 있는지 확인 |
+
+#### 2. 기존 프로젝트를 내 GitLab로 옮기기 (remote 변경)
+
+| 명령어 | 설명 |
+| --- | --- |
+| git remote -v | 현재 등록된 원격 저장소 주소 확인 |
+| git remote set-url origin git@gitlab.com:ho8566z/shop-project-5th.git | 기존 origin의 주소만 교체 |
+| git remote remove origin + git remote add origin <새주소> | 위와 동일한 효과의 다른 방법 |
+| git push -u origin main | 로컬 커밋을 새 remote로 업로드 + 이후 push/pull 기본 대상으로 연결 |
+
+#### 3. 새 프로젝트 clone/pull (Reporter 권한 등)
+
+| 명령어 | 설명 |
+| --- | --- |
+| git clone git@gitlab.com:ho8566z/shop-project-5th.git | 프로젝트 전체를 새로 받기 (이때 origin 자동 등록 + main이 origin/main을 자동 추적) |
+| git pull | clone받은 폴더에서 최신 변경사항만 받아오기 (별도 옵션 불필요) |
+| git pull origin main | pull 대상을 명시적으로 지정하는 방식 (clone 직후엔 안 써도 됨) |
+
+#### 4. 상태 확인용
+
+| 명령어 | 설명 |
+| --- | --- |
+| git branch -vv | 로컬 브랜치가 어떤 원격 브랜치를 추적 중인지 확인 |
+| git --version | git 설치 여부 및 버전 확인 |
