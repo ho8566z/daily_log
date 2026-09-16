@@ -1,0 +1,352 @@
+#### filterChain 무효화
+
+```
+@BeanpublicSecurityFilterChain filterChain(HttpSecurity http) throwsException {
+
+    http
+            .cors(cors -> cors.disable())
+            .csrf(csrf -> csrf.disable());
+
+    http
+            .formLogin(login -> login.disable());
+
+    returnhttp.build();
+
+}
+```
+
+---
+
+## 다양한 의존 객체 주입
+
+#### 필드 주입(Field Injection)
+
+- @Autowired 애너테이션을 통해 주입한다.
+
+#### 생성자 주입(Contstuctor Injection)
+
+- IoC 컨테이너의 생성자(Bean)를 통해 주입한다.
+- 하지만, IoC 컨테이너 밖의 Bean은 절대 주입 될 수 없다.
+
+#### 세터 주입(Setter Injection)
+
+- Dto의 Setter를 통해 주입한다.
+
+---
+
+## Lombok(롬복) 이란?
+
+- JAVA에서 반복적인 코드(보일러 플레이트)의 작성을 줄여주는 라이브러리이다.
+- 컴파일 시점에 애너테이션을 분석해 getter/setter, 생성자, toString 등의 코드를 자동으로 생성해준다.
+- 여러 애너테이션을 사용해 클래스의 필수 코드를 자동 생성한다.
+
+#### **주요 애너테이션**
+
+- **@Getter / @Setter** — 필드에 대한 getter/setter 메서드를 자동 생성한다.
+- **@ToString** — toString() 메서드 자동 생성한다.
+- **@EqualsAndHashCode** — equals(), hashCode() 메서드 자동 생성한다.
+- **@NoArgsConstructor** — 파라미터 없는 기본 생성자 생성한다.
+- **@AllArgsConstructor** — 모든 필드를 파라미터로 받는 생성자 생성한다.
+- **@RequiredArgsConstructor** — final이나 @NonNull이 붙은 필드만 파라미터로 받는 생성자 생성한다.
+- **@Data** — @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor를 한 번에 적용하는 종합 애너테이션한다.
+- **@Builder** — 빌더 패턴 코드를 자동 생성한다.(객체 생성 시 가독성 향상)
+- **@Slf4j** — 로깅용 Logger 객체(log)를 자동 생성한다.
+
+---
+
+## lombok intellij에서 설정하는법
+
+#### lombok 설치
+
+!image.png
+
+#### lombok 설정
+
+!image.png
+
+#### lombok 애너테이션 적용
+
+!image.png
+
+---
+
+## Java Builder 란?
+
+#### Builder 패턴 이란?
+
+- 객체 생성 과정을 별도의 빌더(Builder) 객체에 위임해서, 여러 필드를 체이닝 방식(.of() 형태)으로 하나씩 설정한 뒤 마지막에 .build()로 완성된 객체를 만드는 생성 패턴이다.
+- Build 패턴은 필수 정보를 받은 다음에, 추가 정보를 넣으면 입력되는 추가 정보의 유형에 입력된다.
+- 생성자 파라미터가 많아져도 어떤 값이 어떤 필드에 들어가는지 이름으로 명확히 알 수 있다.
+- 필요한 필드만 선택적으로 설정 가능하다.(선택적 파라미터 처리에 유리)
+- 객체가 불변(immutable)으로 생성되도록 설계하기 좋다.
+
+#### 점층적 생성자 오버로딩(Telescoping Constructor) 이란?
+
+- 필드 개수에 따라 생성자를 여러 개 오버로딩해서 쌓아 올리는 방식. Builder 패턴이 해결하려는 문제 상황으로 자주 언급된다.
+
+#### 점층적 생성자 오버로딩(Telescoping Constructor)의 문제점
+
+- 필드가 늘어날수록 생성자 조합이 기하급수적으로 늘어난다.
+- 파라미터가 많아지면 순서를 헷갈리기 쉽고, 어떤 값이 뭘 의미하는지 코드만 봐서는 알기 어렵다.
+- 특정 필드만 값을 주고 싶어도 그 조합의 생성자가 없으면 불필요한 파라미터까지 다 넣어야 한다.
+
+#### 필수 값의 검증 이란?
+
+- Builder 패턴은 필드를 자유롭게 설정할 수 있는 대신, 필수 값이 빠진 채로 객체가 생성될 위험이 있다.
+- 이를 막기 위해 build() 시점(또는 생성자 시점)에 필수 값이 제대로 채워졌는지 확인하는 절차이다.
+
+---
+
+#### Build 패턴 코드 예시(Java Only)
+
+```java
+package com.office.builderex;
+
+public class MainClass {
+
+public static void main(String[] args) {
+
+	User user = new User.Builder("gildong", 20)
+
+//					.mail("gildong@gmail.com")
+.phone("010-1234-5678")
+.build();
+}
+}
+```
+
+```java
+package com.office.builderex;
+
+public class User {
+
+/*
+ * 회원정보:
+ * 		*이름, *나이,
+ * 		이메일, 연락처
+ */
+private String name;
+private int age;
+private String mail;
+private String phone;
+
+public User(Builder builder) {
+	this.name = builder.name;
+	this.age = builder.age;
+	this.mail = builder.mail;
+	this.phone = builder.phone;
+}
+
+public static class Builder {
+	private String name;
+	private int age;
+	private String mail;
+	private String phone;
+
+	// 필수정보
+	public Builder(String name, int age) {
+		this.name = name;
+		this.age = age;
+	}
+
+	// 추가정보 1
+	public Builder mail(String mail) {
+		this.mail = mail;
+		return this;
+	}
+
+	// 추가정보 2
+	public Builder phone(String phone) {
+		this.phone = phone;
+		return this;
+	}
+
+	public User build() {
+		return new User(this);
+	}
+}
+}
+```
+
+---
+
+#### Builder 애너테이션의 패턴이 적용된 코드 예시
+
+!image.png
+
+---
+
+#### public 유무
+
+```
+@Bean
+publicPasswordEncoder passwordEncoder() {
+    return newBCryptPasswordEncoder();
+}
+```
+
+```
+@BeanPasswordEncoder passwordEncoder() {
+    return newBCryptPasswordEncoder();
+}
+```
+
+---
+
+#### WebConfig 코드
+
+```java
+packagecom.office.calendar.config;
+
+importcom.office.calendar.member.MemberSigninInterceptor;
+importorg.springframework.beans.factory.annotation.Autowired;
+importorg.springframework.context.annotation.Configuration;
+importorg.springframework.web.servlet.config.annotation.InterceptorRegistry;
+importorg.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configurationpublic classWebConfig implementsWebMvcConfigurer {
+
+    @AutowiredMemberSigninInterceptor memberSigninInterceptor;
+
+    @Overridepublic voidaddInterceptors(InterceptorRegistry registry) {
+
+        registry.addInterceptor(memberSigninInterceptor)
+                .addPathPatterns(
+                        "/member/modify");
+
+        /*
+        registry.addInterceptor(memberSigninInterceptor)                                            .addPathPatterns(
+                                    "/member/**"
+        )
+                        .excludePathPatterns(
+                                    "/member/signup",                                            
+                                    "/member/signup_confirm",                        
+                                    "/member/signin",                        
+                                    "/member/signin_confirm",                        
+                                    "/member/signout_confirm",                        
+                                    "/member/findpassword",                        
+                                    "/member/findpassword_confirm"
+        ) 
+        */}
+}
+```
+
+#### MemberSigninInterxeptor 코드
+
+```java
+packagecom.office.calendar.member;
+
+importjakarta.servlet.http.HttpServletRequest;
+importjakarta.servlet.http.HttpServletResponse;
+importjakarta.servlet.http.HttpSession;
+importorg.springframework.stereotype.Component;
+importorg.springframework.web.servlet.HandlerInterceptor;
+
+@Componentpublic classMemberSigninInterceptor implementsHandlerInterceptor {
+
+    @Overridepublic booleanpreHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throwsException {
+        System.out.println("[MemberSigninInterceptor] preHandle()");
+
+        HttpSession session = request.getSession();
+        Object obj = session.getAttribute("loginedID");
+        if(obj != null) {
+            return true;
+
+        }
+        response.sendRedirect("member/signin");
+        return false;
+
+    }
+}
+```
+
+## Spring MVC 요청 처리 흐름 (면접 단골 질문 위주)
+
+**핵심 흐름**
+
+1. **세션(Session)** — HTTP 세션으로 로그인 정보 관리. MemberController에서 로그인 시 로그인 아이디를 세션에 저장해 꺼내 쓰는 구조이다.
+2. **오브젝트(Object) 타입** — 세션에서 꺼낸 값은 Object 타입으로 반환된다. 형변환(캐스팅)이 필요하다. 
+    1. 이게 면접 단골 질문(캐스팅의 의미).
+3. **요청(Request) → 디스패처서블릿(DispatcherServlet)**
+    - 요청이 오면 인터셉터(Interceptor)가 먼저 가로채서 전처리(preHandle)한다. → 서비스 컨트롤러로 연결한다.
+4. **핸들러 매핑(HandlerMapping) & 어댑터(HandlerAdapter)**
+    - 컨트롤러와 그에 맞는 핸들러(메서드)를 찾아준다.
+    - 실제 핸들러가 실행되기 전에 인터셉터가 한 번 더 동작한다.(요청 가로채기).
+5. **인터셉터의 역할**
+    - 클라이언트 요청이 컨트롤러에 전달되기 전에 호출된다.(preHandle).
+    - false를 반환하면 그 시점에서 요청이 중단되고 핸들러까지 가지 않다.(요청이 "튕겨버림").
+    - true를 반환해야 컨트롤러의 메서드(핸들러)가 실제로 실행된다.
+
+---
+
+## Logger(로거) 란?
+
+- 애플리케이션에서 발생하는 이벤트, 상태, 오류 등을 기록(logging)하기 위해 사용하는 객체이다.
+- 앞서 얘기한 System.out.println()의 문제들을 해결하기 위해 만들어진 것이 바로 로깅 프레임워크이고, 그 안에서 실제로 로그를 남기는 역할을 하는 게 Logger 객체이다.
+
+#### Looger의 기본 구조
+
+- Java에서 가장 널리 쓰이는 조합은 SLF4J(인터페이스) + Logback(구현체) 이다.
+
+#### 로그 레벨 (Level)
+
+| 로그 레벨 | 의미 | 예시 |
+| --- | --- | --- |
+| TRACE | 매우 상세한 정보 | 아주 세부적인 실행 과정 |
+| DEBUG | 개발 중 확인할 정보 | 변수 값 확인 |
+| INFO | 일반적인 실행 정보 | 회원가입 성공 |
+| WARN | 주의가 필요한 상황 | 설정값 누락 |
+| ERROR | 오류 발생 | DB 연결 실패 |
+
+## SLF4J가 인터페이스인 이유
+
+- SLF4J(Simple Logging Facade for Java)는 실제 로깅 구현체가 아니라 파사드(facade, 창구 역할) 이다.
+- 실제 구현은 Logback, Log4j2 등이 담당하고, 코드는 SLF4J 인터페이스에만 의존하기 때문에 나중에 구현체를 바꿔도 코드 수정이 필요 없다.
+
+#### 주요 특징 정리
+
+- 비동기 처리 가능: 성능에 영향을 덜 주도록 별도 스레드에서 로그를 기록할 수 있다.
+- 파일 저장 & 롤링: 날짜별/용량별로 로그 파일을 자동 분리-압축할 수 있다.
+- 포맷 커스터마이징: 타임스탬프, 클래스명, 스레드명 등을 자동으로 포함한다.
+- 파라미터 바인딩: logger.info("id={}", userId)처럼 문자열 연산 없이 값 삽입할 수 있다. (성능상 이점)
+
+## System.out.println()의 문제점은?
+
+#### **1. 성능 문제**
+
+- 콘솔 출력은 동기(synchronous) I/O라서 호출할 때마다 스레드가 블로킹된다.
+- 특히 반복문 안에서 대량으로 호출하면 애플리케이션 전체 성능 저하로 이어진다.
+- 내부적으로 synchronized 블록을 사용해서 멀티스레드 환경에서 병목(lock contention)이 생길 수 있다.
+
+#### **2. 로그 레벨 관리 불가**
+
+- println은 그냥 다 찍히거나 안 찍히거나 둘 중 하나다.
+- 로깅 프레임워크(Logback, Log4j2 등)처럼 DEBUG/INFO/WARN/ERROR 레벨을 구분해서 운영 중에 필요한 로그만 켜고 끄는 게 불가능하다.
+
+#### **3. 운영 환경에서 관리 어려움**
+
+- 로그 파일로 자동 저장되지 않고, 파일 롤링(rotation)·압축·보관 기간 설정 같은 기능이 없다.
+- 콘솔에 출력된 내용은 서버 재시작하거나 콘솔이 닫히면 사라진다.(별도로 리다이렉션 안 하면 유실된다.)
+- 타임스탬프, 클래스명, 스레드명 같은 컨텍스트 정보가 자동으로 안 붙는다.
+
+#### **4. 예외 처리 시 스택트레이스 손실 위험**
+
+- e.printStackTrace()처럼 같이 쓰는 경우가 많은데, 이것도 표준 에러(stderr)로 나가면서 로그 시스템과 별도로 관리되어 추적이 어려워진다.
+
+#### **5. 배포/보안 이슈**
+
+- 디버깅용으로 넣은 println을 실수로 지우지 않고 배포하면, 민감한 정보(비밀번호, 토큰, 개인정보 등)가 콘솔/로그에 그대로 노출될 위험이 있다.
+
+## Logger의 프레임워크 란?
+
+- 프로그램 실행 중 발생하는 정보(디버깅, 에러, 상태 등)를 체계적으로 기록및 관리해주는 라이브러리(도구)를 말한다.
+- System.out.println()으로 무작정 출력하는 대신, 로깅 프레임워크를 쓰면 로그의 중요도(레벨), 출력 위치(콘솔/파일 등), 포맷을 세밀하게 제어할 수 있다.
+
+**대표적인 Java 로깅 프레임워크**
+
+| 구분 | 개념 | 역할 | 특징 |
+| --- | --- | --- | --- |
+| SLF4J | Simple Logging Facade for Java | 인터페이스(퍼사드). 실제 구현체가 아니라, 로깅 API를 표준화해주는 창구 역할 | 코드에서는 SLF4J API만 사용하고, 실제 로깅 구현체(Logback, Log4j2 등)는 자유롭게 교체 가능. 특정 프레임워크에 종속되지 않게 해준다. |
+| Log4j | 초기 로깅 프레임워크 (구버전) | SLF4J 등장 이전부터 쓰이던 Apache의 로깅 라이브러리 | 보안 취약점 이슈로 현재는 잘 쓰지 않음. Log4j2로 대체되었다. |
+| Logback | SLF4J의 구현체 중 하나 | 실제로 로그를 출력·저장하는 구현 엔진 | Spring Boot의 기본 로깅 프레임워크. SLF4J를 네이티브로 지원(별도 어댑터 불필요). XML 설정(logback-spring.xml)으로 세밀한 제어 가능하다. |
+| Log4j2 | Log4j의 후속 버전 | Log4j를 완전히 새로 설계한 차세대 로깅 프레임워크 | 비동기 로깅 지원으로 성능이 뛰어남. SLF4J와 연동해서 사용 가능. Log4j의 보안 취약점(Log4Shell 등) 해결할 수 있다. |
