@@ -1,0 +1,159 @@
+#### spring boot → sts4 or intellij
+
+---
+
+#### oracle jdk 17 dowmload
+
+- Spring Boot 프로젝트를 진행하기 위해서는 Java(JDK)의 버전이 17이상이어야 한다.
+
+!image.png
+
+!image.png
+
+#### 환경변수 설정
+
+- 고급시스템 설정 → 환경변수 : JAVA_HOME → Java17이 설치된 폴더경로를 복사해서 변경
+
+!image.png
+
+!image.png
+
+- cmd에서 java version 확인할 것
+
+---
+
+## intellij install - JetBrains
+
+- JetBrains 공식 홈페이지
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+애플리케이션 환경변수 설정 : Properties
+
+!image.png
+
+!image.png
+
+---
+
+## build.gradle 이란?
+
+- Gradle을 사용하는 Java/Spring Boot 프로젝트의 빌드 설정 파일이다.
+
+| 구성 | 의미 | 예시 |
+| --- | --- | --- |
+| plugins | 프로젝트에서 사용할 Gradle 플러그인 설정 | id 'java' |
+| dependencies | 프로젝트에서 사용할 라이브러리 설정 | implementation '...' |
+| repositories | 라이브러리를 가져올 저장소 설정 | mavenCentral() |
+| java | Java 관련 설정 | Java 17 설정 |
+| test | 테스트 관련 설정 | JUnit 설정 |
+
+!image.png
+
+---
+
+#### application.properties의 환경변수 설정
+
+| 설정 | 의미 | 예시 |
+| --- | --- | --- |
+| server.port | Spring Boot 서버가 실행될 포트 번호 | server.port=8080 |
+| spring.datasource.url | 데이터베이스에 접속하기 위한 JDBC URL | spring.datasource.url=jdbc:mysql://localhost:3306/db_name |
+| spring.datasource.username | 데이터베이스 접속 계정 | spring.datasource.username=root |
+| spring.datasource.password | 데이터베이스 접속 비밀번호 | spring.datasource.password=1234 |
+| spring.datasource.driver-class-name | 데이터베이스 연결에 사용할 JDBC 드라이버 | spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver |
+| ${DB_USERNAME} | DB_USERNAME 환경변수에 저장된 값을 가져옴 | spring.datasource.username=${DB_USERNAME} |
+| ${DB_PASSWORD} | DB_PASSWORD 환경변수에 저장된 값을 가져옴 | spring.datasource.password=${DB_PASSWORD} |
+| ${환경변수명:기본값} | 환경변수가 없을 경우 지정한 기본값 사용 | ${DB_USERNAME:root} |
+
+!image.png
+
+---
+
+~~legacy와는 다르게 boot에는 tomcat이 내장되어 있다.~~
+
+~~서버를 내장했다는 것은 서버를 따로 추가해 매번 경로를 지정해야 하는 것과 달리, 어플리케이션을 어느 위치에서나 자유롭게 실행 가능하다는 의미이다.~~ 
+
+~~(tomcat의 server가 매우 견고해짐)~~
+
+## Spring Boot의 내장 Tomcat
+
+- Spring Legacy와 달리 Spring Boot는 기본적으로 내장 Tomcat을 사용한다.
+
+#### 내장 서버란?
+
+- Tomcat을 애플리케이션의 실행 환경에 포함하여, 별도의 외부 Tomcat 서버를 설치하고 프로젝트를 배포하지 않아도 애플리케이션을 실행할 수 있도록 하는 방식이다.
+    - 별도의 Tomcat 서버 설치가 필요하지 않다.
+    - 외부 Tomcat의 경로를 별도로 설정할 필요가 줄어든다.
+    - IDE에서 별도의 서버를 등록하지 않고 애플리케이션을 실행할 수 있다.
+    - 애플리케이션과 실행에 필요한 서버 환경을 함께 패키징할 수 있다.
+    - java -jar 명령어를 이용하여 애플리케이션을 실행할 수 있다.
+
+| 구분 | Spring Legacy | Spring Boot |
+| --- | --- | --- |
+| Tomcat | 외부 Tomcat 사용 | 내장 Tomcat 사용 |
+| 서버 설치 | 별도의 Tomcat 설치 필요 | 별도 설치 불필요 |
+| 프로젝트 배포 | WAR 파일을 Tomcat에 배포 | 실행 가능한 JAR로 실행 가능 |
+| 서버 경로 설정 | Tomcat의 server.xml, 배포 경로 등을 관리 | Spring Boot가 기본 설정 제공 |
+| 실행 방법 | Tomcat 서버를 먼저 실행 | java -jar로 애플리케이션 실행 |
+| 실행 환경 | 특정 Tomcat 서버에 의존 | 애플리케이션과 실행 환경을 함께 패키징 가능 |
+
+---
+
+#### Tomcat 버전
+
+- 내장 Tomcat의 버전은 Spring Boot 버전에 따라 결정된다.
+- 특히 Spring Boot 3.x는 Tomcat 10.1 계열을 기본 내장 서버로 사용한다.
+
+---
+
+#### application.properties 코드 전문
+
+```java
+spring.application.name=SamplePjt
+
+# Tomcat
+server.port=8090
+
+# Dev Tools
+spring.devtools.restart.enabled=true
+
+# Thymeleaf
+spring.thymeleaf.cache=false
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.check-template-location=true
+```
+
+!image.png
+
+---
+
+#### gradlew 란?
+
+- gradlew를 이용해서 프로젝트 이미지 파일(jar)을 만드는 방법
+
+```java
+gradlew clean
+```
+
+```java
+gradlew build
+```
+
+---
+
+#### MemberService 프로젝트 정리할것
+
+- C:\lyh\springboot_intellij\pjt\MemberService
+
+---
