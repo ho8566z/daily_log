@@ -93,19 +93,6 @@ public AuthorityDto toDto() {
 }
 ```
 
-- AuthorityRepository 코드
-
-```java
-package com.office.calendar.member.jpa;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface AuthorityRepository extends JpaRepository<AuthorityEntity, Byte> {
-
-public boolean existsByAuthRoleName(String authRoleName);
-}
-```
-
 ---
 
 # Spring Security Framework
@@ -227,7 +214,14 @@ public boolean existsByAuthRoleName(String authRoleName);
 
 ---
 
-## Spring Security는 Session Less
+## Spring Security와 Session Less의 관계
+
+#### **Spring Security는 세션 방식과 Session Less 방식을 모두 사용할 수 있습니다.**
+
+| 방식 | 설명 |  |  |
+| --- | --- | --- | --- |
+| Session 방식 | 로그인 정보를 서버의 HttpSession에 저장한다. |  |  |
+| Session Less 방식 | 서버에 로그인 상태를 저장하지 않고, 요청마다 JWT 등의 인증 정보를 전달한다. |  |  |
 
 ---
 
@@ -858,6 +852,19 @@ public AuthorityDto toDto() {
 }
 ```
 
+#### AuthorityRepository 코드
+
+```java
+package com.office.calendar.member.jpa;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AuthorityRepository extends JpaRepository<AuthorityEntity, Byte> {
+
+public boolean existsByAuthRoleName(String authRoleName);
+}
+```
+
 #### build.gradle 코드(Spring Security)
 
 ```
@@ -867,5 +874,3 @@ implementation 'org.springframework.boot:spring-boot-starter-security'
 // Source: <https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity6>
 implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 ```
-
----

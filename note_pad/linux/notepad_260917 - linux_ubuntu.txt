@@ -21,7 +21,35 @@
 
 !image.png
 
-## 5교시 첫 번째 북마크 참조
+#### 게이트웨이 & MSA 구조
+
+| 게이트웨이 | 서버 시스템의 "현관문" 역할. 모든 요청이 처음 거치는 지점이다. |
+| --- | --- |
+| MSA(Micro Service Architecture) | 게이트웨이 뒤로 DB, 회원관리 등 기능별로 서버를 분리해서 구성하는 방식이다. |
+- Docker 하나 안에서 여러 서비스를 각각 컨테이너로 띄워 운영하는 것도 가능
+
+#### Docker는 Container System이다.
+
+| 서버 | 배 |
+| --- | --- |
+| 각 서비스를 담는 컨테이너 하나하나 | 컨테이너 시스템(도커) |
+
+### 기존 OS 기반 시스템의 문제점
+
+- 하나의 물리 PC 위에 OS가 있고, 그 위의 모든 프로그램이 해당 OS에 의존해서 동작한다.
+- 한 프로그램(예: 카카오 앱)이 바이러스에 감염되면 OS를 공유하기 때문에 다른 프로그램까지 전염될 위험이 존재한다.
+
+### 가상화(하이퍼바이저) 등장
+
+- OS로부터 독립하기 위해 하이퍼바이저 방식이 등장했다.(호스트 OS 위에 여러 개의 게스트 OS를 얹는 방식, 예: VM)
+- 문제점: OS를 여러 개 띄우다 보니 메모리·CPU 자원 경쟁 발생하고, 무거워졌다.
+
+### 컨테이너의 등장
+
+- 하이퍼바이저의 문제를 해결하기 위해 등장한 것이 컨테이너 런타임이다.
+- 컨테이너는 호스트 OS와 필요한 데이터만 주고받으며, 독립적인 커널이 아닌 런타임 레벨에서 격리한다.
+- 결과: 하이퍼바이저 방식보다 훨씬 가볍고, 배포/운영(마이그레이션)이 쉽다.
+- 이것이 로컬 컨테이너 시스템이며, Docker를 사용하면 이를 클라우드에도 올릴 수 있다.
 
 !image.png
 
@@ -181,7 +209,8 @@ http://192.168.0.1:8080
 | cd ~/shop-project-5th | Docker를 다운받을 디렉토리로 이동한다. |
 | git pull | 최신 버전으로 업데이트 한다. |
 | bash setup/install.sh | 외부 Docker 이미지 다운로드 |
-- Docker 다운로드하고, docker run hello-world 명령의 출력 모습
+
+#### Docker 다운로드하고, docker run hello-world 명령의 출력 모습
 
 !image.png
 
@@ -191,27 +220,77 @@ http://192.168.0.1:8080
 
 !image.png
 
-# 여기부터 재시작
+#### 실제로 Docker를 어떻게 설치하는지?
 
-# 여기부터 재시작
+- Ubuntu 저장소의 docker.io 패키지나 편의 스크립트(convenience script)도 있지만, 일반적인 Ubuntu 머신을 사용하는 기술 사용자에게는 Docker 공식 APT 리포지토리에서 Docker Engine을 설치하는 것이 권장되는 방식이다.
 
-# 여기부터 재시작
+#### Ubuntu에서 Docker 설치 순서 (공식 방식)
 
-# 여기부터 재시작
+1. 사전 패키지 및 GPG 키 등록
+    
+    ```powershell
+    sudo apt-get update
+    sudo apt-get install ca-certificates curl
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
+    ```
+    
+2. Docker 공식 저장소를 apt 소스에 추가
+    
+    ```powershell
+    echo \
+    "deb [arch=(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] <https://download.docker.com/linux/ubuntu> \(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update
+    ```
+    
+3. Docker 엔진 설치
+    
+    ```powershell
+    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    ```
+    
+4. 설치 확인
+    
+    ```powershell
+    sudo docker run hello-world
+    ```
+    
 
-# 여기부터 재시작
+!image.png
 
-# 여기부터 재시작
+#### docker run() 이란?
 
-# 여기부터 재시작
+- 이미지를 기반으로 새 컨테이너를 생성하고 실행하는 명령이다.
+- 실행 단계
+    1.  로컬 이미지 확인
+        - 먼저 로컬(내 컴퓨터)에 해당 이미지가 이미 있는지 확인한다.
+    2.  없으면 레지스트리에서 Pull(다운로드)
+        - 로컬에 없으면 기본 레지스트리인 Docker Hub(또는 지정된 레지스트리)에서 이미지를 찾아 다운로드한다.
+        - 이 단계가 사실상 docker pull 이미지명과 동일한 동작이다.
+    3.  컨테이너 생성(Create)
+        - 다운로드된 이미지를 기반으로 새 컨테이너를 생성한다.
+        - 이 단계에서 p, v, e, -name 같은 옵션들이 적용된다.(네트워크, 볼륨, 환경변수 설정 등)
+    4.  컨테이너 시작(Start)
+        - 생성된 컨테이너를 실제로 실행한다.
 
-# 여기부터 재시작
+!image.png
 
-# 여기부터 재시작
+!image.png
 
-# 여기부터 재시작
+#### Docker Install, Setting, Command 중에 발생할 문제점
 
-## 7교시 첫 번째 북마크 참고
+| 메세지 | 원인 | 해결 |
+| --- | --- | --- |
+| Cannot connect to the Docker daemon | 도커가 안 떠 있다. | sudo service docker start |
+| permission denied … docker.sock | 그룹 적용이 안 되어있다. | ‘wsl --shutdown’ 하고 다시 |
+| docker: command not found | 설치가 안 끝났다. | install.sh를 다시 돌린다. |
+| toomanyrequests / pull 제한 | 같은 IP에서 많이 받았다. | ‘docker login’ 계정을 만든다. |
+
+!image.png
+
+#### docker images 결과(이미지 목록을 보여준다.)
 
 !image.png
 
@@ -219,27 +298,45 @@ http://192.168.0.1:8080
 
 !image.png
 
-!image.png
-
-- docker images 결과
+#### ps, ps -a 결과(지금 돌고 있는 것과 멈춘 것까지 전부 보여준다.)
 
 !image.png
 
 !image.png
 
-!image.png
+#### Docker Hub 받기 제한
 
-- ps, ps -a 결과
-
-!image.png
+- 외부 Docker를 단기간 동안에 다운로드하려고 하면, 다운로드 받기가 제한될 수 있다.
 
 !image.png
 
 !image.png
 
-!image.png
+#### MySQL Install 비교
+
+| 방식 | 방법 | 걸리는 시간 |
+| --- | --- | --- |
+| Window | Website에서 Install한다. | 10분 정도 |
+| Linux | 명령 한 줄 입력 | 30초~1분 |
 
 !image.png
+
+#### MySQL Install(Linux)
+
+```powershell
+docker run -d --name shop-mysql -p 3306:3306 \
+-e MYSQL_ROOT_PASSWORD=shop1234 \
+-e MYSQL_DATABASE=shop \
+mysql:8.0
+```
+
+| 부분 | 설명 |
+| --- | --- |
+| -d | 백그라운드로(detach) |
+| --name | 컨테이너 이름은 직접 정한다. |
+| -p 3306:3306 | 내 컴퓨터 3306 → 컨테이너 3306 |
+| -e | 환경변수(enviroment) |
+| mysql:8.0 | 이미지 이름 : 태그 |
 
 !image.png
 
@@ -252,7 +349,7 @@ mysql:8.0
 
 !image.png
 
-- docker ps, docker ps -a 결과
+#### docker ps, docker ps -a 결과(ps는 Docker의 ls이다.)
 
 !image.png
 
@@ -260,7 +357,22 @@ mysql:8.0
 
 !image.png
 
+#### Intellij로 DB를 보는 방법
+
+| 칸 | 넣을 값 |
+| --- | --- |
+| Host | localhost |
+| Port | 3306 |
+| User | root |
+| Password | shop1234 |
+| Database | shop |
+
 !image.png
+
+#### docker exec() 명령
+
+- 이미 실행 중인 컨테이너 안에서 새로운 명령을 실행하는 명령이다.
+- docker run은 새 컨테이너를 만들지만, exec는 기존 컨테이너에 "들어가서" 뭔가를 실행하는 것이다.
 
 !image.png
 
@@ -268,7 +380,25 @@ mysql:8.0
 
 !image.png
 
+#### 환경변수 설정 방식
+
+| 방식 | 결과 |  |
+| --- | --- | --- |
+| 설정을 코드에 직접 | 비밀번호가 코드에 남고, git에 올라간다.
+서버마다 바꾸려면 코드를 고쳐야 하고, 이미지를 다시 만들어야 한다. |  |
+| 환경변수로 설정 | 코드에는 없지만, 띄울 때 넣는다.
+서버마다 다르게 줄 수 있으며, 같은 이미지를 그대로 사용한다. |  |
+
 !image.png
+
+#### 컨테이너 ON/OFF
+
+| 명령 | 컨테이너는 | 데이터는 |
+| --- | --- | --- |
+| docker stop | 멈춘다. | 남아 있다. |
+| docker start | 다시 돈다 | 그대로 있다. |
+| docker restart | 꺼졌다가 켜진다. | 그대로 있다. |
+| ‘docker rm’ | 사라진다. | 같이 사라진다. |
 
 !image.png
 
@@ -276,6 +406,6 @@ mysql:8.0
 
 ---
 
-- Docker를 받은 다음의 tree 결과
+#### Docker를 받은 다음의 tree 결과
 
 !image.png
