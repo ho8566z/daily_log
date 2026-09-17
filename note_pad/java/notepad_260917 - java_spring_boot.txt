@@ -1,0 +1,51 @@
+n : 1의 관계
+
+user_member의 authority_no
+
+user_authority의 no
+
+```sql
+- user_authority --------------------------------------------------------
+**CREATE** **TABLE** user_authority(
+no				**INT**				**AUTO_INCREMENT**,
+role_name		**VARCHAR**(20)		**NOT** **NULL**,
+**PRIMARY** **KEY**(no)
+);
+```
+
+위의 user_authority 테이블에서 role_name를 Database가 아닌, Application에서 권한을 설정하는 방법
+
+Lambda 표현식을 사용
+
+```java
+@Configurationpublic classDataInitializer {
+
+    @BeanpublicCommandLineRunner initDatabase(AuthorityRepository authorityRepository) {
+
+        returnargs -> {
+
+            if(!authorityRepository.existsByAuthRoleName("PRE_USER")) {
+                authorityRepository.save(
+                        AuthorityEntity.builder()
+                                .authRoleName("PRE_USER")
+                                .build()
+                );
+            }
+
+            if(!authorityRepository.existsByAuthRoleName("USER")) {
+                authorityRepository.save(
+                        AuthorityEntity.builder()
+                                .authRoleName("USER")
+                                .build()
+                );
+            }
+
+        };
+
+    }
+
+}
+```
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------

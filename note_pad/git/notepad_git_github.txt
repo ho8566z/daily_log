@@ -12,7 +12,10 @@ git config --global user.email "ho8566z@gmail.com"
 git config --global user.name "ho8566z"
 
 git config --list
-#email, name 확인
+#email, name을 비롯한 모든 정보 확인
+
+git config --list
+#email, name만 확인
 
 ------------------------------------------------------------------------
 git status
