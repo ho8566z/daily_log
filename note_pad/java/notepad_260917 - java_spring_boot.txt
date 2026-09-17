@@ -49,3 +49,60 @@ Lambda 표현식을 사용
 
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
+# Spring Security Framework
+
+## Spring Security Framework 란?
+
+#### 기존 로그인 방식의 한계
+
+- 세션을 이용한 로그인 방식
+    - 세션을 이용한 로그인 방식 이란?
+- 보안 취약점
+    - 보안 취약점 이란?
+- 유지보수의 어려움
+    - 유지보수의 어려움 이란?
+
+#### Spring Security의 필요성
+
+- 보안(Security)은 웹 애플리케이션의 필수 요소이다.
+- Spring Boot에서 강력한 보안 프레임워크를 제공한다.
+- 주요 기능
+    - 개인정보 보호
+    - 인증과 인가 기능 제공
+    - 불법적인 접근 차단
+
+---
+
+## Spring Security의 주요 기능
+
+#### 인증(Authentication)
+
+- 인증(Authentication) 이란?
+
+#### 인가(Authorization)
+
+- 인가(Authorization) 이란?
+
+#### 자동 보안 설정
+
+- 자동 보안 설정 이란?
+
+---
+
+#### Spring Security 구조 흐름
+
+---
+
+#### build.gradle 코드
+
+```
+// Source: <https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security>
+implementation 'org.springframework.boot:spring-boot-starter-security'
+
+// Source: <https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity6>
+implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+```
+
+#### SecurityConfig.java 코드
+------------------------------------------------------------------------
+------------------------------------------------------------------------
