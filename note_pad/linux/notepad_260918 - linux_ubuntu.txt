@@ -1,3 +1,48 @@
 20260918
 
 
+```powershell
+wsl: Failed to start the systemd user session for 'derek'.
+See journalctl for more details.
+```
+
+- WSL: `derek` 사용자의 systemd 사용자 세션을 시작하지 못했다. 자세한 내용은 `journalctl`을 확인 바란다.
+- Ubuntu/WSL 자체는 실행된 상태이지만, 문제가 발생한 부분은 systemd의 사용자 세션(user session)이다.
+
+#### journalctl --user -b
+
+- systemd 관련 기능을 사용하고 있다면 다음 명령으로 실제 원인을 확인할 수 있다.
+
+#### systemctl --user status
+
+- systemd 전체 상태를 확인할 수 있다.
+
+---
+
+#### 외부 gitlab에서 git pull 안 될때
+
+- 익명
+
+```
+git remote set-url origin git@gitlab.com:<"ABC">/shop-project-5th.git
+```
+
+- Joseph.Ahn
+
+```
+git remote set-url origin git@gitlab.com:Joseph.Ahn/shop-project-5th.git
+```
+
+#### gitlab 연결을 재설정하고 확인
+
+```
+git remote -v
+```
+
+#### 마지막으로 풀
+
+```
+git pull
+```
+
+---
