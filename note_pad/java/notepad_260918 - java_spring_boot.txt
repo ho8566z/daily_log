@@ -1,0 +1,18 @@
+20260918
+
+
+#### 프로젝트 복사하기(calendar → calendaradmin)
+
+!image.png
+
+---
+
+#### 코드 컨벤션(회원)
+
+회원 : member
+
+사용자 : user → 사용자 회원 : user_member
+
+관리자 : admin → 관리자 회원 : admin_member
+
+---
