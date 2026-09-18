@@ -19,7 +19,13 @@ See journalctl for more details.
 
 ---
 
-#### 외부 gitlab에서 git pull 안 될때
+#### 외부 gitlab에서 git pull 안 될때(깃랩 연결)
+
+- 나 자신
+
+```
+git remote set-url origin git@gitlab.com:ho8566z/shop-project-5th.git
+```
 
 - 익명
 
@@ -46,3 +52,297 @@ git pull
 ```
 
 ---
+
+#### Intellij에서 Linux 프로젝트 오픈하는 법
+
+- Intellij를 열고 “三” 메뉴에서 open project를 선택하고, 아래의 명령어를 입략한다.
+
+```
+\\wsl.localhost\Ubuntu\home\derek\shop-project-5th
+```
+
+---
+
+#### 개념 찾기(프로그래밍 언어가 아닌, 일반 언어로 개념 찾기)
+
+- 스웨거(sweager)
+- 포스트맨
+- enums
+- dto, model, entity
+- dao, repository : access?
+
+#### controller(컨트롤러)는 양반의 비서?
+service(서비스)는 심부름꾼(돌쇠)
+dao(다오)나 repository(레포짓토리)는 창고지기
+dto, model, entity는 …?
+
+---
+
+```
+derek@DESKTOP-2K88M9V:~/shop-project-5th$ tree
+.
+├── README.md
+├── build.gradle
+├── docs
+│   ├── DB설계서.md
+│   ├── 와이어프레임.md
+│   └── 요구사항정의서.md
+├── frontend
+│   ├── README.md
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   │   ├── favicon.svg
+│   │   └── icons.svg
+│   ├── src
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── ProductDetail.jsx
+│   │   ├── ProductList.jsx
+│   │   ├── api.js
+│   │   ├── assets
+│   │   │   ├── hero.png
+│   │   │   ├── react.svg
+│   │   │   └── vite.svg
+│   │   ├── index.css
+│   │   └── main.jsx
+│   └── vite.config.js
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle
+├── setup
+│   ├── README.md
+│   ├── WSL_운영.md
+│   ├── install-mac.sh
+│   └── install.sh
+└── src
+└── main
+├── java
+│   └── com
+│       └── dwacademy
+│           └── shop
+│               ├── ShopApplication.java
+│               ├── config
+│               │   ├── SecurityConfig.java
+│               │   └── SessionConst.java
+│               ├── controller
+│               │   ├── ApiExceptionHandler.java
+│               │   ├── ProductController.java
+│               │   └── UserController.java
+│               ├── entity
+│               │   ├── Product.java
+│               │   └── User.java
+│               ├── enums
+│               │   └── UserRole.java
+│               ├── model
+│               │   ├── ProductRequest.java
+│               │   ├── ProductResponse.java
+│               │   ├── UserRequest.java
+│               │   └── UserResponse.java
+│               ├── repository
+│               │   ├── ProductRepository.java
+│               │   └── UserRepository.java
+│               └── service
+│                   ├── ProductService.java
+│                   └── UserService.java
+└── resources
+├── application.yml
+├── data.sql
+└── static
+└── index.html
+
+24 directories, 51 files
+```
+
+---
+
+면접 단골 질문 : 트랜잭션
+
+---
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+#### git pull이 안되는 경우
+
+| 화면 출력 메세지 | 의미 | 해결 방안 |
+| --- | --- | --- |
+| Aleady up to date. | 받을 게 없다. | 폴더가 맞는지 pwd로 확인 |
+| Permission denied (publickey) | 열쇠를 못 알아본다. | ssh -T git@gitlab.com을 다시 |
+| Your local change would bw overwritten | 내가 고친 게 있어서 덮어쓸 수 없다. | git checkout -- . 로 되돌리고 다시 |
+| fatal: not a git repository | 여기는 저장소가 아니다. | cd ~/shop-project-5th로 이동 |
+
+!image.png
+
+!image.png
+
+#### 프로젝트 파일 / 디렉토리
+
+| 파일/디렉토리 | 정체 |
+| --- | --- |
+| build.gradle | 프로젝트 구성과 실행에 필요한 것들 목록 |
+| gradlew | 목록을 받아오는 역할 |
+| gradle/wrapper/ | gradlew의 설정 |
+| setting.gradle | 프로젝트 이름 |
+| src/ | 작성했고, 작성하고, 작성할 코드의 위치 |
+| .gitignore | git이 무시하거나 집중할 것들의 목록 |
+
+## .gitignore 설정 방식: 블랙리스트 vs 화이트리스트
+
+#### 1. 블랙리스트 방식 (제외할 것만 명시)
+
+- 가장 일반적이고 흔하게 쓰는 방식이다.
+- 무시할 파일/폴더를 하나씩 나열한다.
+- 블랙리스트 예시
+
+```
+.log
+*.class
+node_modules/
+target/
+.env
+.idea/
+*.tmp
+build/
+```
+
+| 패턴 | 의미 |
+| --- | --- |
+| *.log | 확장자가 .log인 모든 파일을 무시한다. |
+| node_modules/ | 해당 폴더 전체를 무시한다. |
+| .env | 특정 파일명을 무시 (환경변수, 민감정보) |
+| build/, target/ | 빌드 결과물 폴더를 무시한다. |
+
+#### 2. 화이트리스트 방식 (`!`로 예외 지정 — 허용할 것만 명시)
+
+- ! 기호로 예외를 지정하는 방식이다.
+- 프로젝트 구조가 복잡하거나 관리할 파일이 명확히 정해져 있을 때 사용한다.
+- 화이트리스트 예시
+
+```
+1. 일단 모든 파일 무시
+*
+
+2. 특정 파일/폴더는 예외로 허용
+!.gitignore
+!src/
+!src/**
+!README.md
+!pom.xml
+```
+
+| 패턴 | 의미 |
+| --- | --- |
+| * | 모든 파일을 일단 무시 대상으로 지정한다. |
+| !src/ | src 폴더는 예외하고, 추적을 허용한다. |
+| !src/** | src 폴더 내부의 모든 파일을 예외 처리한다.(주의: !src/만 쓰면 폴더는 보여도 내부 파일은 여전히 무시될 수 있음) |
+| !.gitignore | .gitignore 파일 자체는 항상 추적되게 한다. |
+
+#### 3. 주의할 점 — 화이트리스트 방식의 함정
+
+- Git은 이미 무시된(ignored) 디렉토리 내부는 기본적으로 들여다보지 않는다.
+- 그래서 아래처럼 작성하면 의도대로 동작하지 않을 수 있다.
+- 해결 방법: 상위 폴더들도 하나씩 예외 처리해줘야 한다.
+
+```
+!src/
+!src/main/
+!src/main/java/
+!src/main/java/**
+```
+
+---
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+---
+
+#### Intellij로 shop-project-5th의 url인 “http://localhost:8080/swagger-ui.html”을 실행한 모습
+
+!image.png
+
+---
+
+---
+
+!image.png
+
+!image.png
+
+- 
+
+#### .gradlew build -x test 결과
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+37페이지, curl 이란?
+
+!image.png
+
+서버오류 100번대, 200번대, 300번대, 400번대, 500번대

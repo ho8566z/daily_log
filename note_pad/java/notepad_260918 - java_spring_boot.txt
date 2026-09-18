@@ -7,10 +7,6 @@
 
 ---
 
-# [==== 아래, 맞는지 확인할 것 ====]
-
-# [==== 아래, 맞는지 확인할 것 ====]
-
 ## 비동기 방식 이란?
 
 - 웹 개발에서 비동기(Asynchronous) 방식은 요청을 보낸 후 응답을 기다리지 않고 다른 작업을 계속 수행할 수 있도록 하는 방식이다.
@@ -116,36 +112,334 @@ fetch('https://api.example.com/data')
 - 즉, REST는 "원칙(스타일) 자체"를 의미하고, RESTful은 "그 원칙을 얼마나 잘 지켰는지"를 나타내는 말이다.
 - 모든 REST API가 100% RESTful한 것은 아니며, 원칙을 일부만 따르는 API도 실무에서는 흔히 "REST API"라고 불리는 경우가 많다.
 
-#### query string 방식이란?(+ url command 예시)
+## 1. query string 방식이란?
 
-#### RESTful 방식이란?
+- URL 끝에 ?key=value 형태로 파라미터를 붙여서 서버에 조건이나 데이터를 전달하는 방식이다.
+- 주로 필터링, 검색, 정렬, 페이징 등 자원을 "조회하는 조건"을 표현할 때 사용한다.
 
-- 쿼리 파라미터 설계(+ url command 예시)
+```
+GET /users?id=5
+GET /users?page=2&size=10
+GET /products?category=shoes&sort=price_desc
+```
 
-- 경로 변수 설계(+ url command 예시)
+## 2. RESTful 방식이란?
 
-- 쿼리 파리미터 vs. 경로 변수
+- REST 원칙에 따라 자원(Resource)을 URL 경로 자체로 표현하고, 행위는 HTTP 메서드로 표현하는 설계 방식이다.
 
-#### RESTful과 query string 비교
+#### 2-1. 쿼리 파라미터 설계
 
-|  |  |  |
+- 자원을 검색·필터링·정렬 할 때 사용. 자원 자체를 특정 짓는 게 아니라 "조건"을 전달하는 용도이다.
+
+```
+GET /users?role=admin
+→ role이 admin인 사용자들 조회
+
+GET /posts?category=tech&page=1
+→ tech 카테고리의 1페이지 게시글 조회
+
+GET /products?minPrice=1000&maxPrice=5000
+→ 가격 범위로 상품 필터링
+```
+
+#### 2-2. 경로 변수 설계(Path Variable)
+
+- 특정 자원을 고유하게 식별할 때 사용. URL 경로 자체에 자원의 식별자(ID)를 포함한다.
+
+```
+GET /users/5
+→ id가 5인 특정 사용자 조회
+
+GET /posts/12/comments
+→ 12번 게시글의 댓글 목록 조회
+
+DELETE /products/30
+→ id가 30인 상품 삭제
+```
+
+#### 2-3. 쿼리 파리미터 vs. 경로 변수
+
+| 구분 | 쿼리 파라미터
+(Query Parameter) | 경로 변수
+(Path Variable) |
 | --- | --- | --- |
-|  |  |  |
-|  |  |  |
+| 용도 | 자원을 필터링·검색·정렬·페이징 | 특정 자원을 고유하게 식별 |
+| 필수 여부 | 보통 선택적(optional) | 보통 필수(required) |
+| 예시 | /users?role=admin | /users/5 |
+| 의미 | "이런 조건에 맞는 것들을 줘” | "이 특정 자원을 줘” |
+| 자원 여러 개 반환 가능 여부 | 가능 (목록 반환) | 보통 단일 자원 반환 |
 
-#### RESTful과 query string 비교
+## 3. RESTful과 query string 비교
 
-# [==== 위, 맞는지 확인할 것 ====]
-
-# [==== 위, 맞는지 확인할 것 ====]
+| 구분 | RESTful (경로 변수)
+/users/5 | Query String
+/users?id=5 |
+| --- | --- | --- |
+| REST 원칙 부합 여부 | ✅ 권장되는 방식 | ⚠️ 비권장 (안티패턴에 가까움) |
+| 의미 | "5번이라는 자원 자체"를 가리킴 | "id가 5인 것을 찾아줘"라는 조건 |
+| URI의 역할 | URI 자체가 자원을 고유하게 식별 | URI는 자원 집합, id는 검색 조건일 뿐 |
+| 계층 표현 | /users/5/posts/3 처럼 계층 관계 표현 용이 | /posts?userId=5&postId=3 식으로 평면적 |
+| 가독성 | URL만 봐도 "5번 사용자"임을 직관적으로 파악 | id가 여러 개면 URL이 길고 복잡해짐 |
 
 ---
 
+#### 비동기 코드의 전체 흐름
+
+```
+[list.html] 페이지 로드
+→ [admins.js] DOMContentLoaded 이벤트 발생
+→ [admins.js] fetchGetAdmins() 실행 → 비동기 요청 (GET /admin/admins)
+→ [AdminController] /admin/admins 요청 수신
+→ [AdminService] DB에서 관리자 목록 조회 (memberRepository.findAll())
+→ [AdminController] JSON(Map) 형태로 응답 반환
+→ [admins.js] 응답 받아서 .json()으로 파싱 → 화면(table)에 동적으로 렌더링
+```
+
+#### 비동기 코드의 계층별 역할 정리
+
+| 계층 | 파일 | 역할 |
+| --- | --- | --- |
+| View (초기 화면) | list.html | 빈 테이블(<tbody>)만 먼저 렌더링, 데이터는 JS가 채운다, |
+| Client (비동기 요청) | admins.js | fetch()로 서버에 비동기 요청하면, 응답을 JSON으로 변환하고, DOM에 삽입한다. |
+| Controller | AdminController | /admin/admins 요청을 받아 Service 호출 후 JSON(@ResponseBody) 반환한다. |
+| Service | AdminService | DB에서 관리자 목록 조회,하고 DTO로 변환한다. |
+
+#### 비동기 코드 핵심(admin.js)
+
+```jsx
+document.addEventListener("DOMContentLoaded", function () {
+fetchGetAdmins();  // 페이지 로드 완료 후 비동기 요청 시작
+});
+
+async function fetchGetAdmins() {
+try {
+let response = await fetch('/admin/admins', {
+method: 'GET',
+headers: { 'Content-Type': 'application/json; charset=utf-8' }
+});
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok!');
+    }
+
+    let data = await response.json();  // 응답 body를 JSON으로 파싱
+    // ... DOM에 데이터 렌더링
+} catch (error) {
+    console.log('통신 에러', error);
+}
+}
+```
+
 #### AdminController 코드
+
+```java
+package com.office.calendaradmin.admin;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
+
+@Slf4j
+@Controller
+@RequestMapping("/admin")
+@RequiredArgsConstructor
+public class AdminController {
+
+final private AdminService adminService;
+
+// 관리자 목록 : /admin.css/list
+@GetMapping("/list")
+public String list() {
+    log.info("list()");
+
+    String nextPage = "admin/list";
+
+    return nextPage;
+}
+
+// 관리자 목록 조회
+@GetMapping("/admins")
+@ResponseBody
+public Object admins() {
+    log.info("admins()");
+
+    Map<String, Object> resultMap = adminService.admins();
+
+    return resultMap;
+}
+}
+```
 
 #### AdminService 코드
 
+```java
+package com.office.calendaradmin.admin;
+
+import com.office.calendaradmin.member.MemberDao;
+import com.office.calendaradmin.member.MemberDto;
+import com.office.calendaradmin.member.jpa.MemberEntity;
+import com.office.calendaradmin.member.jpa.MemberRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.engine.spi.ManagedEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class AdminService {
+
+final private MemberRepository memberRepository;
+
+public Map<String, Object> admins() {
+    log.info("admins()");
+
+    Map<String, Object> resultMap = new HashMap<>();
+
+    List<MemberEntity> memberEntities = memberRepository.findAll();
+
+    List<MemberDto> admins = memberEntities.stream()
+            .map(MemberEntity::toDto)
+            .collect(Collectors.toUnmodifiableList());
+
+    resultMap.put("admins", admins);
+
+    return resultMap;
+
+}
+}
+```
+
 #### admins.js 코드
+
+```jsx
+document.addEventListener("DOMContentLoaded", function (){
+console.log('DOCUMENT READY!!');
+
+fetchGetAdmins();
+});
+
+async function fetchGetAdmins() {
+console.log('fetchGetAdmins()');
+
+try {
+    let response = await fetch('/admin/admins', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok!');
+    }
+
+    console.log('fetchGetAdmins() COMMUNICATION SUCCESS!!');
+
+    let data = await response.json();
+    console.log('data: ', data);	// <- AdminController의 resultMap 할당
+    let admins = data.admins
+    for (let i = 0; admins.length; i++) {
+        let template = document.querySelector('#list-template').content.cloneNode(true);
+        template.querySelector('.no').textContent = admins[i].no;
+        template.querySelector('.id').textContent = admins[i].id;
+        template.querySelector('select[name="authority"]').value = admins[i].authorityDto.no;
+        template.querySelector('.mail').textContent = admins[i].mail;
+        template.querySelector('.phone').textContent = admins[i].phone;
+        template.querySelector('.reg_date').textContent = admins[i].reg_date;
+        template.querySelector('.mod_date').textContent = admins[i].mod_date;
+        document.querySelector('#section_wrap tbody').appendChild(template);
+    }
+
+} catch (error) {
+    console.log('fetchGetAdmins() COMMUNICATION ERROR!!', error);
+
+}
+}
+```
+
+#### list.html 코드
+
+```html
+<!DOCTYPE html>
+<html lang="en"
+xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:replace="~{/include/title.html::title}"/>
+
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" th:href="@{/css/header_nav_footer.css}">
+<link rel="stylesheet" th:href="@{/css/admin.css}">
+
+<script th:src="@{/js/admin.js}"></script>
+
+</head>
+<body>
+
+<header th:replace="~{/include/header_nav_footer.html::header}" />
+<nav th:replace="~{/include/header_nav_footer.html::nav}"/>
+
+<section>
+<div id="section_wrap">
+<div class="word">
+ADMIN LIST
+</div>
+<div class="content">
+<table>
+<thead>
+<tr>
+<th>NO</th>
+<th>ID</th>
+<th>AUTHORITY</th>
+<th>MAIL</th>
+<th>PHONE</th>
+<th>REG_DATE</th>
+<th>MOD_DATE</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<footer th:replace="~{/include/header_nav_footer.html::footer}"/>
+
+</body>
+</html>
+
+<template id="list-template">
+<tr>
+<td class="no"></td>
+<td class="id"></td>
+<td class="authority">
+<select name="authority">
+<option value="1">PRE_ADMIN</option>
+<option value="2">ADMIN</option>
+<option value="3">SUPER_ADMIN</option>
+</select>
+</td>
+<td class="mail"></td>
+<td class="phone"></td>
+<td class="reg_date"></td>
+<td class="mod_date"></td>
+</tr>
+</template>
+```
+
+---
 
 - 비동기 방식으로 구현 결과
 
