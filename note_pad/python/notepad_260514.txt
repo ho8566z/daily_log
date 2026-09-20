@@ -220,7 +220,7 @@ print(f'names type: {type(names)}')
 
 ------------------------------------------------------------------------
 str = "박찬호 이승엽 박세리 박지성 이순철 선동열 손흥민 김연아"
-splitedStr = str.split(" ")     #spit()으로 나눌 때는 ' '나 =, + 등으로 나눌 수 있다
+splitedStr = str.split(" ")     #split()으로 나눌 때는 ' '나 =, + 등으로 나눌 수 있다
 print(f'splitedStr: {splitedStr}')
 print(f'splitedStr type: {type(splitedStr)}')
 # splitedStr: ['박찬호', '이승엽', '박세리', '박지성', '이순철', '선동열', '손흥민', '김연아']
