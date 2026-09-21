@@ -1,31 +1,36 @@
 20260921
 
 
-ResponseEntity 란?
+## ResponseEntity 란?
 
-Spring에서 HTTP 응답 전체(상태 코드, 헤더, 바디)를 세밀하게 제어할 수 있게 해주는 클래스입니다. 컨트롤러 메서드의 반환 타입으로 주로 사용됩니다.
+- Spring에서 HTTP 응답 전체(상태 코드, 헤더, 바디)를 세밀하게 제어할 수 있게 해주는 클래스이다.
+- 컨트롤러 메서드의 반환 타입으로 주로 사용된다.
 
-주요 특징
+#### ResponseEntity의 주요 특징
 
-HTTP 상태 코드를 직접 지정 가능 (200, 201, 404, 500 등)
-응답 헤더를 커스텀으로 추가 가능
-응답 바디에 원하는 데이터를 담을 수 있음
+- HTTP 상태 코드를 직접 지정 가능하다.(200, 201, 404, 500 등)
+응답 헤더를 커스텀으로 추가 가능하다.
+- 응답 바디에 원하는 데이터를 담을 수 있다.
 
+---
 
-saveAndFlush 란?
+## saveAndFlush 란?
 
-Spring Data JPA의 JpaRepository가 제공하는 메서드로, 엔티티를 저장하면서 즉시 DB에 반영(flush)까지 수행합니다.
+- Spring Data JPA의 JpaRepository가 제공하는 메서드로, 엔티티를 저장하면서 즉시 DB에 반영(flush)까지 수행한다.
 
-save()와의 차이
+#### save()와의 차이
 
-save(): 영속성 컨텍스트(1차 캐시)에 엔티티를 저장. 실제 DB에 쿼리가 나가는 시점은 트랜잭션이 커밋되거나 flush가 일어날 때(보통 트랜잭션 종료 시점)
-saveAndFlush(): 저장과 동시에 즉시 flush()를 호출해서 바로 DB에 SQL을 실행시킴
+- save()
+    - 영속성 컨텍스트(1차 캐시)에 엔티티를 저장한다.
+    - 실제 DB에 쿼리가 나가는 시점은 트랜잭션이 커밋되거나 flush가 일어날 때이다.(보통 트랜잭션 종료 시점)
+- saveAndFlush()
+    - 저장과 동시에 즉시 flush()를 호출해서 바로 DB에 SQL을 실행시킨다.
 
+---
 
-------------------------------------------------------------------------
+#### [ UserController ]
 
-[ UserController ]
-
+```java
 package com.office.calendaradmin.user;
 
 import lombok.RequiredArgsConstructor;
@@ -42,60 +47,57 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
 
-    final private UserService userService;
+final private UserService userService;
 
-    // 사용자 목록 화면(/user/list)
-    @GetMapping("/list")
-    public String list() {
-        log.info("list()");
+// 사용자 목록 화면(/user/list)
+@GetMapping("/list")
+public String list() {
+    log.info("list()");
 
-        String nextPage = "user/list";
+    String nextPage = "user/list";
 
-        return nextPage;
-
-    }
-
-    // 사용자 목록 조회(/user/users)
-    @GetMapping("/users")
-    public ResponseEntity<Map<String, Object>> users() {
-        log.info("users()");
-
-        Map<String, Object> resultMap = userService.users();
-
-        return ResponseEntity.ok(resultMap);
-
-    }
-
-    // 사용자 권한 변경(/user/${userNo}/auth)
-    @PutMapping("{userNo}/auth")
-    public ResponseEntity<Map<String, Object>> updateUserAuthority(
-            @PathVariable int userNo,
-            @RequestBody Map<String, Integer> request
-    ) {
-        log.info("updateUserAuthority()");
-
-        if (request.get("authorityNo") == null) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("result", 0));
-        }
-
-        Map<String, Object> resultMap =
-                userService.updateUserAuthority(userNo, request.get("authorityNo"));
-
-
-        return ResponseEntity.ok(resultMap);
-
-    }
-
-
+    return nextPage;
 
 }
 
+// 사용자 목록 조회(/user/users)
+@GetMapping("/users")
+public ResponseEntity<Map<String, Object>> users() {
+    log.info("users()");
 
-------------------------------------------------------------------------
+    Map<String, Object> resultMap = userService.users();
 
-[ UserService ]
+    return ResponseEntity.ok(resultMap);
 
+}
+
+// 사용자 권한 변경(/user/${userNo}/auth)
+@PutMapping("{userNo}/auth")
+public ResponseEntity<Map<String, Object>> updateUserAuthority(
+        @PathVariable int userNo,
+        @RequestBody Map<String, Integer> request
+) {
+    log.info("updateUserAuthority()");
+
+    if (request.get("authorityNo") == null) {
+        return ResponseEntity.badRequest()
+                .body(Map.of("result", 0));
+    }
+
+    Map<String, Object> resultMap =
+            userService.updateUserAuthority(userNo, request.get("authorityNo"));
+
+    return ResponseEntity.ok(resultMap);
+
+}
+}
+```
+
+---
+
+#### [ UserService ]
+
+```java
 package com.office.calendaradmin.user;
 
 import com.office.calendaradmin.user.jpa.UserAuthorityEntity;
@@ -117,182 +119,189 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-    final public static int UPDATE_USER_AUTHORITY_SUCCESS   = 1;
-    final public static int UPDATE_USER_AUTHORITY_FAIL      = 0;
+final public static int UPDATE_USER_AUTHORITY_SUCCESS   = 1;
+final public static int UPDATE_USER_AUTHORITY_FAIL      = 0;
 
-    final private UserRepository userRepository;
+final private UserRepository userRepository;
 
-    public Map<String, Object> users() {
-        log.info("users()");
+public Map<String, Object> users() {
+    log.info("users()");
 
-        Map<String, Object> resultMap = new HashMap<>();
+    Map<String, Object> resultMap = new HashMap<>();
 
-        List<UserEntity> userEntities = userRepository.findAll();
-        List<UserDto> users = userEntities.stream()
-                .map(UserEntity::toDto)
-                .collect(Collectors.toList());
+    List<UserEntity> userEntities = userRepository.findAll();
+    List<UserDto> users = userEntities.stream()
+            .map(UserEntity::toDto)
+            .collect(Collectors.toList());
 
-        log.info("users: {}", users);
+    log.info("users: {}", users);
 
-        resultMap.put("users", users);
+    resultMap.put("users", users);
 
-        return resultMap;
+    return resultMap;
 
-    }
-
-    @Transactional
-    public Map<String, Object> updateUserAuthority(int userNo, Integer authorityNo) {
-        log.info("updateUserAuthority()");
-
-        Map<String, Object> resultMap = new HashMap<>();
-
-        Optional<UserEntity> optionalUser = userRepository.findById(userNo);
-        if (optionalUser.isPresent()) {
-            UserEntity userEntity = optionalUser.get();
-
-            Byte targetAuthorityNo = 1;
-            if (authorityNo == 2)
-                targetAuthorityNo = 2;
-
-            userEntity.setAuthorityEntity(UserAuthorityEntity.builder()
-                    .authNo(targetAuthorityNo)
-                    .build());
-
-            userRepository.saveAndFlush(userEntity);
-            resultMap.put("resultMap", UPDATE_USER_AUTHORITY_SUCCESS);
-            resultMap.put("mod_date", userEntity.toDto().getMod_date());
-
-        } else {
-            resultMap.put("resultMap", UPDATE_USER_AUTHORITY_FAIL);
-
-        }
-        return resultMap;
-    }
 }
 
+@Transactional
+public Map<String, Object> updateUserAuthority(int userNo, Integer authorityNo) {
+    log.info("updateUserAuthority()");
 
-------------------------------------------------------------------------
+    Map<String, Object> resultMap = new HashMap<>();
 
-[ admin.js ]
+    Optional<UserEntity> optionalUser = userRepository.findById(userNo);
+    if (optionalUser.isPresent()) {
+        UserEntity userEntity = optionalUser.get();
 
+        Byte targetAuthorityNo = 1;
+        if (authorityNo == 2)
+            targetAuthorityNo = 2;
+
+        userEntity.setAuthorityEntity(UserAuthorityEntity.builder()
+                .authNo(targetAuthorityNo)
+                .build());
+
+        userRepository.saveAndFlush(userEntity);
+        resultMap.put("resultMap", UPDATE_USER_AUTHORITY_SUCCESS);
+        resultMap.put("mod_date", userEntity.toDto().getMod_date());
+
+    } else {
+        resultMap.put("resultMap", UPDATE_USER_AUTHORITY_FAIL);
+
+    }
+    return resultMap;
+}
+}
+```
+
+---
+
+#### [ admin.js ]
+
+```jsx
 const UPDATE_ADMIN_AUTHORITY_SUCCESS   = 1;
 const UPDATE_ADMIN_AUTHORITY_FAIL      = 0;
 
 document.addEventListener("DOMContentLoaded", function (){
-    console.log('DOCUMENT READY!!');
+console.log('DOCUMENT READY!!');
 
-    fetchGetAdmins();
+fetchGetAdmins();
 
-    initEvents();
-
+initEvents();
 });
 
 async function fetchGetAdmins() {
-    console.log('fetchGetAdmins()');
+console.log('fetchGetAdmins()');
 
-    try {
-        let response = await fetch('/admin/admins', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok!');
+try {
+    let response = await fetch('/admin/admins', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8'
         }
+    });
 
-        console.log('fetchGetAdmins() COMMUNICATION SUCCESS!!');
-
-        let data = await response.json();
-        console.log('data: ', data);
-        let admins = data.admins
-        for (let i = 0; admins.length; i++) {
-            let template = document.querySelector('#list-template').content.cloneNode(true);
-            template.querySelector('tr').setAttribute('id', 'admin_' + admins[i].no);
-            template.querySelector('.no').textContent = admins[i].no;
-            template.querySelector('.id').textContent = admins[i].id;
-            template.querySelector('select[name="authority"]').setAttribute('admin_no', admins[i].no);
-            template.querySelector('select[name="authority"]').value = admins[i].authorityDto.no;
-            template.querySelector('.mail').textContent = admins[i].mail;
-            template.querySelector('.phone').textContent = admins[i].phone;
-            template.querySelector('.reg_date').textContent = admins[i].reg_date;
-            template.querySelector('.mod_date').textContent = admins[i].mod_date;
-            document.querySelector('#section_wrap tbody').appendChild(template);
-        }
-
-    } catch (error) {
-        console.log('fetchGetAdmins() COMMUNICATION ERROR!!', error);
-
+    if (!response.ok) {
+        throw new Error('Network response was not ok!');
     }
 
+    console.log('fetchGetAdmins() COMMUNICATION SUCCESS!!');
+
+    let data = await response.json();
+    console.log('data: ', data);
+    let admins = data.admins
+    for (let i = 0; admins.length; i++) {
+        let template = document.querySelector('#list-template').content.cloneNode(true);
+        template.querySelector('tr').setAttribute('id', 'admin_' + admins[i].no);
+        template.querySelector('.no').textContent = admins[i].no;
+        template.querySelector('.id').textContent = admins[i].id;
+        template.querySelector('select[name="authority"]').setAttribute('admin_no', admins[i].no);
+        template.querySelector('select[name="authority"]').value = admins[i].authorityDto.no;
+        template.querySelector('.mail').textContent = admins[i].mail;
+        template.querySelector('.phone').textContent = admins[i].phone;
+        template.querySelector('.reg_date').textContent = admins[i].reg_date;
+        template.querySelector('.mod_date').textContent = admins[i].mod_date;
+        document.querySelector('#section_wrap tbody').appendChild(template);
+    }
+
+} catch (error) {
+    console.log('fetchGetAdmins() COMMUNICATION ERROR!!', error);
+
+}
 }
 
 function initEvents() {
-    console.log('initEvents() CALLED!!');
+console.log('initEvents() CALLED!!');
 
-    document.querySelector('#section_wrap').addEventListener('change', function (event) {
-        console.log('section_wrap CHANGE EVENT!!');
-        console.log('event: ', event);
+document.querySelector('#section_wrap').addEventListener('change', function (event) {
+    console.log('section_wrap CHANGE EVENT!!');
+    console.log('event: ', event);
 
-        if (event.target.name === 'authority') {
-            console.log('authority CHANGED!!');
+    if (event.target.name === 'authority') {
+        console.log('authority CHANGED!!');
 
-            let adminNo = event.target.getAttribute('admin_no');
-            let authorityNo =  event.target.value;
+        let adminNo = event.target.getAttribute('admin_no');
+        let authorityNo =  event.target.value;
 
-            console.log('adminNo: ', adminNo);
-            console.log('authorityNo: ', authorityNo);
+        console.log('adminNo: ', adminNo);
+        console.log('authorityNo: ', authorityNo);
 
-            fetchUpdateAdminAuthority(adminNo, authorityNo);
+        fetchUpdateAdminAuthority(adminNo, authorityNo);
 
-        }
+    }
 
-
-
-    });
-
+});
 }
 
 async function fetchUpdateAdminAuthority(adminNo, authorityNo) {
-    console.log('fetchUpdateAdminAuthority() CALLEd!!');
+console.log('fetchUpdateAdminAuthority() CALLEd!!');
 
-    let reqData = JSON.stringify({
-        'authorityNo': authorityNo
+let reqData = JSON.stringify({
+    'authorityNo': authorityNo
+});
+
+try {
+    let response = await fetch(`/admin/${adminNo}/auth`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: reqData
     });
 
-    try {
-        let response = await fetch(`/admin/${adminNo}/auth`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: reqData
-        });
+    if (!response.ok) {
+        throw new Error('Network response was not ok!');
+    }
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok!');
-        }
+    console.log('fetchUpdateAdminAuthority() COMMUNICATION SUCCESS!!');
 
-        console.log('fetchUpdateAdminAuthority() COMMUNICATION SUCCESS!!');
+    let data = await response.json();
+    console.log('data: ', data);
 
-        let data = await response.json();
-        console.log('data: ', data);
+    if (data.result === UPDATE_ADMIN_AUTHORITY_SUCCESS) {
+        alert("Authority change success!!");
+        document.querySelector(`#admin_${adminNo} .mod_date`).textContent = data.mod_date;
 
-        if (data.result === UPDATE_ADMIN_AUTHORITY_SUCCESS) {
-            alert("Authority change success!!");
-            document.querySelector(`#admin_${adminNo} .mod_date`).textContent = data.mod_date;
-
-        } else {
-            alert("Authority change fail!!");
-
-        }
-
-    } catch (error) {
-        console.log('fetchUpdateAdminAuthority() COMMUNICATION ERROR!!', error);
+    } else {
         alert("Authority change fail!!");
 
     }
 
-}
+} catch (error) {
+    console.log('fetchUpdateAdminAuthority() COMMUNICATION ERROR!!', error);
+    alert("Authority change fail!!");
 
+}
+}
+```
+
+---
+
+Map.of("result", 0); 이란?
+
+ResponseEntity.badRequest() 란?
+
+ResponseEntity.badRequest() 란?
+
+---
+
+Spring Security 인가(Authorization) 설정 이란?
