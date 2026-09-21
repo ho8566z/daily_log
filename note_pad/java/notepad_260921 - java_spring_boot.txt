@@ -296,12 +296,46 @@ try {
 
 ---
 
-Map.of("result", 0); 이란?
+## Map.of("result", 0); 이란?
 
-ResponseEntity.badRequest() 란?
+- 불변(immutable) Map을 간편하게 생성하는 정적 팩토리 메서드이다.
 
-ResponseEntity.badRequest() 란?
+#### Map.of("result", 0)의 **특징**
+
+- key-value 쌍을 인자로 나열한다.
+    - Map.of(k1, v1, k2, v2, ...) (최대 10쌍까지 지원한다.)
+- 반환된 Map은 수정 불가하다.
+    - (불변) — put(), remove() 호출 시 UnsupportedOperationException가 발생한다.
+- null key/value의 사용을 불허한다.
+    - (NullPointerException이 발생한다.)
+- 주로 컨트롤러에서 간단한 JSON 응답을 만들 때 사용한다.
 
 ---
 
-Spring Security 인가(Authorization) 설정 이란?
+## ResponseEntity.badRequest() 란?
+
+- HTTP 상태 코드 400 Bad Request로 응답을 만드는 정적 편의 메서드이다.
+
+#### 언제 사용하는지?
+
+- 클라이언트가 잘못된 요청(파라미터 누락, 형식 오류, 유효성 검증 실패 등)을 보냈을 때
+- 서버 내부 문제가 아니라 요청 자체가 잘못됐음을 명확히 알릴 때
+
+---
+
+## Spring Security 인가(Authorization) 설정 이란?
+
+- 인증(Authentication)이 "누구인지 확인"하는 것이라면, 인가(Authorization)는 "이 사용자가 이 자원에 접근할 권한이 있는지 확인"하는 것입니다.
+- Spring Security에서는 주로 SecurityFilterChain을 통해 설정한다.
+
+#### 핵심 개념
+
+| 메서드 | 의미 |
+| --- | --- |
+| permitAll() | 누구나 접근 가능 |
+| authenticated() | 로그인만 하면 접근 가능 |
+| hasRole("ADMIN") | 특정 권한(ROLE_ADMIN)을 가진 사용자만 접근 가능 |
+| hasAnyRole("A", "B") | 여러 권한 중 하나라도 있으면 접근 가능 |
+| denyAll() | 모두 차단 |
+
+---
