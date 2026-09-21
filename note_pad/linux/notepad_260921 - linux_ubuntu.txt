@@ -92,23 +92,80 @@ https://www.postman.com/downloads/
 
 !image.png
 
-포트번호 추가적으로 표로 만들기
+#### 주요 포트 번호
 
-localhost:127.0.0.1…?
+| 포트 | 프로토콜/용도 | 설명 |  |  |
+| --- | --- | --- | --- | --- |
+| 80 | HTTP | 일반 웹사이트(http://) 기본 포트 — URL에서 생략 가능 |  |  |
+| 443 | HTTPS | 보안 웹사이트(https://) 기본 포트 — SSL/TLS 암호화 적용 |  |  |
+| 8080 | HTTP(대체) | 개발용 서버가 흔히 쓰는 포트 — 스프링부트 기본값 |  |  |
+| 3000 | HTTP(대체) | React, Node.js(Express) 개발 서버가 자주 쓰는 포트 |  |  |
+| 5432 | PostgreSQL | PostgreSQL 데이터베이스 기본 포트 |  |  |
+| 3306 | MySQL | MySQL / MariaDB 데이터베이스 기본 포트 |  |  |
+| 27017 | MongoDB | MongoDB 데이터베이스 기본 포트 |  |  |
+| 6379 | Redis | Redis 캐시 서버 기본 포트 |  |  |
+| 22 | SSH | 원격 서버 접속(SSH) 기본 포트 |  |  |
+| 21 | FTP | 파일 전송(FTP) 기본 포트 |  |  |
+| 25 | SMTP | 이메일 전송 기본 포트 |  |  |
+
+---
+
+#### localhost vs 127.0.0.1
+
+| 항목 | localhost | 127.0.0.1 |
+| --- | --- | --- |
+| 의미 | "내 컴퓨터 자신"을 가리키는 도메인 이름(호스트명) | "내 컴퓨터 자신"을 가리키는 실제 IP 주소 |
+| 범주 | 루프백(loopback) 주소의 별칭 | 루프백(loopback) IP 주소 자체 |
+| 동작 방식 | 운영체제의 hosts 파일에서 127.0.0.1로 변환(resolve)됨 | 네트워크 레이어에서 바로 "나 자신"으로 처리 |
+| 차이 | 이름으로 부르는 것 | 숫자로 부르는 것 |
+
+---
+
+!image.png
+
+#### URL(Uniform Resource Locator)의 조각별 의미
+
+| 조각 | 뜻 | 간단한 설명 |
+| --- | --- | --- |
+| http:// | 통신 방식(프로토콜) | 웹에서 주고받는 약속 |
+| localhost | 어느 컴큐터인지 | 지금 이 컴퓨터 |
+| :8080 | 어느 프로그램(문)인지 | 스프링 서버 |
+| /api/products | 그 내부의 무엇인지 | 상품이라는 자원 |
 
 !image.png
 
 !image.png
 
-!image.png
+#### Postman 화면 보는법
+
+| 화면 구분 | 무엇을 보는지 |
+| --- | --- |
+| 요청(위쪽) | 메서드, 주소, (필요하면)Body |
+| 응답 (아래쪽) | 상태 코드, 걸린 시간, Body |
 
 !image.png
 
-shop-project-5th 코드 한번 읽기
+- shop-project-5th 코드 한번 읽기
 
 !image.png
 
 !image.png
+
+## Collection 이란?
+
+- Postman에서 관련된 API 요청들을 하나의 폴더처럼 묶어서 관리하는 기능이다.
+
+#### Collection의 핵심 개념
+
+- 여러 개의 API 요청을 낱개로 흩어놓지 않고, 하나의 프로젝트나 기능 단위로 그룹핑해서 저장하는 것이다.
+
+#### Collection이 왜 필요한지?
+
+- 정리: 회원 관련 API, 게시글 관련 API 등을 폴더별로 나눠서 관리한다.
+- 재사용: 매번 URL, 헤더, 인증 정보를 새로 입력하지 않고 저장된 요청을 클릭만 하면 실행할 수 있다.
+- 공유: 컬렉션을 export(JSON 파일)해서 팀원에게 공유하거나 Postman 계정으로 팀 워크스페이스에 공유할 수 있다.
+- 자동화: 컬렉션 전체를 순서대로 실행해서 테스트 시나리오를 자동으로 돌릴 수 있다. (Collection Runner)
+- 문서화: 컬렉션 자체를 API 문서처럼 활용 가능하다.(Publish 기능)
 
 ---
 
@@ -136,13 +193,55 @@ shop-project-5th 코드 한번 읽기
 
 !image.png
 
-- ,(컴마)를 제외하고 Post를 보내서 400번대 에러 발생
+!image.png
 
 !image.png
 
-- @를 넣지 않아서, “이메일 형식이 아닙니다.” 메세지 출력
+!image.png
 
 !image.png
+
+!image.png
+
+---
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+- 프로그래밍 기초 개념으로 이미 정리한 것에 추가할 것
+
+!image.png
+
+- ,(컴마)를 제외하고 Post를 보냈을 때, 에러(400번대)
+
+!image.png
+
+- 이메일 형식에서 @를 넣지 않아서, “이메일 형식이 아닙니다.” 메세지 출력하고 에러 발생
+
+!image.png
+
+- 데이터 타입을 JSON이 아닌, HTML로 받았을 때의 에러
+
+!image.png
+
+- Variables를 ‘baseURL2’에서 ’baseurl2’로 바꿨을 때의 에러
+
+!image.png
+
+- 프로그램을 실행 중인 포트번호 8080에서 실행 중이지 않은 8081로 바꿨을 때의 에러
+
+!image.png
+
+- GET방식의 포트를 POST방식으로 보냈을 때의 에러
 
 !image.png
 
