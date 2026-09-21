@@ -62,7 +62,7 @@ implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 
 !image.png
 
-postman 공식 다운로드 주소 : 
+Postman 공식 다운로드 주소 : 
 
 https://www.postman.com/downloads/
 
@@ -175,9 +175,23 @@ https://www.postman.com/downloads/
 
 !image.png
 
+#### Collection VS. History
+
+|  | Collection |  | History |  |
+| --- | --- | --- | --- | --- |
+| 저장 방식 | 직접 Save를 눌러야 한다. |  | Send할 때 마다 자동으로 기록한다. |  |
+| 정리 상태 | 사용자가 이름을 붙여 정리한다. |  | 시간순으로 정렬된다. |  |
+| 언제 쓰는지 | 반복해서 계속 사용할 요청을 저장·관리할 때 (API 테스트 스위트 구성, 팀과 공유, 문서화 등) |  | 방금 보낸 요청을 다시 찾거나 재사용할 때 (임시로 빠르게 재실행) |  |
+
 !image.png
 
 !image.png
+
+## Collection 구조
+
+```
+Collection(최상위 폴더) —→ Folder(하위 폴더, 선택) —→ Request(요청)
+```
 
 !image.png
 
@@ -195,11 +209,40 @@ https://www.postman.com/downloads/
 
 !image.png
 
+#### Params & Body
+
+| 구분 | 쓰는 곳 | 예시 |
+| --- | --- | --- |
+| Params(쿼리 파라미터) | 주소 자체에 값을 붙인다. | 검색어 등 |
+| Body(요청 본문) | 주소와 분리된 별도의 상자 | 회원가입 JSON 등 |
+
 !image.png
+
+#### Post를 2번 보내면, 2번 실행되는지?
+
+| 같은 Request로 POST를 2번 보내면 | 결과 |
+| --- | --- |
+| 첫 번째 | 201 Created — 생성 |
+| 두 번쨰(같은 데이터) | 400 — 이미 입력된 정보입니다. |
+
+!image.png
+
+#### Header 탭
+
+- Body가 편지 내용이라면, Header는 편지 봉투의 부가적 정보이다.
+
+| Header | 자동으로 붙은 값 | 뜻 |
+| --- | --- | --- |
+| Content-Type | apllication/json | 본문이 JSON 형식이라는 표시 |
+| Content-Length | (자동계산) | 본문의 바이트 크기 |
 
 !image.png
 
 !image.png
+
+#### 반복되는 주소를 ‘변수’로 만들기
+
+- 반복되는 “http://localhost:8080”을 변수로 선언했다.
 
 !image.png
 
@@ -217,6 +260,17 @@ https://www.postman.com/downloads/
 
 !image.png
 
+## 오류 진단 순서
+
+| 증상 | 진단 순서 | 해결 방안 |
+| --- | --- | --- |
+| Could not send request / ECONNREFUSED | Spring Boot 실행 여부 | 터미널에서 앱 설정 |
+| 404 Not Found | 주소 철자와 경로 | ex) /api/products, /api/users 확인 |
+| 405 Method Not Allowed | GET / POST 선택 | 컨트롤러에 맞는 메서드 선택 |
+| 400 Bad Request | Response body의 message | JSON과 입력값 수정 |
+| 415 Unsupported Media Type | Body 형식 Content-Type | raw → JSON 선택 |
+| 500 Internal Server Error | Spring Boot 터미널 로그 | 첫 예외 원인부터 읽기 |
+| Unresolved variable | 변수 이름-범위-저장 | 주소 변수의 철자와 Collection 확인 |
 - 프로그래밍 기초 개념으로 이미 정리한 것에 추가할 것
 
 !image.png
@@ -247,8 +301,32 @@ https://www.postman.com/downloads/
 
 !image.png
 
+## Environment(환경) 란?
+
+- Postman에서 변수를 저장해서 같은 요청을 여러 상황(개발/스테이징/운영 서버 등)에서 값만 바꿔가며 재사용할 수 있게 해주는 기능이다.
+
+#### 왜 쓰는지
+
+- 요청을 만들 때마다 URL이나 토큰 같은 값을 일일이 고쳐 쓰는 대신, {{변수명}} 형태로 넣어두고 Environment에서 실제 값을 관리하는 방식이다.
+
+| 구분 | 범위 |
+| --- | --- |
+| Collection 변수 | 해당 Collection 내부에서만 사용한다. |
+| Environment(환경) | 여러 Collection에서 공유 가능하다. |
+
 !image.png
 
 !image.png
+
+## 26.09.21 숙제
+
+|  | 무엇 |  |  |  |  | 예상 결과 |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | GET /api/products?keyword=마우스 |  |  |  |  | 200, 이름에 ‘마우스’ 들어간 것만 |  |  |  |  |
+| 2 | POST /api/products (상품 새로 등록) |  |  |  |  | 201, 새 id 자동 부여 |  |  |  |  |
+| 3 | PUT /api/products/{id} (2번 상품 가격-재고 수정) |  |  |  |  | 200, 수정된 값으로 응답 |  |  |  |  |
+| 4 | DELETE /api/products/{id} (2번 상품 삭제) |  |  |  |  | 204, 응답 본문 없음 |  |  |  |  |
+| 5 | 삭제한 상품을 GET /api/products/{id} |  |  |  |  | 400, ‘상품을 찾을 수 없다’ |  |  |  |  |
+| 6 | POST /api/users/login → GET /api/users/me |  |  |  |  | 로그인 성공 후 me는 200 |  |  |  |  |
 
 !image.png
