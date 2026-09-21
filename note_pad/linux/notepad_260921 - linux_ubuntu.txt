@@ -62,10 +62,15 @@ implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 
 !image.png
 
-!image.png
+postman 공식 다운로드 주소 : 
+
+https://www.postman.com/downloads/
 
 !image.png
 
+!image.png
+
+- Postman을 실행하기 전에, Linux에서 docker start인지, Intellij run인지 확인해야 한다.
 - http://localhost:8080의 Postman 화면(부분)
 
 !image.png
@@ -77,6 +82,13 @@ implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 !image.png
 
 !image.png
+
+#### 왜 Postman의 기본 메서드가 Get인지?
+
+| 가장 자주 사용하는 동작 | ‘조회’가 api 호출 중, 압도적으로 많음 |
+| --- | --- |
+| 가장 안전한 동작 | 서버 데이터를 바꾸지 않는다.
+실수해도 위험이 적다. |
 
 !image.png
 
@@ -99,3 +111,45 @@ shop-project-5th 코드 한번 읽기
 !image.png
 
 ---
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+- 회원가입 성공
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+- ,(컴마)를 제외하고 Post를 보내서 400번대 에러 발생
+
+!image.png
+
+- @를 넣지 않아서, “이메일 형식이 아닙니다.” 메세지 출력
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
