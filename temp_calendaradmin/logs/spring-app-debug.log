@@ -1,0 +1,193 @@
+2026-09-15 10:19:58 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 10:21:56 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 10:21:59 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-15 11:35:22 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 11:37:04 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 11:41:57 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 11:43:29 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 11:44:03 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 11:45:33 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 11:47:33 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 11:48:29 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 11:48:43 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 12:03:55 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 12:04:26 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-15 12:04:55 DEBUG [mapper.MemberMapper.isMember] - ==>  Preparing: SELECT COUNT(*) FROM USER_MEMBER WHERE ID = ?
+2026-09-15 12:04:55 DEBUG [mapper.MemberMapper.isMember] - ==> Parameters: chanho(String)
+2026-09-15 12:04:55 DEBUG [mapper.MemberMapper.isMember] - <==      Total: 1
+2026-09-15 12:04:55 DEBUG [mapper.MemberMapper.insertMember] - ==>  Preparing: INSERT INTO USER_MEMBER(ID, PW, MAIL, PHONE) VALUES(?, ?, ?, ?)
+2026-09-15 12:04:55 DEBUG [mapper.MemberMapper.insertMember] - ==> Parameters: chanho(String), $2a$10$8g.kZIAdJCVbXALV9HDbm.bBuqfKhZdZkcgoLgoOJCZzcXsvXlXNy(String), chanho@gmail.com(String), 010-1111-2222(String)
+2026-09-15 12:04:55 DEBUG [mapper.MemberMapper.insertMember] - <==    Updates: 1
+2026-09-15 12:05:09 DEBUG [mapper.MemberMapper.selectMemberByID] - ==>  Preparing: SELECT * FROM USER_MEMBER WHERE ID = ?
+2026-09-15 12:05:09 DEBUG [mapper.MemberMapper.selectMemberByID] - ==> Parameters: chanho(String)
+2026-09-15 12:05:09 DEBUG [mapper.MemberMapper.selectMemberByID] - <==      Total: 1
+2026-09-15 12:05:12 DEBUG [mapper.MemberMapper.selectMemberByID] - ==>  Preparing: SELECT * FROM USER_MEMBER WHERE ID = ?
+2026-09-15 12:05:12 DEBUG [mapper.MemberMapper.selectMemberByID] - ==> Parameters: chanho(String)
+2026-09-15 12:05:12 DEBUG [mapper.MemberMapper.selectMemberByID] - <==      Total: 1
+2026-09-15 12:07:24 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 12:13:18 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 12:21:08 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 12:24:59 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 12:25:25 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 12:33:19 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 12:33:28 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-15 12:33:30 DEBUG [mapper.MemberMapper.selectMemberByID] - ==>  Preparing: SELECT * FROM USER_MEMBER WHERE ID = ?
+2026-09-15 12:33:30 DEBUG [mapper.MemberMapper.selectMemberByID] - ==> Parameters: chanho(String)
+2026-09-15 12:33:30 DEBUG [mapper.MemberMapper.selectMemberByID] - <==      Total: 1
+2026-09-15 12:33:34 DEBUG [mapper.MemberMapper.updateMember] - ==>  Preparing: UPDATE USER_MEMBER SET PW = ?, MAIL = ?, PHONE = ? WHERE NO = ?
+2026-09-15 12:33:34 DEBUG [mapper.MemberMapper.updateMember] - ==> Parameters: $2a$10$YInvz./pGFKZ0aerEd9mVOdJOMaSWLi1JvjPKaRJqe6.lPuSe9bly(String), chanho@gmail.com(String), 010-1111-2222(String), 3(Integer)
+2026-09-15 12:33:34 DEBUG [mapper.MemberMapper.updateMember] - <==    Updates: 1
+2026-09-15 12:33:36 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-15 12:33:41 DEBUG [mapper.MemberMapper.selectMemberByID] - ==>  Preparing: SELECT * FROM USER_MEMBER WHERE ID = ?
+2026-09-15 12:33:41 DEBUG [mapper.MemberMapper.selectMemberByID] - ==> Parameters: chanho(String)
+2026-09-15 12:33:41 DEBUG [mapper.MemberMapper.selectMemberByID] - <==      Total: 1
+2026-09-15 12:33:43 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-15 12:37:49 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-15 12:40:26 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 09:00:00 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 09:01:48 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-16 09:01:57 DEBUG [mapper.MemberMapper.selectMemberByID] - ==>  Preparing: SELECT * FROM USER_MEMBER WHERE ID = ?
+2026-09-16 09:01:57 DEBUG [mapper.MemberMapper.selectMemberByID] - ==> Parameters: gildong(String)
+2026-09-16 09:01:57 DEBUG [mapper.MemberMapper.selectMemberByID] - <==      Total: 1
+2026-09-16 09:02:02 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-16 11:11:49 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:12:21 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-16 11:16:04 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:16:07 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:20:47 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:20:49 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:25:17 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:25:19 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:28:01 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:28:15 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-16 11:28:57 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:34:35 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:34:41 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-16 11:34:44 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-16 11:42:11 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:42:54 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-16 11:43:12 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:43:20 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-16 11:45:45 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:45:49 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:45:54 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-16 11:46:01 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-16 11:48:52 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 11:48:55 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 12:06:44 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 12:06:46 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 12:17:08 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 12:17:11 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 12:19:43 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 12:19:45 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 12:29:36 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 12:29:44 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-16 12:35:23 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-16 12:35:26 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 09:35:40 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 09:37:26 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 09:40:28 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 09:40:34 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 09:41:48 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 09:41:53 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 09:42:29 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 09:42:34 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 09:43:48 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 09:43:59 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 09:44:00 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 09:44:02 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 09:45:32 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 09:45:34 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 11:42:45 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 11:43:00 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 11:44:34 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 11:44:46 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 11:51:40 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 11:51:53 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 11:51:55 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 11:52:12 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 12:02:18 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:03:53 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:05:59 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:06:02 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:13:05 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:13:08 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:16:50 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:16:52 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:18:53 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:18:56 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:19:36 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:19:39 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:20:46 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:20:48 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:26:12 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:26:48 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 12:27:01 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 12:27:15 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 12:27:35 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 12:27:52 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 12:29:45 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:30:27 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-17 12:30:28 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 12:30:29 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 12:30:39 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-17 12:30:51 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-18 09:13:37 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 09:13:54 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-18 09:14:08 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-18 09:14:12 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-18 09:21:38 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 09:21:52 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-18 09:22:05 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-18 09:43:22 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 10:03:04 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 10:03:13 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-18 10:06:21 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 10:09:53 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-18 10:13:26 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 10:13:31 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-18 10:14:19 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 10:16:30 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-18 10:18:37 DEBUG [office.calendar.CalendarApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 10:18:44 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-18 10:19:23 DEBUG [office.calendar.HomeController] - DEBUG:: home()
+2026-09-18 11:35:47 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:36:01 DEBUG [office.calendaradmin.HomeController] - DEBUG:: home()
+2026-09-18 11:36:09 DEBUG [office.calendaradmin.HomeController] - DEBUG:: home()
+2026-09-18 11:37:18 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:37:37 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:38:16 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:39:43 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:39:46 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:40:19 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:42:01 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:42:03 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:43:02 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:45:10 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:45:38 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:46:53 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:47:01 DEBUG [office.calendaradmin.HomeController] - DEBUG:: home()
+2026-09-18 11:47:51 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:48:32 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:49:26 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 11:50:21 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:03:16 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:03:34 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:09:52 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:12:00 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:24:20 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:24:23 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:26:17 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:26:22 DEBUG [office.calendaradmin.HomeController] - DEBUG:: home()
+2026-09-18 12:28:55 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:29:20 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:31:02 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:31:36 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:36:12 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:36:19 DEBUG [office.calendaradmin.HomeController] - DEBUG:: home()
+2026-09-18 12:36:58 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:37:00 DEBUG [office.calendaradmin.HomeController] - DEBUG:: home()
+2026-09-18 12:37:19 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:38:17 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:41:14 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-09-18 12:43:15 DEBUG [office.calendaradmin.CalendarAdminApplication] - Running with Spring Boot v4.1.1, Spring v7.0.9
