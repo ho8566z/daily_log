@@ -1,0 +1,85 @@
+20260922
+
+
+## 권한 인가 금지 코드
+
+#### [ SecurityConfig ]
+
+```java
+http
+        .exceptionHandling(exception -> exception
+            .accessDeniedHandler(new MemberAccessDeniedHandler())
+        );
+
+    return http.build();
+```
+
+---
+
+#### [ MemberAccessDeniedHandler ]
+
+```java
+package com.office.calendar.member.security;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
+
+import java.io.IOException;
+
+@Slf4j
+public class MemberAccessDeniedHandler implements AccessDeniedHandler {
+
+// handle()은 접근 거부시 실행되는 메서드
+@Override
+public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+
+    response.sendRedirect("/member/access_denied");
+
+}
+}
+```
+
+---
+
+#### [ MemberController ]
+
+```java
+// 권한이 없어서 접근이 막힌 경우
+@GetMapping("/access_denied")
+public String accessDenied() {
+    log.info("accessDenied()");
+
+    String nextPage = "member/access_denied";
+
+    return nextPage;
+
+}
+```
+
+---
+
+#### [ access_denied.html ]
+
+```html
+<section>
+    <div id="section_wrap">
+        <div class="word">
+            SORRY, ACCESS DENIED.
+        </div>
+    </div>
+</section>
+```
+
+---
+
+## SPA 란?
+
+## MPA 란?
+
+## SPA VS. MPA
+
+---
