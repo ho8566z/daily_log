@@ -386,6 +386,19 @@ document.addEventListener('click', function (event) {
 
     }
 });
+
+// change이벤트 들의 처리document.addEventListener('change', function(event) {
+
+    //달력에서 년 변경 시if(event.target.matches('#section_wrap select[name="p_year"]')) {
+        setMonthBySelectChanged();
+    }
+
+    //달력에서 월 변경 시if(event.target.matches('#section_wrap select[name="p_month"]')) {
+        setMonthBySelectChanged();
+    }
+
+});
+
 }
 
 function setPreMonth() {
@@ -472,6 +485,27 @@ console.log('removeCalenderTr() CALLED!!');
 let tbody = document.querySelector('#table_calender tbody');
 tbody.innerHTML = '';
 }
+
+function setMonthBySelectChanged() {
+console.log('setMonthBySelectChanged() CALLED!!');
+
+let temp_year = document.querySelector('select[name="p_year"]').value;
+let temp_month = document.querySelector('select[name="p_month"]').value - 1;
+
+let selectedCalender = new Date(temp_year, temp_month, 1);
+
+// 데이터 설정
+setCurrentCalender(
+    selectedCalender.getFullYear(),
+    selectedCalender.getMonth(),
+    selectedCalender.getDate(),
+    selectedCalender.getDay()
+);
+
+// 달력 UI 렌더링
+removeCalenderTr();
+addCalenderTr();
+}
 ```
 
 #### [ planner.js ] 전체 함수 구조
@@ -507,40 +541,94 @@ DOMContentLoaded
 ```
 
 ```jsx
-                     [페이지 로딩]
-                          │
-                          ▼
-                   DOMContentLoaded
-                          │
-         ┌────────────────┼────────────────┐
-         ▼                ▼                ▼
-setCurrentCalender()   setCurrentYear...   addCalenderTr()
-   │                      │                │
-   │                      │                └─ 달력 HTML 생성
-   │                      └─ 년/월 표시
-   └─ 현재 날짜 저장
-                          │
-                          ▼
-                      initEvents()
-                          │
-                     click 이벤트 등록
-                          │
-              ┌───────────┴───────────┐
-              ▼                       ▼
-         이전 버튼 클릭           다음 버튼 클릭
-              │                       │
-              ▼                       ▼
-         setPreMonth()            setNextMonth()
-              │                       │
-      ┌───────┼───────┐       ┌───────┼───────┐
-      ▼       ▼       ▼       ▼       ▼       ▼
-     현재    select   삭제    현재    select   삭제
-     변경    변경      │      변경    변경      │
-                      ▼                       ▼
-               addCalenderTr()        addCalenderTr()
-                      │                       │
-                      ▼                       ▼
-                    새 달력                  새 달력
+DOMContentLoaded
+│
+├── setCurrentCalender()
+│
+├── setCurrentYearAndMonthSelectUI()
+│
+├── addCalenderTr()
+│
+└── initEvents()
+     │
+     ├── click 이벤트
+     │    │
+     │    ├── 이전 버튼
+     │    │    └── setPreMonth()
+     │    │         ├── setCurrentCalender()
+     │    │         ├── setCurrentYearAndMonthSelectUI()
+     │    │         ├── removeCalenderTr()
+     │    │         └── addCalenderTr()
+     │    │
+     │    └── 다음 버튼
+     │         └── setNextMonth()
+     │              ├── setCurrentCalender()
+     │              ├── setCurrentYearAndMonthSelectUI()
+     │              ├── removeCalenderTr()
+     │              └── addCalenderTr()
+     │
+     └── change 이벤트
+          │
+          ├── 년도 <select> 변경
+          │    └── setMonthBySelectChanged()
+          │         ├── setCurrentCalender()
+          │         ├── removeCalenderTr()
+          │         └── addCalenderTr()
+          │
+          └── 월 <select> 변경
+               └── setMonthBySelectChanged()
+                    ├── setCurrentCalender()
+                    ├── removeCalenderTr()
+                    └── addCalenderTr()
 ```
+
+```jsx
+                     ┌──────────────────────┐
+                     │  DOMContentLoaded    │
+                     └──────────┬───────────┘
+                                │
+          ┌─────────────────────┼─────────────────────┐
+          │                     │                     │
+          ▼                     ▼                     ▼
+setCurrentCalender()   setCurrentYearAndMonth...   addCalenderTr()
+          │                     │                     │
+          └─────────────────────┴─────────────────────┘
+                                │
+                                ▼
+                            initEvents()
+                                │
+               ┌────────────────┴────────────────┐
+               │                                 │
+             click                             change
+               │                                 │
+      ┌────────┴────────┐                ┌───────┴────────┐
+      │                 │                │                │
+      ▼                 ▼                ▼                ▼
+  .btn_pre          .btn_next         p_year           p_month
+      │                 │                │                │
+      ▼                 ▼                └───────┬────────┘
+setPreMonth()    setNextMonth()                  │
+      │                 │                        │
+      │                 │                        ▼
+      │                 │          setMonthBySelectChanged()
+      │                 │                        │
+      └────────┬────────┘                        │
+               │                                 │
+               └──────────────┬──────────────────┘
+                              │
+                              ▼
+                     setCurrentCalender()
+                              │
+                              ▼
+                setCurrentYearAndMonthSelectUI()
+                              │
+                              ▼
+                       removeCalenderTr()
+                              │
+                              ▼
+                        addCalenderTr()
+```
+
+      
 
 ---
