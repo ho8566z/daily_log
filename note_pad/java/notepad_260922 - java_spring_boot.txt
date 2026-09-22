@@ -1,7 +1,7 @@
 20260922
 
 
-## 권한 인가 금지 코드
+## 권한 인가 금지 - 코드
 
 #### [ SecurityConfig ]
 
@@ -73,6 +73,15 @@ public String accessDenied() {
     </div>
 </section>
 ```
+
+#### 동작 흐름
+
+1. 사용자가 권한이 없는 URL에 접근 시도
+2. FilterSecurityInterceptor(구버전) 또는 AuthorizationFilter(신버전)가 인가 여부를 검사
+3. 권한 부족 → AccessDeniedException 발생
+4. ExceptionTranslationFilter가 이 예외를 캐치
+5. 등록된 AccessDeniedHandler.handle() 호출 → MemberAccessDeniedHandler가 실행되어 /member/access_denied로 리다이렉트
+6. MemberController의 accessDenied()가 새 요청을 받아 뷰(access_denied.html)를 반환
 
 ---
 
@@ -628,7 +637,5 @@ setPreMonth()    setNextMonth()                  │
                               ▼
                         addCalenderTr()
 ```
-
-      
 
 ---
