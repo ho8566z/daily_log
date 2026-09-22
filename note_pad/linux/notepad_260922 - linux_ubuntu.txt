@@ -5,7 +5,29 @@
 
 !image.png
 
-db에 새로운 항목을 추가하면 nullable을 허용해야 한다.
+## Spring Boot + JPA — Entity 필드 추가 시 nullable 설계
+
+#### [ entity/User ]
+
+```java
+// ★ 8일차의 주인공. nullable — 이미 가입한 회원도 재부팅 시 값 없이 재생성된다.
+@Column(length = 20)
+private String phone;
+```
+
+#### [ model/UserRequest ]
+
+```java
+// 필수 아님 — 안 보내면 그냥 null 로 저장된다. 보낼 땐 010-1234-5678 형식만 통과.
+@Pattern(regexp = "^01[0-9]-\\d{3,4}-\\d{4}$", message = "전화번호는 010-1234-5678 형식입니다")
+private String phone;
+```
+
+#### 새 컬럼 추가 시 nullable 허용
+
+- 기존 회원 데이터가 있는 상태에서 컬럼을 새로 추가하면, 기존 row는 값이 없으므로 NOT NULL 제약을 걸면 마이그레이션이 깨진다.
+- 따라서 신규 컬럼은 기본적으로 nullable로 열어두고, 필요 시 백필 후 제약을 건다.
+    - ‘백필(backfill)’은 이미 저장돼 있는 기존 row들의 빈 값을 나중에 채워 넣는 작업을 말한다.
 
 !image.png
 
@@ -33,21 +55,79 @@ db에 새로운 항목을 추가하면 nullable을 허용해야 한다.
 
 !image.png
 
+- DataGrip에서 Users 테이블 조회
+
+!image.png
+
+- DataGrip에서 Products 테이블 조회
+
+!image.png
+
+- 데이터를 INSERT하려는 console 화면
+
+!image.png
+
+- console에서 데이터를 INSERT 한 다음의 Users 테이블 조회
+
+!image.png
+
+!image.png
+
+## Hibernate 란?
+
+- JPA(Java Persistence API)는 명세(interface)일 뿐이고, Hibernate는 그 명세를 구현한 실제 구현체(implementation)다.
+    - JPA는 "자바 객체와 DB 테이블을 어떻게 매핑할지"에 대한 표준 규약(어노테이션, 인터페이스 등)만 정의했기 때문에 실제 동작 코드는 없다.
+    - Hibernate는 JPA 명세를 따르면서, 실제로 SQL을 생성하고 DB와 통신하는 라이브러리이다.
+
+#### Hibernate가 실제로 하는 일
+
+- Entity 객체 ↔ DB 테이블 자동 매핑
+- 영속성 컨텍스트(1차 캐시) 관리
+- 변경 감지(Dirty Checking) → SQL 자동 생성
+- 지연 로딩(Lazy Loading) 처리
+- 트랜잭션 관리 지원
+
+!image.png
+
+!image.png
+
+## DDL (Data Definition Language) 이란?
+
+- 데이터베이스 구조(스키마)를 정의하는 언어로서 테이블, 컬럼, 제약조건 등을 만들고 바꾸고 지운다.
+
+| 명령어 | 역할 |
+| --- | --- |
+| CREATE | 테이블/DB 등 생성 |
+| ALTER | 테이블 구조 변경 (컬럼 추가/수정/삭제) |
+| DROP | 테이블/DB 삭제 |
+| TRUNCATE | 테이블 데이터 전체 삭제(구조는 유지) |
+
+## DML (Data Manipulation Language) 이란?
+
+- 데이터를 다루는 언어로서 테이블 구조는 그대로 두고, 그 안의 데이터를 읽고 쓰고 고치고 지운다.
+
+| 명령어 | 역할 |
+| --- | --- |
+| SELECT | 데이터 조회 |
+| INSERT | 데이터 삽입 |
+| UPDATE | 데이터 수정 |
+| DELETE | 데이터 삭제 |
+
 !image.png
 
 !image.png
 
 !image.png
 
-ddl이란?
+# 여기서 재시작
 
-dml이란?
+# 여기서 재시작
 
-!image.png
+# 여기서 재시작
 
-!image.png
+# 여기서 재시작
 
-!image.png
+# 여기서 재시작
 
 !image.png
 
