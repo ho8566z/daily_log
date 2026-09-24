@@ -10,6 +10,7 @@ import datetime
 import json
 
 SERVICE_KEY = '1fac12c20ae2a975376bc2dedd43773c22483d8f7be8953e009f33d65a5efb06'
+SERVICE_KEY = 'YOUR_SERVICE_KEY'
 
 ------------------------------------------------------------------------
 def getRequestURL(url):
