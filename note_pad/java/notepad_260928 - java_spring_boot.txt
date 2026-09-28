@@ -198,6 +198,84 @@ if (event.target.matches('#table_calender a.title')) {
 
 ---
 
+## DELETE 요청으로 리소스 삭제하기
+
+- 조회(GET)/등록(POST)만 있던 데서 이번에 '삭제' 기능이 추가되면서, HTTP 메서드를 method: 'DELETE'로 지정해서 보낸다.
+- URL 경로 자체에 삭제할 대상의 id(no)를 템플릿 리터럴로 박아넣는 REST 방식(`/planner/plan/${no}`)을 사용했다. 같은 '일정 1건'을 가리키는 URL이지만, 메서드가 GET이면 조회, DELETE면 삭제가 된다.
+- 삭제 성공 여부는 data.result 값(0보다 큰지)로 판단하고, 성공하면 달력을 다시 그려서(removeCalenderTr + addCalenderTr) 삭제된 일정이 화면에서 사라지게 한다.
+
+#### [ planner_fetch.js - fetchRemovePlan() ]
+
+```jsx
+async function fetchRemovePlan(no) {
+    try {
+        let response = await fetch(`/planner/plan/${no}`, {   // /planner/plan/2
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        let data = await response.json();
+
+        if (data.result > 0) {
+            alert("일정이 정상적으로 삭제 되었습니다.");
+
+            removeCalenderTr();
+            addCalenderTr();
+            fetchGetCurrentMonthPlans();
+
+        } else {
+            alert("일정이 정상적으로 삭제 되지 않았습니다.");
+        }
+
+    } catch (error) {
+        console.log('fetchRemovePlan() COMMUNICATION ERROR!! ', error);
+
+    } finally {
+        hideDetailPlanView();   // 삭제 후에도 상세보기 모달은 닫아야 한다
+    }
+}
+```
+
+---
+
+## 모달 열기/닫기 함수 짝 맞추기 - hideDetailPlanView()
+
+- showWritePlanView() / hideWritePlanView() 처럼, 모달을 보여주는 show 함수가 있으면 그 짝으로 값을 비우고 숨기는 hide 함수를 항상 함께 만든다.
+- 상세보기 모달(#show_plan)은 showDetailPlanView()만 있고 닫는 함수가 없었는데, 'CLOSE' 버튼과 'DELETE' 버튼이 추가되면서 hideDetailPlanView()가 새로 만들어졌다.
+
+#### [ planner.js ]
+
+```jsx
+// 일정 디테일 모달 닫기
+if (event.target.matches('#show_plan input[value="CLOSE"]')) {
+    hideDetailPlanView();
+}
+
+// 일정 삭제 버튼 클릭 시
+if (event.target.matches('#show_plan input[value="DELETE"]')) {
+    let no = event.target.getAttribute("data-no");
+    fetchRemovePlan(no);
+}
+
+function hideDetailPlanView() {
+    let showPlan = document.querySelector('#show_plan');
+
+    showPlan.querySelector('input[name="p_title"]').value = '';
+    showPlan.querySelector('input[name="p_body"]').value = '';
+    showPlan.querySelector('input[name="p_file"]').value = '';
+
+    showPlan.style.display = 'none';
+}
+```
+
+---
+
 ## 전체 코드
 
 #### [ planner.js ]
@@ -418,6 +496,25 @@ function initEvents() {
             console.log('PLAN TITLE CLICKED!!', event.target.getAttribute('data-no'));
 
             fetchGetPlan(event.target.getAttribute('data-no'));
+
+        }
+
+        // 일정 디테일 모달 닫기
+        if (event.target.matches('#show_plan input[value="CLOSE"]')) {
+            console.log('CLOSE BUTTON CLICKED!!');
+
+            hideDetailPlanView();
+
+        }
+
+        // 일정 삭제 버튼 클릭 시
+        if (event.target.matches('#show_plan input[value="DELETE"]')) {
+            console.log('DELETE BUTTON CLICKED!!');
+
+            let no = event.target.getAttribute("data-no");
+            console.log('no: ', no);
+
+            fetchRemovePlan(no);
 
         }
 
@@ -651,6 +748,20 @@ function showDetailPlanView(plan) {
     showPlan.style.display = "block";
 
 }
+
+function hideDetailPlanView() {
+    console.log("hideDetailPlanView() CALLED!!");
+
+    // let showPlan = document.getElementById('show_plan');
+    let showPlan = document.querySelector('#show_plan');
+
+    showPlan.querySelector('input[name="p_title"]').value = '';
+    showPlan.querySelector('input[name="p_body"]').value = '';
+    showPlan.querySelector('input[name="p_file"]').value = '';
+
+    showPlan.style.display = 'none';
+
+}
 ```
 
 ---
@@ -780,6 +891,48 @@ async function fetchGetPlan(no) {
 
     } catch (error) {
         console.log('fetchGetPlan() COMMUNICATION ERROR!! ', error);
+
+    }
+
+}
+
+async function fetchRemovePlan(no) {
+    console.log('fetchRemovePlan() CALLED!!');
+
+    try {
+        let response = await fetch(`/planner/plan/${no}`, {   // /planner/plan/2
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        console.log('fetchRemovePlan() COMMUNICATION SUCCESS!! ');
+
+        let data = await response.json();
+        console.log('data: ', data);
+
+        if (data.result > 0) {
+            alert("일정이 정상적으로 삭제 되었습니다.");
+
+            removeCalenderTr();
+            addCalenderTr();
+            fetchGetCurrentMonthPlans();
+
+        } else {
+            alert("일정이 정상적으로 삭제 되지 않았습니다.");
+
+        }
+
+    } catch (error) {
+        console.log('fetchRemovePlan() COMMUNICATION ERROR!! ', error);
+
+    } finally {
+        hideDetailPlanView();
 
     }
 
