@@ -1,4 +1,789 @@
 20260928
 
 
-forEach() 란?
+## forEach() 란?
+
+- 배열의 각 요소를 순서대로 순회하면서 콜백 함수를 실행하는 배열 메서드다.
+- map()과 달리 새 배열을 반환하지 않고, 단순히 각 요소에 대해 어떤 동작(DOM에 추가하기, 값 세팅하기 등)을 수행하고 싶을 때 쓴다.
+
+#### [ planner_fetch.js / planner.js ]
+
+```jsx
+// 서버에서 받아온 일정 목록을 화면에 하나씩 그려주기
+let plans = data.plans;
+plans.forEach(dto => {
+    let appendTag = `<li><a class="title" href="#none" data-no="${dto.no}">${dto.title}</a></li>`;
+    let targetElement = document.querySelector(`#date_${dto.date} ul.plan`);
+    if (targetElement) {
+        targetElement.insertAdjacentHTML('beforeend', appendTag);
+    }
+});
+
+// 상세보기 모달의 모든 input에 일정 번호(no)를 한 번에 저장하기
+showPlan.querySelectorAll("input").forEach(input => input.dataset.no = plan.no);
+```
+
+---
+
+## 이벤트 위임(Event Delegation) 이란?
+
+- 버튼/링크 하나하나에 이벤트를 등록하는 대신, 상위 요소인 document 하나에만 이벤트 리스너를 걸어두고 event.target으로 실제로 클릭된 요소가 무엇인지 판별하는 방식이다.
+- 달력의 "write" 버튼이나 일정 제목처럼, 페이지가 새로고침될 때마다(달이 바뀔 때마다) DOM이 통째로 새로 만들어지는 요소에 특히 유리하다. 매번 새로 생긴 요소마다 이벤트를 다시 걸어줄 필요 없이, document에 딱 한 번만 등록해두면 이후 생기는 요소까지 전부 자동으로 처리된다.
+- event.target.matches(selector)로 "지금 클릭된 요소가 내가 원하는 선택자와 일치하는가"를 검사한다.
+
+#### [ planner.js - initEvents() ]
+
+```jsx
+document.addEventListener('click', function (event) {
+
+    // 이전달 버튼 클릭 시
+    if (event.target.matches('#section_wrap .btn_pre')) {
+        setPreMonth();
+    }
+
+    // 달력의 일정 등록(write) 버튼 클릭 시
+    if (event.target.matches('#section_wrap a.write')) {
+        let dateElement = event.target.closest("div").parentElement.querySelector('div.date');
+        let date = dateElement ? dateElement.textContent.trim() : '';
+        showWritePlanView(current_year, current_month + 1, date);
+    }
+
+    // 일정 제목 클릭 시 상세보기
+    if (event.target.matches('#table_calender a.title')) {
+        fetchGetPlan(event.target.getAttribute('data-no'));
+    }
+
+});
+```
+
+---
+
+## Date 객체로 달력 그리드 만들기
+
+- new Date(year, month, 0) 처럼 일(day)에 0을 넣으면, JS Date 객체가 자동으로 "month의 전달, 마지막 날"로 보정해준다. 즉 new Date(2026, 9, 0)은 9월(month 인덱스 9 = 10월)의 0번째 날 = 9월의 마지막 날이 된다. 이 성질을 이용해서 "이번 달의 마지막 날짜"를 구한다.
+- getDay()로 이번 달 1일이 무슨 요일(0~6, 0=일요일)인지 구하고, 그 요일 수만큼 앞에 빈 칸(0)을 채운 뒤 날짜를 순서대로 채워서 6주(7일 × 6 = 42칸) 짜리 달력 격자를 만든다.
+
+#### [ planner.js - addCalenderTr() ]
+
+```jsx
+let thisCalenderStart = new Date(current_year, current_month, 1);
+let thisCalenderStartDay = thisCalenderStart.getDay();     // 이번 달 1일의 요일
+
+let thisCalenderEnd = new Date(current_year, current_month + 1, 0);
+let thisCalenderEndDate = thisCalenderEnd.getDate();       // 이번 달의 마지막 날짜
+
+let dates = Array();
+let dateCnt = 1;
+for (let i = 0; i < 42; i++) {
+    if (i < thisCalenderStartDay || dateCnt > thisCalenderEndDate) {
+        dates[i] = 0;      // 빈 칸
+    } else {
+        dates[i] = dateCnt;
+        dateCnt++;
+    }
+}
+```
+
+---
+
+## async / await + fetch API로 서버 통신하기
+
+- fetch()는 기본적으로 Promise를 반환하는데, async 함수 안에서 await을 붙이면 마치 동기 코드처럼 위에서 아래로 순서대로 읽을 수 있다.
+- fetch는 서버가 4xx/5xx를 응답해도 네트워크 자체는 성공했기 때문에 reject 하지 않는다. 그래서 response.ok를 직접 검사해서 실패 시 throw new Error(...)로 강제로 에러를 던지고, catch 블록에서 잡아 처리하는 패턴이 자주 쓰인다.
+- try(정상 처리) / catch(에러 처리) / finally(성공·실패 상관없이 항상 실행) 구조로 역할을 분리한다. finally는 주로 로딩 스피너를 끄거나, 아래 예시처럼 입력 모달을 닫는 뒷정리에 사용된다.
+
+#### [ planner_fetch.js - fetchWritePlan() ]
+
+```jsx
+async function fetchWritePlan(year, month, date, title, body, file) {
+    let formData = new FormData();
+    formData.append("year", year);
+    formData.append("month", month);
+    formData.append("date", date);
+    formData.append("title", title);
+    formData.append("body", body);
+    formData.append("file", file);
+
+    try {
+        let response = await fetch('/planner/plan', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        let data = await response.json();
+
+        if (!data || data.result <= 0) {
+            alert("일정 등록에 문제가 발생 했습니다.");
+        } else {
+            alert("일정이 정상적으로 등록 되었습니다.");
+            removeCalenderTr();
+            addCalenderTr();
+            fetchGetCurrentMonthPlans();
+        }
+
+    } catch (error) {
+        alert('일정 등록에 문제가 발생 했습니다.');
+
+    } finally {
+        hideWritePlanView();   // 성공하든 실패하든 모달은 항상 닫는다
+    }
+}
+```
+
+---
+
+## FormData 란?
+
+- 텍스트 값과 파일(<input type="file">)을 함께 묶어서 multipart/form-data 형식으로 서버에 전송할 때 쓰는 브라우저 내장 객체다.
+- fetch()의 body에 FormData 인스턴스를 그대로 넘기면, boundary가 포함된 Content-Type 헤더를 브라우저가 알아서 설정해주기 때문에 개발자가 직접 Content-Type을 지정하지 않는 것이 일반적이다.
+
+#### [ planner_fetch.js ]
+
+```jsx
+let formData = new FormData();
+formData.append("year", year);
+formData.append("month", month);
+formData.append("date", date);
+formData.append("title", title);
+formData.append("body", body);
+formData.append("file", file);   // 파일도 그대로 append 가능
+```
+
+---
+
+## URLSearchParams 란?
+
+- 객체 형태의 파라미터를 year=2026&month=9 같은 GET 요청용 쿼리스트링으로 손쉽게 변환해주는 브라우저 내장 객체다.
+
+#### [ planner_fetch.js - fetchGetCurrentMonthPlans() ]
+
+```jsx
+let reqData = {
+    "year": current_year,
+    "month": current_month + 1
+}
+
+let queryString = new URLSearchParams(reqData).toString();
+
+let response = await fetch(`/planner/plans?${queryString}`, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+    }
+});
+```
+
+---
+
+## dataset(data-*) 속성 활용
+
+- HTML 요소에 data-xxx 형태로 커스텀 속성을 붙이면, JS에서는 element.dataset.xxx 로 값을 읽고 쓸 수 있다.
+- 목록에 렌더링되는 각 항목의 <a> 태그에 DB 상 고유 번호(no)를 data-no로 심어두고, 클릭됐을 때 그 값을 꺼내어 서버에 상세 데이터를 요청하는 방식으로 활용됐다.
+
+#### [ planner.js / planner_fetch.js ]
+
+```jsx
+// 렌더링 시 data-no에 고유 번호를 저장
+let appendTag = `<li><a class="title" href="#none" data-no="${dto.no}">${dto.title}</a></li>`;
+
+// 클릭 시 저장해둔 data-no 값을 꺼내서 서버 조회 요청
+if (event.target.matches('#table_calender a.title')) {
+    fetchGetPlan(event.target.getAttribute('data-no'));
+}
+```
+
+---
+
+## 전체 코드
+
+#### [ planner.js ]
+
+```jsx
+// --- 현재 날짜 ---
+let current_year;           // 현재 년도
+let current_month;          // 현재 월
+let current_date;           // 현재 일
+let current_day;            // 현재 요일
+
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOCUMENT READY!!');
+
+    // --- 오늘 날짜 ---
+    let today = new Date();
+    let today_year = today.getFullYear();        // 오늘 년도
+    let today_month = today.getMonth();          // 오늘 월(0 ~ 11)
+    let today_date = today.getDate();            // 오늘 일
+    let today_day = today.getDay();              // 오늘 요일(0 ~ 6, 0 -> 일요일)
+
+    // 현재
+    setCurrentCalender(today_year, today_month, today_date, today_day);
+
+    // 현재 (<select> UI)
+    setCurrentYearAndMonthSelectUI();
+
+    // 현재 (<tr> UI)
+    addCalenderTr();
+
+    // 해당 년/월 일정들 가져오기
+    fetchGetCurrentMonthPlans();
+
+    // 이벤트 핸들러 등록
+    initEvents();
+
+});
+
+// 현재
+function setCurrentCalender(year, month, date, day) {
+    console.log('setCurrentCalender() CALLED!!');
+
+    current_year = year;
+    current_month = month;
+    current_date = date;
+    current_day = day
+
+}
+
+// 현재 (<select> UI)
+function setCurrentYearAndMonthSelectUI() {
+    console.log('setCurrentYearAndMonthSelectUI() CALLED!!');
+
+    document.querySelector('#section_wrap select[name="p_year"]').value = current_year;
+    document.querySelector('#section_wrap select[name="p_month"]').value = current_month + 1;
+
+}
+
+// 현재 (<tr> UI)
+function addCalenderTr() {
+    console.log('addCalenderTr() CALLED!!');
+
+    let thisCalenderStart = new Date(current_year, current_month, 1);
+    let thisCalenderStartDate = thisCalenderStart.getDate();            // 현재 월의 첫 날
+    let thisCalenderStartDay = thisCalenderStart.getDay();              // 현재 월의 첫 요일 2
+
+    let thisCalenderEnd = new Date(current_year, current_month + 1, 0);
+    let thisCalenderEndDate = thisCalenderEnd.getDate();                // 현재 월의 마지막 날
+
+    // 달력 구성 날짜 데이터
+    let dates = Array();
+    let dateCnt = 1;
+    for(let i = 0; i < 42; i++) {
+        if (i < thisCalenderStartDay || dateCnt > thisCalenderEndDate) {
+            dates[i] = 0;
+        } else {
+            dates[i] = dateCnt;
+            dateCnt++;
+        }
+
+    }
+
+    // UI 제작 with dates
+    let tableBody = document.querySelector('#table_calender tbody');
+
+    let dateIndex = 0;
+    for (let i = 0; i < 6; i++) {
+
+        if (i >= 5 && dates[dateIndex] === 0)
+            break;
+
+        let tr = document.createElement('tr');
+
+        for (let j = 0; j < 7; j++) {
+            let td = document.createElement('td');
+
+            // 날짜 UI
+            if (dates[dateIndex] !== 0) {
+                // 날짜  UI
+                let dateDiv = document.createElement('div');
+                dateDiv.className = 'date';
+                dateDiv.textContent = dates[dateIndex];
+                td.appendChild(dateDiv);
+
+                // 일정 등록 버튼 UI
+                let writeDiv = document.createElement('div');
+                let writeLink = document.createElement('a');
+                writeLink.className = 'write';
+                writeLink.href = "#none";
+                writeLink.textContent = 'write';
+                writeDiv.appendChild(writeLink);
+                td.appendChild(writeDiv);
+
+                // 일정 출력 UI
+                let planWrap = document.createElement('div');
+                planWrap.className = 'plan_wrap';
+                planWrap.id = `date_${dates[dateIndex]}`;
+
+                let planList = document.createElement('ul');
+                planList.className = 'plan';
+                planWrap.appendChild(planList);
+                td.appendChild(planWrap);
+
+            }
+
+            tr.appendChild(td);
+            dateIndex++;
+
+        }
+
+        tableBody.appendChild(tr);
+
+    }
+
+}
+
+// 이벤트 등록
+function initEvents() {
+    console.log('initEvents()');
+
+    // click 이벤트 들 처리
+    document.addEventListener('click', function (event) {
+
+        // 이전달 에서 이벤트 발생 시
+        if (event.target.matches('#section_wrap .btn_pre')) {
+            console.log('btn_pre CLICKED!!');
+            setPreMonth();
+        }
+
+        // 다음달 에서 이벤트 발생 시
+        if (event.target.matches('#section_wrap .btn_next')) {
+            console.log('btn_next CLICKED!!');
+            setNextMonth();
+        }
+
+        // 달력에서 일정 등록 버튼(write)을 클릭 시
+        if (event.target.matches('#section_wrap a.write')) {
+            console.log('write CLICKED!!');
+
+            let year = current_year;
+            let month = current_month + 1;
+
+            let dateElement = event.target.closest("div").parentElement.querySelector('div.date');
+            let date = dateElement ? dateElement.textContent.trim() : '';
+
+            showWritePlanView(year, month, date);
+
+        }
+
+        // 일정 등록 모달 닫기
+        if (event.target.matches('#write_plan input[value="CANCEL"]')) {
+            console.log('CANCEL BUTTON CLICKED!!');
+
+            hideWritePlanView();
+
+        }
+
+        // 일정 등록 확인(WRITE) 버튼 클릭 시
+        if (event.target.matches('#write_plan input[value="WRITE"]')) {
+            console.log('WRITE BUTTON CLICKED!!');
+
+            let year = document.querySelector('#write_plan select[name="wp_year"]').value;      // 2026
+            let month = document.querySelector('#write_plan select[name="wp_month"]').value;    // 9
+            let date = document.querySelector('#write_plan select[name="wp_date"]').value;      // 10
+
+            let title = document.querySelector('#write_plan input[name="p_title"]').value;      // 제목
+            let body = document.querySelector('#write_plan input[name="p_body"]').value;        // 내용
+            let file = document.querySelector('#write_plan input[name="p_file"]').value;        // 파일
+
+            if (title === '') {
+                alert('INPUT NEW PLAN TITLE!!');
+                document.querySelector('#write_plan input[name="p_title"]').focus();
+
+            } else if (body === '') {
+                alert('INPUT NEW PLAN BODY!!');
+                document.querySelector('#write_plan input[name="p_body"]').focus();
+
+            } else if (file === '') {
+                alert('SELECT FILE!!');
+                document.querySelector('#write_plan input[name="p_file"]').focus();
+
+            } else {
+                let inputFile = document.querySelector('#write_plan input[name="p_file"]');
+                console.log('inputFile: ', inputFile);
+
+                let files = inputFile.files;
+                console.log('files: ', files);
+
+                // 비동기 방식으로 서버에 전송
+                fetchWritePlan(year, month, date, title, body, files[0]);
+
+            }
+
+        }
+
+        // 일정 디테일 모달 보이기
+        if (event.target.matches('#table_calender a.title')) {
+            console.log('PLAN TITLE CLICKED!!', event.target.getAttribute('data-no'));
+
+            fetchGetPlan(event.target.getAttribute('data-no'));
+
+        }
+
+    });
+
+    // change 이벤트 들 처리
+    document.addEventListener('change', function (event) {
+
+        // 달력에서 년 변경 시
+        if (event.target.matches('#section_wrap select[name="p_year"]')) {
+            setMonthBySelectChanged();
+        }
+
+        // 달력에서 월 변경 시
+        if (event.target.matches('#section_wrap select[name="p_month"]')) {
+            setMonthBySelectChanged();
+        }
+
+        // 일정 등록 모달에서 년 변경 시
+        if (event.target.matches('#write_plan select[name="wp_year"]')) {
+            console.log('wp_year CHANGED!!');
+
+            let year = event.target.value;
+            let month = document.querySelector('#write_plan select[name="wp_month"]').value;
+
+            setSelectDateOptions(year, month, 'wp_date');
+
+        }
+
+        // 일정 등록 모달에서 월 변경 시
+        if (event.target.matches('#write_plan select[name="wp_month"]')) {
+            console.log('wp_month CHANGED!!');
+
+            let year = document.querySelector('#write_plan select[name="wp_year"]').value;
+            let month = event.target.value
+
+            setSelectDateOptions(year, month, 'wp_date');
+
+        }
+
+    });
+}
+
+function setPreMonth() {
+    console.log('setPreMonth()');
+
+    let yearSelect = document.querySelector('select[name="p_year"]');
+    let monthSelect = document.querySelector('select[name="p_month"]');
+
+    if (yearSelect.value == 2025 && monthSelect.value == 1) {
+        alert('2025년 1월 이전은 설정할 수 없습니다.');
+        return false;
+    }
+
+    let temp_year = current_year;
+    let temp_month = current_month - 1;
+
+    if (temp_month <= -1) {
+        temp_year -= 1;
+        temp_month = 11;
+    }
+
+    let preCalender = new Date(temp_year, temp_month, 1);
+
+    // 현재 데이터 설정
+    setCurrentCalender(
+        preCalender.getFullYear(),
+        preCalender.getMonth(),
+        preCalender.getDate(),
+        preCalender.getDay()
+    )
+
+    // UI(<select>) 렌더링
+    setCurrentYearAndMonthSelectUI();
+
+    //  UI(<tr>) 제거
+    removeCalenderTr();
+
+    // UI(<tr>) 렌더링
+    addCalenderTr();
+
+    // 해당 년/월 일정들 가져오기
+    fetchGetCurrentMonthPlans();
+
+}
+
+function setNextMonth() {
+    console.log('setNextMonth()');
+
+    let yearSelect = document.querySelector('select[name="p_year"]');
+    let monthSelect = document.querySelector('select[name="p_month"]');
+
+    if (yearSelect.value == 2030 && monthSelect.value == 12) {
+        alert('2030년 12월 이후는 설정할 수 없습니다.');
+        return false;
+    }
+
+    let temp_year = current_year;
+    let temp_month = current_month + 1;
+
+    if (temp_month >= 12) {
+        temp_year += 1;
+        temp_month = 0;
+    }
+
+    let nextCalender = new Date(temp_year, temp_month, 1);
+
+    // 현재 데이터 설정
+    setCurrentCalender(
+        nextCalender.getFullYear(),
+        nextCalender.getMonth(),
+        nextCalender.getDate(),
+        nextCalender.getDay()
+    )
+
+    // UI(<select>) 렌더링
+    setCurrentYearAndMonthSelectUI();
+
+    //  UI(<tr>) 제거
+    removeCalenderTr();
+
+    // UI(<tr>) 렌더링
+    addCalenderTr();
+
+    // 해당 년/월 일정들 가져오기
+    fetchGetCurrentMonthPlans();
+
+}
+
+function removeCalenderTr() {
+    console.log('removeCalenderTr() CALLED!!');
+
+    let tbody = document.querySelector('#table_calender tbody');
+    tbody.innerHTML = '';
+
+}
+
+function setMonthBySelectChanged() {
+    console.log('setMonthBySelectChanged() CALLED!!');
+
+    let temp_year = document.querySelector('select[name="p_year"]').value;
+    let temp_month = document.querySelector('select[name="p_month"]').value - 1;
+
+    let seletedCalender = new Date(temp_year, temp_month, 1);
+
+    // 데이터 설정
+    setCurrentCalender(
+        seletedCalender.getFullYear(),
+        seletedCalender.getMonth(),
+        seletedCalender.getDate(),
+        seletedCalender.getDay()
+    );
+
+    // 달력 UI 렌더링
+    removeCalenderTr();
+    addCalenderTr();
+
+    // 해당 년/월 일정들 가져오기
+    fetchGetCurrentMonthPlans();
+
+}
+
+function showWritePlanView(year, month, date) {
+    console.log('showWritePlanView() CALLED!!');
+
+    document.querySelector('#write_plan select[name="wp_year"]').value = year;
+    document.querySelector('#write_plan select[name="wp_month"]').value = month;
+
+    setSelectDateOptions(year, month, 'wp_date');
+    document.querySelector('#write_plan select[name="wp_date"]').value = date;
+
+    document.querySelector('#write_plan').style.display = 'block';
+
+}
+
+function hideWritePlanView() {
+    console.log('hideWritePlanView() CALLED!!');
+
+    document.querySelector('#write_plan input[name="p_title"]').value = '';
+    document.querySelector('#write_plan input[name="p_body"]').value = '';
+    document.querySelector('#write_plan input[name="p_file"]').value = '';
+
+    document.querySelector('#write_plan').style.display = 'none';
+
+}
+
+function setSelectDateOptions(year, month, select_name) {   // 2026 9
+    console.log('setSelectDateOptions() CALLED!!');
+
+    console.log(month);
+
+    // SET DATA
+    let last = new Date(year, month, 0);                    // 2026 8
+    console.log(last.getFullYear());                        // 2026
+    console.log(last.getMonth());                           // 컴퓨터 날짜(8)  -> 인간 날짜(9)
+    console.log(last.getDate());                            // 30
+
+    // REMOVE OLD OPTIONS
+    let selectElement = document.querySelector(`select[name="${select_name}"]`);
+    selectElement.innerHTML = '';
+
+    // GENERATE UI(ADD NEW OPTIONS AT SELECT)
+    for (let i = 1; i <= last.getDate(); i++) {
+        let option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        selectElement.appendChild(option);
+    }
+}
+
+function showDetailPlanView(plan) {
+    console.log('showDetailPlanView() CALLED!!');
+
+    let showPlan = document.querySelector('#show_plan');
+
+    showPlan.querySelector('select[name="dp_year"]').value = plan.year;
+    showPlan.querySelector('select[name="dp_month"]').value = plan.month;
+
+    setSelectDateOptions(plan.year, plan.month, "dp_date");
+    showPlan.querySelector('select[name="dp_date"]').value = plan.date;
+
+    showPlan.querySelector('input[name="p_title"]').value = plan.title;
+    showPlan.querySelector('input[name="p_body"]').value = plan.body;
+
+    let uploadImgURI = `/planUploadImg/${plan.ori_owner_id}/${plan.img_name}`;
+    showPlan.querySelector('img.plan_img').src = uploadImgURI;
+
+    showPlan.querySelectorAll("input").forEach(input => input.dataset.no = plan.no);
+    showPlan.dataset.ori_no = plan.ori_no;
+
+    showPlan.style.display = "block";
+
+}
+```
+
+---
+
+#### [ planner_fetch.js ]
+
+```jsx
+async function fetchWritePlan(year, month, date, title, body, file) {
+    console.log('fetchWritePlan() CALLED!!');
+
+    let formData = new FormData();
+    formData.append("year", year);
+    formData.append("month", month);
+    formData.append("date", date);
+    formData.append("title", title);
+    formData.append("body", body);
+    formData.append("file", file);
+
+    try {
+        let response = await fetch('/planner/plan', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        console.log('fetchWritePlan() COMMUNICATION SUCCESS!! ');
+
+        let data = await response.json();
+        console.log('data: ', data);
+
+        if (!data || data.result <= 0) {
+            alert("일정 등록에 문제가 발생 했습니다.");
+
+        } else {
+            alert("일정이 정상적으로 등록 되었습니다.");
+            removeCalenderTr();     // 기존 달력(<tr>) 제거
+            addCalenderTr();        // 새 달력(<tr>) 생성
+            fetchGetCurrentMonthPlans(); // 일정들 가져오는 함수
+
+        }
+
+    } catch (error) {
+        console.log('fetchWritePlan() COMMUNICATION ERROR!! ', error);
+        alert('일정 등록에 문제가 발생 했습니다.');
+
+    } finally {
+        hideWritePlanView();
+
+    }
+
+}
+
+async function fetchGetCurrentMonthPlans() {
+    console.log('fetchGetCurrentMonthPlans() CALLED!!');
+
+    let reqData = {
+        "year": current_year,
+        "month": current_month + 1
+    }
+
+    let queryString = new URLSearchParams(reqData).toString();
+    console.log("queryString: ", queryString);
+
+    try {
+        let response = await fetch(`/planner/plans?${queryString}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        console.log('fetchGetCurrentMonthPlans() COMMUNICATION SUCCESS!! ');
+
+        let data = await response.json();
+        console.log('data: ', data);
+
+        let plans = data.plans;
+        plans.forEach(dto => {
+            let appendTag = `<li><a class="title" href="#none" data-no="${dto.no}">${dto.title}</a></li>`;
+            let targetElement = document.querySelector(`#date_${dto.date} ul.plan`);
+            // targetElement.appendChild(appendTag);
+            if (targetElement) {
+                targetElement.insertAdjacentHTML('beforeend', appendTag);
+            }
+
+        });
+
+    } catch (error) {
+        console.log('fetchGetCurrentMonthPlans() COMMUNICATION ERROR!! ', error);
+
+    }
+
+}
+
+async function fetchGetPlan(no) {
+    console.log("fetchGetPlan() CALLED!!");
+
+    let queryString = new URLSearchParams({"no": no}).toString();
+    console.log("queryString: ", queryString);
+
+    try {
+        let response = await fetch(`/planner/plan?${queryString}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        console.log('fetchGetPlan() COMMUNICATION SUCCESS!! ');
+
+        let data = await response.json();
+        console.log('data: ', data);
+
+        let plan = data.plan;
+        showDetailPlanView(plan);
+
+    } catch (error) {
+        console.log('fetchGetPlan() COMMUNICATION ERROR!! ', error);
+
+    }
+
+}
+```
+
+---
