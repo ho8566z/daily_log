@@ -1,12 +1,103 @@
 20260929
 
 
-@RequestParam(value = "file", required = false) 란?
+## @RequestParam(value = "file", required = false) 란?
+
+- 요청 파라미터(쿼리스트링, form 데이터, multipart 파트)를 컨트롤러 메서드의 매개변수에 바인딩하는 어노테이션이다.
+- value = "file" 은 요청에서 이름이 "file" 인 파라미터를 꺼내 오겠다는 뜻이다. 파일 업로드(multipart/form-data)에서는 MultipartFile 타입과 함께 쓴다.
+- required = false 는 해당 파라미터가 없어도 에러를 내지 않고 null 을 넣어준다는 뜻이다.
+- required 의 기본값은 true 이고, 이때 파라미터가 없으면 400 Bad Request 가 발생한다.
+- 게시글 작성처럼 "파일 첨부는 선택"인 기능에서 주로 쓴다.
+
+#### required = false 일 때 주의할 점
+
+- 파일 파트 자체가 안 오면 file 은 null 이다.
+- input type="file" 은 있는데 파일을 고르지 않고 제출하면, null 이 아니라 비어 있는 MultipartFile 이 들어온다. 그래서 null 체크와 isEmpty() 체크를 둘 다 해야 한다.
+- defaultValue 를 지정하면 required 는 자동으로 false 가 된다. (단, 파일에는 defaultValue 를 쓰지 않는다.)
+
+#### [ 예시 - BoardController ]
+
+```java
+@PostMapping("/board/write")
+public String write(BoardDto dto,
+                    @RequestParam(value = "file", required = false) MultipartFile file) {
+
+    if (file != null && !file.isEmpty()) {
+        // 파일이 첨부된 경우에만 저장 처리
+        String originalName = file.getOriginalFilename();
+        // ... 파일 저장 로직
+    }
+
+    // 게시글 저장 로직
+    return "redirect:/board/list";
+}
+```
 
 ---
 
-authentication할 때,
+## Spring Security 인증과 HttpSession 이란?
 
-spring security → HttpSession less(100%는 아님)
+- 직접 로그인을 구현할 때는 로그인 성공 시 session.setAttribute("loginUser", member) 처럼 개발자가 HttpSession 을 직접 다뤘다.
+- Spring Security 를 쓰면 개발자 코드에서 HttpSession 을 직접 다룰 일이 거의 없어진다. 그래서 "HttpSession less" 라고 표현한다.
+- 하지만 100% 세션을 안 쓰는 것은 아니다. 폼 로그인 방식에서는 Security 가 내부적으로 세션을 그대로 사용한다.
 
-SecurityContextHolder와 Principal의 관계
+#### 내부 동작 흐름 (폼 로그인 기준)
+
+- 1) 로그인 성공 → Security 가 인증 정보(Authentication)를 만들어 SecurityContext 에 담는다.
+- 2) SecurityContextRepository(기본 구현체: HttpSessionSecurityContextRepository)가 이 SecurityContext 를 HttpSession 에 "SPRING_SECURITY_CONTEXT" 라는 키로 저장한다.
+- 3) 다음 요청이 오면 필터가 세션에서 SecurityContext 를 꺼내 SecurityContextHolder 에 다시 넣어준다.
+- 4) 요청 처리가 끝나면 SecurityContextHolder 를 비운다.
+- 즉, 세션은 여전히 쓰이지만 "개발자가 직접" 쓰지 않을 뿐이다. 이것이 "100%는 아님" 의 의미다.
+
+#### 완전히 세션을 안 쓰려면?
+
+- JWT 같은 토큰 방식으로 인증하고, SessionCreationPolicy.STATELESS 로 설정하면 서버가 세션을 만들지 않는다. 이때는 매 요청마다 토큰으로 인증 정보를 다시 만든다.
+
+| 구분 | 직접 구현 (HttpSession) | Spring Security (폼 로그인) | Spring Security + JWT (STATELESS) |
+| --- | --- | --- | --- |
+| 로그인 정보 저장 위치 | 개발자가 세션에 직접 저장 | Security 가 세션에 SecurityContext 저장 | 서버에 저장 안 함 (토큰에 담음) |
+| 개발자의 세션 코드 | 필요함 | 거의 없음 | 없음 |
+| 실제 세션 사용 여부 | 사용 | 사용 (내부적으로) | 사용 안 함 |
+
+---
+
+## SecurityContextHolder와 Principal의 관계 란?
+
+- 인증 정보는 SecurityContextHolder → SecurityContext → Authentication → Principal 순서로 감싸져 있다.
+
+#### 구조
+
+```
+SecurityContextHolder          (현재 스레드의 보안 정보 보관함, 기본은 ThreadLocal)
+ └─ SecurityContext            (인증 정보를 담는 상자)
+     └─ Authentication         (인증 객체)
+         ├─ Principal          (누구인가? 보통 UserDetails 구현체)
+         ├─ Credentials        (비밀번호 등, 인증 후에는 보통 지워짐)
+         └─ Authorities        (권한 목록, ROLE_USER 등)
+```
+
+- SecurityContextHolder 는 현재 요청을 처리하는 스레드에 SecurityContext 를 보관한다. 그래서 컨트롤러, 서비스 어디서든 꺼내 쓸 수 있다.
+- Authentication.getPrincipal() 은 로그인한 사용자 자체를 돌려준다. 로그인 후에는 보통 UserDetails 구현체(예: CustomUserDetails)가 들어 있다.
+- Authentication 인터페이스는 java.security.Principal 을 상속한다. 그래서 컨트롤러 매개변수에 Principal 을 선언하면 실제로는 Authentication 객체가 들어오고, getName() 은 사용자 아이디(username)를 돌려준다.
+
+#### 로그인 사용자 정보를 꺼내는 3가지 방법
+
+```java
+// 1. SecurityContextHolder 에서 직접 꺼내기 (어디서든 가능)
+Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+String username = auth.getName();
+
+// 2. 컨트롤러 매개변수로 Principal 받기 (아이디만 필요할 때)
+@GetMapping("/mypage")
+public String mypage(Principal principal) {
+    String username = principal.getName();
+    return "mypage";
+}
+
+// 3. @AuthenticationPrincipal 로 UserDetails 바로 받기 (회원 정보가 더 필요할 때)
+@GetMapping("/mypage")
+public String mypage(@AuthenticationPrincipal CustomUserDetails user) {
+    String nickname = user.getNickname();
+    return "mypage";
+}
+```
