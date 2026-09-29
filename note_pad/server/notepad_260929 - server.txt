@@ -1,0 +1,504 @@
+20260929
+
+
+## @RequestParam(value = "file", required = false) 란?
+
+- 요청 파라미터(쿼리스트링, form 데이터, multipart 파트)를 컨트롤러 메서드의 매개변수에 바인딩하는 어노테이션이다.
+- value = "file" 은 요청에서 이름이 "file" 인 파라미터를 꺼내 오겠다는 뜻이다. 파일 업로드(multipart/form-data)에서는 MultipartFile 타입과 함께 쓴다.
+- required = false 는 해당 파라미터가 없어도 에러를 내지 않고 null 을 넣어준다는 뜻이다.
+- required 의 기본값은 true 이고, 이때 파라미터가 없으면 400 Bad Request 가 발생한다.
+- 게시글 작성처럼 "파일 첨부는 선택"인 기능에서 주로 쓴다.
+
+#### required = false 일 때 주의할 점
+
+- 파일 파트 자체가 안 오면 file 은 null 이다.
+- input type="file" 은 있는데 파일을 고르지 않고 제출하면, null 이 아니라 비어 있는 MultipartFile 이 들어온다. 그래서 null 체크와 isEmpty() 체크를 둘 다 해야 한다.
+- defaultValue 를 지정하면 required 는 자동으로 false 가 된다. (단, 파일에는 defaultValue 를 쓰지 않는다.)
+
+---
+
+## Spring Security 인증과 HttpSession 이란?
+
+- 직접 로그인을 구현할 때는 로그인 성공 시 session.setAttribute("loginUser", member) 처럼 개발자가 HttpSession 을 직접 다뤘다.
+- Spring Security 를 쓰면 개발자 코드에서 HttpSession 을 직접 다룰 일이 거의 없어진다. 그래서 "HttpSession less" 라고 표현한다.
+- 하지만 100% 세션을 안 쓰는 것은 아니다. 폼 로그인 방식에서는 Security 가 내부적으로 세션을 그대로 사용한다.
+
+#### 내부 동작 흐름 (폼 로그인 기준)
+
+- 1) 로그인 성공 → Security 가 인증 정보(Authentication)를 만들어 SecurityContext 에 담는다.
+- 2) SecurityContextRepository(기본 구현체: HttpSessionSecurityContextRepository)가 이 SecurityContext 를 HttpSession 에 "SPRING_SECURITY_CONTEXT" 라는 키로 저장한다.
+- 3) 다음 요청이 오면 필터가 세션에서 SecurityContext 를 꺼내 SecurityContextHolder 에 다시 넣어준다.
+- 4) 요청 처리가 끝나면 SecurityContextHolder 를 비운다.
+- 즉, 세션은 여전히 쓰이지만 "개발자가 직접" 쓰지 않을 뿐이다. 이것이 "100%는 아님" 의 의미다.
+
+#### 완전히 세션을 안 쓰려면?
+
+- JWT 같은 토큰 방식으로 인증하고, SessionCreationPolicy.STATELESS 로 설정하면 서버가 세션을 만들지 않는다. 이때는 매 요청마다 토큰으로 인증 정보를 다시 만든다.
+
+| 구분 | 직접 구현 (HttpSession) | Spring Security (폼 로그인) | Spring Security + JWT (STATELESS) |
+| --- | --- | --- | --- |
+| 로그인 정보 저장 위치 | 개발자가 세션에 직접 저장 | Security 가 세션에 SecurityContext 저장 | 서버에 저장 안 함 (토큰에 담음) |
+| 개발자의 세션 코드 | 필요함 | 거의 없음 | 없음 |
+| 실제 세션 사용 여부 | 사용 | 사용 (내부적으로) | 사용 안 함 |
+
+---
+
+## SecurityContextHolder와 Principal의 관계 란?
+
+- 인증 정보는 SecurityContextHolder → SecurityContext → Authentication → Principal 순서로 감싸져 있다.
+
+#### 구조
+
+```
+SecurityContextHolder          (현재 스레드의 보안 정보 보관함, 기본은 ThreadLocal)
+ └─ SecurityContext            (인증 정보를 담는 상자)
+     └─ Authentication         (인증 객체)
+         ├─ Principal          (누구인가? 보통 UserDetails 구현체)
+         ├─ Credentials        (비밀번호 등, 인증 후에는 보통 지워짐)
+         └─ Authorities        (권한 목록, ROLE_USER 등)
+```
+
+- SecurityContextHolder 는 현재 요청을 처리하는 스레드에 SecurityContext 를 보관한다. 그래서 컨트롤러, 서비스 어디서든 꺼내 쓸 수 있다.
+- Authentication.getPrincipal() 은 로그인한 사용자 자체를 돌려준다. 로그인 후에는 보통 UserDetails 구현체(예: CustomUserDetails)가 들어 있다.
+- Authentication 인터페이스는 java.security.Principal 을 상속한다. 그래서 컨트롤러 매개변수에 Principal 을 선언하면 실제로는 Authentication 객체가 들어오고, getName() 은 사용자 아이디(username)를 돌려준다.
+
+#### 로그인 사용자 정보를 꺼내는 3가지 방법
+
+```java
+// 1. SecurityContextHolder 에서 직접 꺼내기 (어디서든 가능)
+Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+String username = auth.getName();
+
+// 2. 컨트롤러 매개변수로 Principal 받기 (아이디만 필요할 때)
+@GetMapping("/mypage")
+public String mypage(Principal principal) {
+    String username = principal.getName();
+    return "mypage";
+}
+
+// 3. @AuthenticationPrincipal 로 UserDetails 바로 받기 (회원 정보가 더 필요할 때)
+@GetMapping("/mypage")
+public String mypage(@AuthenticationPrincipal CustomUserDetails user) {
+    String nickname = user.getNickname();
+    return "mypage";
+}
+```
+
+---
+
+## VirtualBox 란?
+
+- 오라클(Oracle)에서 만든 무료 가상화 프로그램이다. 내 PC(호스트 OS, 여기서는 Windows) 위에 또 다른 운영체제(게스트 OS, 여기서는 Ubuntu)를 가상머신(VM)으로 띄울 수 있다.
+- 실제 PC를 포맷하지 않고도 리눅스 서버를 만들어 보고, 망가지면 가상머신만 지우고 다시 만들면 된다는 장점이 있다.
+- 실습에서 사용한 설치 파일은 VirtualBox-6.1.50-161033-Win.exe (6.1 버전, Windows용) 이다.
+
+## Ubuntu 란?
+
+- 데비안(Debian) 계열의 리눅스 배포판이다. 자료가 많고 서버로도 많이 쓰여서 리눅스 입문용으로 가장 흔하게 쓰인다.
+- 실습에서 사용한 이미지는 ubuntu-20.04.6-desktop-amd64.iso 이다.
+    - 20.04 : 2020년 4월에 나온 LTS(장기 지원) 버전이다.
+    - desktop : GUI(바탕화면)가 포함된 버전이다. 실제 서버에서는 GUI 가 없는 server 이미지를 주로 쓰지만, 실습에서는 편의를 위해 desktop 을 쓴다.
+    - amd64 : 64비트 PC용 이미지다.
+
+| 구분 | 호스트 OS | 게스트 OS |
+| --- | --- | --- |
+| 의미 | 실제 PC 에 설치된 운영체제 | 가상머신 안에서 돌아가는 운영체제 |
+| 이번 실습 | Windows | Ubuntu 20.04 |
+
+---
+
+## VirtualBox에서 Ubuntu 설치 순서
+
+#### 1. VirtualBox 설치
+
+- VirtualBox-6.1.50-161033-Win.exe 를 실행하고 기본 설정 그대로 Next 를 눌러 설치한다.
+- 설치 중 "네트워크 인터페이스 설치 시 네트워크 연결이 잠시 끊긴다"는 경고가 나오는데, 가상 네트워크 어댑터를 만드는 과정이라 정상이다. 예(Yes)를 누른다.
+- 장치 소프트웨어(드라이버) 설치를 묻는 창이 나오면 설치를 허용한다.
+
+!image.png
+
+#### 2. 새 가상머신 만들기
+
+!image.png
+
+- VirtualBox 관리자에서 새로 만들기(N) 를 누른다.
+- 머신 폴더(저장 위치) : 가상머신 하나가 수십 GB 까지 커질 수 있으므로, 여유가 있다면 C 드라이브 말고 D 드라이브 같은 데이터용 드라이브로 지정해두는 것이 좋다.
+- 이름 : 알아보기 쉬운 이름(예: ubuntu-server), 종류 : Linux, 버전 : Ubuntu (64-bit) 로 선택한다.
+- 버전 목록에 64-bit 가 안 보이면, BIOS 에서 가상화 기술(Intel VT-x / AMD-V)이 꺼져 있거나 Windows 의 Hyper-V 가 켜져 있는 경우다.
+
+#### 3. 메모리(RAM) 크기 설정
+
+!image.png
+
+- 가상머신에 나눠 줄 메모리를 정한다. Ubuntu Desktop 기준 최소 2048MB, 여유가 있으면 4096MB 를 권장한다.
+- 슬라이더의 초록색 범위 안에서 정해야 호스트 PC 가 느려지지 않는다.
+
+#### 4. 가상 하드 디스크 만들기
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+- 지금 새 가상 하드 디스크 만들기 → 파일 종류 VDI(VirtualBox Disk Image) → 동적 할당 순으로 선택한다.
+- 동적 할당 : 실제로 사용한 만큼만 PC 용량을 차지한다. (고정 크기는 처음부터 전체 용량을 잡는 대신 조금 더 빠르다.)
+- 크기는 최소 25GB 이상으로 잡는 것이 좋다. 너무 작으면 나중에 패키지 설치할 때 공간이 부족해진다.
+
+#### 5. 가상머신 설정
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+- 시스템 → 프로세서 : CPU 개수를 2개 이상으로 올리면 설치와 동작이 훨씬 빠르다.
+- 디스플레이 → 비디오 메모리 : 128MB 로 올려두면 GUI 화면이 덜 끊긴다.
+- 저장소 → 컨트롤러: IDE 의 비어 있는 광학 드라이브를 선택하고, 오른쪽 디스크 아이콘에서 ubuntu-20.04.6-desktop-amd64.iso 파일을 선택해 연결한다. (가상 DVD 에 설치 디스크를 넣는 것과 같다.)
+    - iso 파일 Ubuntu 공식 릴리스 페이지
+    : https://releases.ubuntu.com/ (focal = 20.04)
+- 네트워크 → 어댑터 1 : 기본값인 NAT 로 두면 가상머신에서 인터넷을 바로 쓸 수 있다. (NAT 는 아래에서 따로 정리)
+- 네트워크 → 어댑터 2 : 네트워크 어댑터 사용하기를 체크하고 호스트 전용 어댑터(Host-Only Adapter) 로 설정한다. (수업 방식)
+    - 어댑터 1(NAT)은 인터넷용, 어댑터 2(호스트 전용)는 호스트 PC 와 가상머신이 직접 통신하는 전용 통로라고 생각하면 된다.
+    - 뒤에 나오는 고정 IP, SSH(PuTTY), MySQL 원격 접속은 모두 이 어댑터 2 를 통해서 한다.
+
+#### 6. 가상머신 시작 후 Ubuntu 설치
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+- 가상머신을 선택하고 시작(T)을 누르면 연결해 둔 iso 로 부팅되면서 Ubuntu 설치 화면이 나온다.
+- 언어 선택 후 Install Ubuntu(Ubuntu 설치) 를 누른다. (Try Ubuntu 는 설치 없이 체험만 하는 모드다.)
+- 키보드 레이아웃 : 한국어 키보드를 쓰면 Korean - Korean (101/104 key compatible) 을 고른다.
+- 업데이트 및 기타 소프트웨어 : 일반 설치 또는 최소 설치를 고른다. 서버 실습이 목적이면 최소 설치로도 충분하고 설치가 더 빠르다.
+- 설치 형식 : 디스크를 지우고 Ubuntu 설치 를 선택한다. 여기서 지워지는 것은 4번에서 만든 가상 하드 디스크(VDI) 뿐이라, 실제 PC 의 데이터는 안전하다.
+- 지역 : Seoul 을 선택한다. (시간대 설정)
+- 사용자 정보 : 이름, 컴퓨터 이름(hostname), 사용자 이름, 비밀번호를 입력한다. 이 비밀번호는 나중에 sudo 명령어를 쓸 때도 쓰이므로 꼭 기억해야 한다.
+
+#### 7. 설치 완료 후 마무리
+
+!image.png
+
+!image.png
+
+- 설치가 끝나면 지금 다시 시작 을 누른다.
+- "Please remove the installation medium, then press ENTER" 가 나오면 Enter 를 누른다. VirtualBox 가 보통 가상 DVD(iso)를 자동으로 빼주므로 그대로 넘어가면 된다. 다시 설치 화면이 나오면 저장소 설정에서 iso 를 빼주면 된다.
+- 로그인 화면에서 설치 때 만든 계정으로 로그인한다. 이 계정과 비밀번호는 나중에 PuTTY 로 외부에서 접속할 때도 그대로 쓰인다.
+- 처음 로그인하면 온라인 계정 연결, 정보 보내기 같은 초기 안내 창이 몇 개 나오는데, 건너뛰기 / 다음 으로 넘기고 완료 를 누르면 된다.
+- 여기까지 끝나면 VirtualBox 를 닫기 전에 스냅샷을 한 번 찍어둔다. (아래 스냅샷 이란? 참고)
+- 터미널(Ctrl + Alt + T)을 열고 패키지 목록을 최신으로 맞춘다.
+
+```bash
+sudo apt update
+sudo apt upgrade -y
+```
+
+#### 8. 게스트 확장(Guest Additions) 설치 (선택)
+
+- 게스트 확장을 설치하면 화면 크기 자동 조절, 호스트와 클립보드 공유, 마우스 통합 등이 된다.
+- 가상머신 창 메뉴 장치 → 게스트 확장 CD 이미지 삽입 을 누르고, 나오는 창에서 실행한다.
+- 빌드에 필요한 패키지가 없다고 나오면 아래를 먼저 설치하고 다시 실행한 뒤 재부팅한다.
+
+```bash
+sudo apt install -y build-essential gcc make perl
+```
+
+---
+
+## NAT 란?
+
+- NAT(Network Address Translation)는 사설 IP 주소를 공인 IP 주소로 바꿔서 인터넷에 나갈 수 있게 해주는 주소 변환 기술이다.
+- VirtualBox 의 NAT 모드에서는 VirtualBox 가 공유기 역할을 한다. 가상머신은 10.0.2.15 같은 내부 IP 를 받고, 밖으로 나가는 요청은 호스트 PC 의 IP 로 바뀌어서 나간다.
+- 그래서 설정 없이도 가상머신 → 인터넷(apt 설치 등)은 바로 된다.
+- 반대로 외부(호스트 PC 포함) → 가상머신 으로는 기본적으로 접속이 안 된다. 호스트에서 SSH 로 접속하려면 포트 포워딩 설정이 필요하다.
+
+#### 포트 포워딩 (NAT 에서 외부 접속 열기)
+
+- 설정 → 네트워크 → 어댑터 1(NAT) → 고급 → 포트 포워딩 에서 규칙을 추가한다.
+- 예시 : 호스트 포트 2222 → 게스트 포트 22 로 설정하면, 호스트에서 ssh -p 2222 사용자명@127.0.0.1 로 Ubuntu 에 접속할 수 있다.
+
+#### 수업에서 쓰는 조합 : NAT + 호스트 전용 어댑터
+
+- 어댑터를 하나만 쓰면 둘 중 하나를 포기해야 한다. NAT 만 쓰면 호스트에서 접속하려고 포트 포워딩을 매번 걸어야 하고, 호스트 전용만 쓰면 인터넷(apt 설치)이 안 된다.
+- 그래서 어댑터 1 = NAT(인터넷), 어댑터 2 = 호스트 전용(호스트 ↔ VM 접속) 으로 나눠서 두 가지를 모두 해결한다.
+- Ubuntu 안에서는 어댑터 1 이 enp0s3, 어댑터 2 가 enp0s8 이라는 이름으로 보인다.
+
+#### VirtualBox 네트워크 모드 비교
+
+| 구분 | VM → 인터넷 | 호스트 → VM | VM ↔ VM | 특징 |
+| --- | --- | --- | --- | --- |
+| NAT (기본값) | 가능 | 포트 포워딩 필요 | 불가 | 설정 없이 인터넷 사용, 가장 간단 |
+| NAT 네트워크 | 가능 | 포트 포워딩 필요 | 가능 | 여러 VM 을 같은 내부망에 묶을 때 |
+| 어댑터에 브리지 | 가능 | 가능 | 가능 | VM 이 공유기에서 실제 PC 처럼 IP 를 받음 |
+| 호스트 전용 어댑터 | 불가 | 가능 | 가능 | 호스트와 VM 끼리만 통신 (인터넷 X) |
+
+---
+
+---
+
+## net-tools 란?
+
+- ifconfig, netstat, route, arp 같은 전통적인 네트워크 확인 명령어들을 모아둔 패키지다.
+- Ubuntu 20.04 는 기본으로 ip 명령어(iproute2)만 들어 있어서, 설치 직후 ifconfig 를 치면 "command not found" 가 나온다. 그래서 net-tools 를 따로 설치한다.
+- 가장 많이 쓰는 용도는 ifconfig 로 가상머신의 IP 주소를 확인하는 것이다. NAT 모드라면 보통 10.0.2.15 가 나온다.
+
+#### [ 설치 명령어 ]
+
+```bash
+sudo apt-get update              # 설치 가능한 패키지 목록을 최신으로 갱신 (설치 전에 항상 먼저)
+sudo apt-get install net-tools   # net-tools 설치
+ifconfig                          # 설치 확인 + IP 주소 확인 (enp0s3 의 inet 값)
+```
+
+- apt-get update 는 패키지를 설치하는 게 아니라 "목록"만 갱신하는 명령어다. 이걸 안 하면 오래된 목록 때문에 설치가 실패할 수 있다.
+- apt-get 과 apt 는 같은 일을 한다. apt 가 더 최신이고 출력이 보기 좋으며, apt-get 은 스크립트에서 많이 쓴다.
+
+| 구분 | net-tools (예전 방식) | iproute2 (요즘 방식, 기본 설치됨) |
+| --- | --- | --- |
+| IP 주소 확인 | ifconfig | ip a |
+| 라우팅 테이블 확인 | route -n | ip route |
+| 열린 포트 확인 | netstat -tnlp | ss -tnlp |
+
+---
+
+## 스냅샷(Snapshot) 이란?
+
+- 가상머신의 특정 시점 상태(디스크, 설정)를 저장해두는 기능이다. 게임의 "세이브 포인트"와 같다.
+- 설정을 잘못 건드려서 Ubuntu 가 망가져도, 스냅샷을 찍어둔 시점으로 몇 초 만에 되돌릴 수 있다. 처음부터 다시 설치할 필요가 없다.
+- 그래서 설치 직후나 큰 작업(패키지 설치, 설정 변경)을 하기 전에 찍어두는 습관을 들이는 것이 좋다.
+
+#### 스냅샷 찍는 방법
+
+!image.png
+
+!image.png
+
+- 가상머신 창 메뉴 머신 → 스냅샷 찍기 를 누르거나, VirtualBox 관리자에서 가상머신 오른쪽의 목록 아이콘 → 스냅샷 → 찍기 를 누른다.
+- 스냅샷 이름은 나중에 구분하기 쉽게 "설치 직후", "net-tools 설치 후" 처럼 상태를 적어둔다.
+
+#### 스냅샷 복원하는 방법
+
+- 가상머신을 끈 상태에서 스냅샷 목록의 원하는 시점을 선택하고 복원 을 누른다.
+- 복원할 때 "현재 상태도 스냅샷으로 저장할지" 묻는데, 지금 상태가 필요 없으면 체크를 해제하고 복원한다.
+
+#### 주의할 점
+
+- 스냅샷은 백업이 아니다. 원본 가상 디스크에 의존하기 때문에, 가상머신 파일 자체가 손상되면 스냅샷도 같이 쓸 수 없게 된다.
+- 스냅샷을 많이 쌓아두면 디스크 용량을 계속 차지하므로, 필요 없는 스냅샷은 삭제한다.
+
+---
+
+## 고정 IP 란?
+
+- 가상머신의 IP 주소가 바뀌지 않도록 직접 정해두는 것이다.
+- 기본값은 DHCP(IP 자동 할당)라서 재부팅하거나 환경이 바뀌면 IP 가 달라질 수 있다. 그러면 PuTTY 세션, DB 접속 주소를 매번 다시 고쳐야 한다. 서버는 "항상 같은 주소"여야 하므로 고정 IP 를 쓴다.
+- 수업에서는 어댑터 2(호스트 전용, enp0s8)에 192.168.56.101 을 고정했다.
+
+#### 1. VirtualBox 호스트 전용 네트워크 확인
+
+- VirtualBox 6.1 은 파일 → 호스트 네트워크 관리자, 7.x 는 도구 → 네트워크 메뉴에서 확인한다.
+- VirtualBox Host-Only Ethernet Adapter 의 IPv4 주소(보통 192.168.56.1)와 네트마스크(255.255.255.0)를 확인한다. 이 192.168.56.1 이 호스트 PC 쪽 주소이고, 가상머신은 같은 192.168.56.x 대역 안에서 주소를 정해야 서로 통신된다.
+
+#### 2. Ubuntu 에서 IP 수동 설정 (GUI 방식)
+
+- 설정 → 네트워크 → 두 번째 유선 연결(enp0s8)의 톱니바퀴 → IPv4 탭으로 들어간다.
+- IPv4 방식을 자동(DHCP) 에서 수동 으로 바꾸고 아래처럼 입력한 뒤 적용한다.
+
+| 항목 | 값 (수업 기준) | 의미 |
+| --- | --- | --- |
+| 주소 | 192.168.56.101 | 가상머신에 고정할 IP |
+| 네트마스크 | 255.255.255.0 | 192.168.56.x 까지를 같은 네트워크로 본다는 뜻 |
+| 게이트웨이 | 192.168.56.1 | 호스트 네트워크 관리자에서 확인한 호스트 쪽 주소 |
+- 설정은 바로 반영되지 않는다. 해당 연결 스위치를 껐다가 다시 켜야 새 IP 가 적용된다.
+- 설정 후 인터넷(apt)이 안 되면, enp0s8 의 게이트웨이 때문에 인터넷 요청이 NAT 가 아닌 쪽으로 나가는 경우다. 이때는 enp0s8 의 게이트웨이를 비워두면 된다.
+
+#### 3. 확인
+
+```bash
+ifconfig                 # enp0s8 의 inet 값이 192.168.56.101 인지 확인
+```
+
+- 호스트(Windows) 명령 프롬프트에서 ping 192.168.56.101 을 쳐서 응답이 오면 호스트 ↔ 가상머신 통신까지 정상이다.
+- 성공하면 가상머신을 완전히 종료한 상태에서 스냅샷(예: "고정 IP 설정 완료")을 찍어둔다.
+
+---
+
+## SSH 란?
+
+- SSH(Secure Shell)는 네트워크로 다른 컴퓨터에 원격 접속해서 명령어를 실행할 수 있게 해주는 프로토콜이다. 기본 포트는 22 번이다.
+- 주고받는 데이터(비밀번호, 명령어)가 모두 암호화되기 때문에, 예전에 쓰던 텔넷(Telnet)보다 안전하다.
+- 실제 서버는 모니터 없이 데이터센터에 있기 때문에, 서버 관리는 거의 SSH 로 접속해서 한다. 이번 실습에서도 Windows(호스트)에서 Ubuntu(가상머신)로 SSH 접속하는 것이 목표다.
+
+#### [ 설치 명령어 ]
+
+```bash
+sudo apt-get install ssh          # openssh-server + openssh-client 를 함께 설치
+sudo systemctl status ssh         # 실행 상태 확인 (active (running) 이면 정상)
+```
+
+- ssh 패키지를 설치하면 접속을 받는 쪽(openssh-server)과 접속하는 쪽(openssh-client)이 함께 설치되고, SSH 서버가 자동으로 실행된다. 서버만 확실히 설치하고 싶으면 sudo apt-get install openssh-server 로 직접 설치해도 된다.
+
+!image.png
+
+#### SSH 서비스 관리 명령어
+
+```bash
+sudo systemctl start ssh      # 시작
+sudo systemctl status ssh     # 상태 확인
+sudo systemctl restart ssh    # 재시작 (설정을 바꾼 뒤)
+sudo systemctl stop ssh       # 중지
+```
+
+#### 방화벽(ufw) 에서 SSH 허용
+
+```bash
+sudo ufw allow ssh            # 22번 포트(SSH) 허용 규칙 추가
+sudo ufw status               # 방화벽 상태 및 규칙 확인
+```
+
+- Ubuntu 는 기본적으로 ufw 가 꺼져(inactive) 있어서, 지금은 규칙만 미리 넣어두는 셈이다.
+- 나중에 방화벽을 켜면(sudo ufw enable) 허용하지 않은 포트는 전부 막힌다. 그때는 MySQL(3306) 같은 다른 포트도 따로 허용해야 한다.
+
+#### 호스트(Windows)에서 접속하기
+
+- 수업 방식(어댑터 2 호스트 전용 + 고정 IP)이면 포트 포워딩 없이 고정 IP 와 기본 포트 22 로 바로 접속한다.
+
+```powershell
+ssh 사용자이름@192.168.56.101
+```
+
+- 어댑터 1(NAT)만 쓰는 경우에는 호스트 → 가상머신 접속이 막혀 있으므로, 위의 NAT 란? 에서 정리한 포트 포워딩(호스트 2222 → 게스트 22)을 먼저 설정하고 아래처럼 접속한다.
+
+```powershell
+ssh -p 2222 사용자이름@127.0.0.1
+```
+
+- 처음 접속하면 "Are you sure you want to continue connecting (yes/no)?" 가 나오는데, 서버를 처음 믿고 등록하는 과정이다. yes 를 입력한 뒤 Ubuntu 계정 비밀번호를 입력하면 접속된다.
+- 어댑터에 브리지 모드라면 포트 포워딩 없이 ssh 사용자이름@가상머신IP 로 바로 접속할 수 있다. (가상머신 IP 는 ifconfig 로 확인)
+
+---
+
+## PuTTY 란?
+
+- Windows 에서 쓰는 무료 SSH 접속 프로그램(SSH 클라이언트)이다. 위에서 명령 프롬프트로 하던 ssh 접속을 창 하나로 편하게 할 수 있게 해준다.
+- 접속 정보(주소, 포트)를 세션으로 저장해두고 더블클릭 한 번으로 다시 접속할 수 있어서, 서버를 여러 대 관리할 때 편하다.
+- puTTY로 server에 접속하는 습관 들이기
+    - 실제 서버에는 GUI 가 없고, 모니터 앞이 아니라 원격으로 접속해서 명령어로만 관리한다.
+    - 가상머신 창(GUI)에서 바로 작업하는 버릇이 들면 실제 서버 환경에서 막힌다. 그래서 VirtualBox 창은 켜두기만 하고, 작업은 PuTTY 로 접속해서 터미널로 하는 연습을 하는 것이다.
+
+#### 1. PuTTY 설치
+
+- 공식 사이트(putty.org)에서 Windows 64-bit 용 설치 파일(.msi)을 받아 기본 설정 그대로 설치한다.
+
+#### 2. 접속 정보 입력 (Session 화면)
+
+- Host Name (or IP address) : 수업 방식이면 고정 IP 인 192.168.56.101 을 넣는다. (NAT + 포트 포워딩이면 127.0.0.1, 브리지 모드면 가상머신 IP)
+- Port : 수업 방식이면 기본값 22 그대로 둔다. (NAT + 포트 포워딩이면 호스트 포트, 예: 2222)
+- Connection type : SSH
+
+#### 3. 세션 저장
+
+- Saved Sessions 칸에 이름(예: ubuntu-server)을 적고 Save 를 누른다.
+- 다음부터는 목록에서 이름을 더블클릭하면 바로 접속된다. 설정을 바꿀 때는 Load → 수정 → Save 순서로 해야 저장된다.
+
+#### 4. 한글 깨짐 방지 (권장)
+
+- 왼쪽 메뉴 Window → Translation → Remote character set 을 UTF-8 로 바꾼 뒤, Session 으로 돌아가 다시 Save 한다.
+
+#### 5. 접속
+
+- Open 을 누르면 처음 한 번 Security Alert(호스트 키 확인) 창이 나온다. 이 서버를 믿고 등록하겠냐는 뜻이므로 Accept 를 누른다.
+- login as : Ubuntu 사용자 이름, password : 비밀번호를 입력한다. 비밀번호는 입력해도 화면에 아무것도 안 보이는 것이 정상이다.
+- 복사는 드래그만 하면 되고, 붙여넣기는 마우스 오른쪽 클릭이다. (Ctrl + V 가 아니다.)
+
+---
+
+## MySQL 설정
+
+- Ubuntu 서버에 MySQL 을 설치하고, 외부(호스트 PC, 스프링 프로젝트)에서 접속할 수 있게 설정하는 과정이다.
+- Ubuntu 20.04 에서 apt 로 설치하면 MySQL 8.0 이 설치된다.
+
+#### 1. 설치 및 실행 확인
+
+```bash
+sudo apt-get update
+sudo apt-get install mysql-server
+sudo systemctl status mysql       # active (running) 이면 정상
+```
+
+#### 2. 기본 보안 설정
+
+```bash
+sudo mysql_secure_installation
+```
+
+- 비밀번호 검증 정책, 익명 사용자 삭제, root 원격 로그인 차단, test DB 삭제 등을 차례로 물어본다. 실습에서는 대부분 y 로 진행한다.
+
+#### 3. MySQL 접속 및 사용자 생성
+
+- Ubuntu 의 MySQL root 계정은 기본적으로 비밀번호가 아니라 리눅스 계정(auth_socket)으로 인증한다. 그래서 sudo 를 붙이면 비밀번호 없이 들어가진다.
+- 실제 작업은 root 대신 따로 만든 사용자로 하는 것이 원칙이다.
+
+```sql
+-- sudo mysql 로 접속한 뒤 실행
+CREATE DATABASE testdb;
+CREATE USER '사용자이름'@'%' IDENTIFIED BY '비밀번호';   -- '%' = 모든 IP 에서 접속 허용
+GRANT ALL PRIVILEGES ON testdb.* TO '사용자이름'@'%';
+FLUSH PRIVILEGES;
+```
+
+#### 3-1. (수업 방식) root 비밀번호 설정 + root 원격 접속 허용
+
+- 수업에서는 따로 사용자를 만들지 않고, root 계정에 비밀번호를 걸고 원격 접속을 허용하는 방식으로 진행했다.
+- sudo mysql -u root -p 로 들어간다. 비밀번호를 물어보면 그냥 Enter 를 누르면 된다. (아직은 auth_socket 인증이라 sudo 만으로 통과된다.)
+
+```sql
+-- root 를 비밀번호 방식(mysql_native_password)으로 바꾸고 비밀번호 지정
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
+
+-- root 가 어떤 IP 에서든 접속할 수 있게 host 를 '%' 로 변경
+USE mysql;
+UPDATE user SET host = '%' WHERE user = 'root';
+FLUSH PRIVILEGES;
+```
+
+- 이후부터는 sudo mysql 이 아니라 mysql -u root -p 로 비밀번호를 입력해서 접속한다.
+- 주의 : root + 단순한 비밀번호 + 모든 IP 허용 조합은 실습용이다. 실제 서버에서 이렇게 열어두면 외부 공격 대상이 된다. 실무에서는 위 3번처럼 전용 사용자를 만들고, root 원격 접속은 막아두는 것이 원칙이다.
+
+#### 4. 외부 접속 허용 (bind-address)
+
+- MySQL 은 기본적으로 자기 자신(127.0.0.1)에서 오는 접속만 받는다. 외부에서 접속하려면 설정 파일을 고쳐야 한다.
+- 같은 파일에 bind-address 말고 mysqlx-bind-address(33060 포트, MySQL Shell 등이 쓰는 X Protocol 용)도 있다. 수업에서는 두 줄을 모두 맨 앞에 # 을 붙여 주석 처리했다. 주석 처리하면 제한이 풀려 모든 IP 에서 접속을 받으므로, 0.0.0.0 으로 바꾸는 것과 같은 효과다. (편집기는 vi 대신 nano 를 써도 된다.)
+
+```bash
+sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+# bind-address = 127.0.0.1  →  bind-address = 0.0.0.0 으로 변경
+sudo systemctl restart mysql
+```
+
+#### 5. 호스트(Windows)의 MySQL Workbench 로 접속 확인
+
+- Workbench 에서 MySQL Connections 옆의 + 를 눌러 새 연결을 만든다.
+- Hostname : 192.168.56.101 (고정 IP), Port : 3306, Username : root (또는 만든 사용자), Password : Store in Vault 로 저장 → Test Connection 으로 확인한다.
+- 스프링 프로젝트에서도 같은 주소를 쓴다. (예: url 에 192.168.56.101:3306/DB이름)
+- 수업 방식(호스트 전용 어댑터)이면 포트 포워딩이 필요 없다. NAT 만 쓰는 경우에만 VirtualBox 포트 포워딩에 호스트 3306 → 게스트 3306 규칙을 추가하고 127.0.0.1 로 접속한다.
+
+---
