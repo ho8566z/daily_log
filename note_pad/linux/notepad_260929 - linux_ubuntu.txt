@@ -1,3 +1,57 @@
 20260929
 
 
+세션 하이재킹
+
+!image.png
+
+토큰(jwt : java web token) 이란?
+
+| 구분 |  |  |
+| --- | --- | --- |
+|  |  |  |
+|  |  |  |
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+굳이 정리x
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+---
