@@ -1,0 +1,12 @@
+20260929
+
+
+@RequestParam(value = "file", required = false) 란?
+
+---
+
+authentication할 때,
+
+spring security → HttpSession less(100%는 아님)
+
+SecurityContextHolder와 Principal의 관계
