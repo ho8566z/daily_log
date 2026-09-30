@@ -1,11 +1,7 @@
 20260930
 
 
-!image.png
-
-!image.png
-
-!image.png
+#### Linux(Ubuntu)와 Docker를 이용한 앱 실행 순서
 
 | 순서 및 할 일 | 어디서 / 무엇을 |  | 성공했을 때, 보이는 것 |  |
 | --- | --- | --- | --- | --- |
@@ -16,77 +12,75 @@
 | 5 앱 실행 | → (ShopApplication) 또는 ./gradlew bootRun |  | Started ShopApplication |  |
 | 6 브라우저 확인 | localhost:8080/api/products |  | 상품 목록 JSON |  |
 
-!image.png
+#### WSL 켜기 명령
 
-#### WSL 켜기
+- WSL 실행
+    - powershell에 입력한다.
+    - Windows에서 기본 Linux(Ubuntu 등)으로 진입한다.
 
 ```powershell
 wsl
 ```
 
+- 현재 사용자 확인
+    - 현재 로그인한 Linux 사용자의 이름을 출력한다.
+
 ```powershell
 whoami
 ```
+
+- 현재 작업 디렉터리 확인
+    - 현재 내가 위치한 폴더의 경로를 출력한다.
 
 ```powershell
 pwd
 ```
 
-!image.png
+#### Docker 확인 명령
 
-#### Docker 확인
+- Docker 버전 확인
+    - Docker가 설치되어 있는지와 설치된 버전을 확인한다.
 
 ```powershell
 docker —version
 ```
 
+- Docker 서비스 상태 확인
+
+| active | Docker 서비스 실행 중이다. |
+| --- | --- |
+| inactive | Docker 서비스 중지 상태이다. |
+
 ```powershell
 systemctl is-active docker
 ```
+
+- 현재 실행 중인 컨테이너 확인
+    - 실행 중인 컨테이너만 표시한다.
 
 ```powershell
 docker ps
 ```
 
+- 전체 컨테이너 확인
+    - 실행 중인 컨테이너에 더해 중지된 컨테이너까지 표시한다.
+
 ```powershell
 docker ps -a
 ```
 
-!image.png
+#### DB 켜기 명령
 
-!image.png
-
-#### DB 켜기
+- MySQL 컨테이너 실행
+    - shop-mysql이라는 이름의 중지된 Docker 컨테이너를 다시 시작하고, 컨테이너가 실행되면 내부의 MySQL 서버도 함께 실행한다.
 
 ```powershell
 docker start shop-mysql
 ```
 
-!image.png
-
 ---
 
-!image.png
-
-!image.png
-
-!image.png
-
-!image.png
-
-!image.png
-
-!image.png
-
-!image.png
-
-!image.png
-
-!image.png
-
-!image.png
-
-!image.png
+#### 앱 실행 시 막히는 부분 목록
 
 | 막힌 부분 | 증상 |  | 원인 |  | 해결 |  |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -100,13 +94,7 @@ Docker Install & Start |  |
 아직 준비 중이다. |  | DB Up 확인, 20~30초 확인 뒤 다시 실행한다. |  |
 | 앱 | Post 8080 was already in use |  | 앱이 이미 떠 있다. |  | 기존 실행 중인 앱을 종료하거나 8080 포트를 사용하는 프로세스를 종료한 후 다시 실행한다. |  |
 
-!image.png
-
-!image.png
-
-!image.png
-
-!image.png
+---
 
 #### 회원과 상품의 CRUD 비교
 
@@ -115,9 +103,7 @@ Docker Install & Start |  |
 | 회원 | join | login | me | logout |
 | 상품 | create | findAll/findById | update | delete |
 
-!image.png
-
-!image.png
+---
 
 #### 하나의 서비스를 표현하는 클래스 구분
 
@@ -127,9 +113,7 @@ Docker Install & Start |  |
 | ProductRequest | 클라이언트 → 서버 | 등록할 때 필요한 값만, id 없음 |  |
 | ProductResponse | 서버 → 클라이언트 | 보여줄 값만, soldOut 같은 파생 필드 추가 |  |
 
-!image.png
-
-!image.png
+---
 
 #### Service 코드 예시
 
@@ -141,7 +125,7 @@ Docker Install & Start |  |
 | update(id, request) | 상품 정보 수정 |
 | delete(id) | 상품 삭제 |
 
-!image.png
+---
 
 #### API와 메서드
 
@@ -153,9 +137,7 @@ Docker Install & Start |  |
 | PUT /api/products/{id} | update(id, request) 호출 |
 | DELETE /api/products/{id} | delete(id) 호출 |
 
-!image.png
-
-!image.png
+---
 
 #### curl 명령어 예시
 
@@ -183,11 +165,3 @@ curl -X POST http://localhost:8080/api/products -H "Content-Type: application/js
 - postman에서 ‘블루투스 스피커’ 상품정보 수정(PUT)할 때, 가격을 음수로 설정하면 발생하는 BadRequset의 모습
 
 !image.png
-
-!image.png
-
-!image.png
-
-!image.png
-
----
