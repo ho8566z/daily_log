@@ -34,9 +34,33 @@
 
 #### L4장비 란?
 
-#### L4장비 란?
+- 네트워크의 4계층(Transport Layer) 정보를 기준으로 트래픽을 분산해 주는 장비이다.
 
-#### L4장비 란?
+```
+                    사용자
+                      │
+                  HTTP 요청
+                      ↓
+                ┌──────────┐
+                │ L4 장비  │
+                │ 로드밸런서 │
+                └────┬─────┘
+                     │
+             ┌───────┴───────┐
+             ↓               ↓
+        ┌─────────┐      ┌─────────┐
+        │ Server 1│      │ Server 2│
+        └─────────┘      └─────────┘
+```
+
+#### 왜 L4인가?
+
+- OSI 7계층에서 L4 = 전송 계층(Transport Layer)이다.
+- L4 장비는 주로 다음과 같은 정보를 이용한다.
+    - IP 주소
+    - TCP / UDP
+    - Port 번호
+- L4 장비가 요청을 여러 서버로 분산시키는 것을 로드 밸런싱(Load Balancing)이라고 한다.
 
 ---
 
@@ -48,4 +72,40 @@
 
 !image.png
 
-복제 다음에 복원
+- 복제 다음에 복원
+
+---
+
+## VirtualBox — Linux(Ubuntu) Install, Update
+
+#### Git, JDK Install
+
+```powershell
+sudo apt install ~
+```
+
+---
+
+#### Gradle Install
+
+```powershell
+wget https://services.gradle.org/distributions/gradle-8.10.2-bin.zip -P /tmp
+```
+
+- Gradle unzip
+
+```powershell
+sudo unzip -d /opt/gradle /tmp/gradle-8.10.2-bin.zip
+```
+
+---
+
+#### .profile : nano update
+
+sudo nano .profile
+
+- $JAVA_HOME, $GRADLE_HOME, $PATH
+
+---
+
+https://hoazzinews.tistory.com/2
