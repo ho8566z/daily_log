@@ -3,11 +3,19 @@
 
 !image.png
 
-- `request.getSession()` 은 "내 보관함을 줘, 없으면 하나 새로 배정해줘"라는 요청이다.
-- `session.setAttribute(SessionConst.LOGIN_USER_ID, user.getId())` 는 보관함에 이름표(키)와 방금 로그인한 회원의 숫자 id(값)를 넣는 코드다.
-- 이 코드가 실행되는 순간 스프링이 알아서 응답에 `Set-Cookie: JSESSIONID=...` 헤더를 붙여준다. 쿠키를 만드는 코드는 따로 작성할 필요가 없다.
+## 세션(Session)이란?
+
+- 로그인 상태를 유지하기 위해 서버가 사용자 정보를 저장해 두는 저장소다.
+
+#### 세션에 값을 저장하는 코드
+
+- request.getSession() 은 "내 보관함을 줘, 없으면 하나 새로 배정해줘"라는 요청이다.
+- session.setAttribute(SessionConst.LOGIN_USER_ID, user.getId()) 는 보관함에 이름표(키)와 방금 로그인한 회원의 숫자 id(값)를 넣는 코드다.
+- 이 코드가 실행되는 순간 스프링이 알아서 응답에 Set-Cookie: JSESSIONID=... 헤더를 붙여준다. 쿠키를 만드는 코드는 따로 작성할 필요가 없다.
 
 !image.png
+
+#### 데이터 전략 : 왜 회원 정보 전체가 아닌 숫자 ‘id’만 저장하는지?
 
 - 세션에는 회원 정보 전체가 아니라 숫자 id만 저장한다.
 - 메모리 최적화: 로그인한 사람이 많아질수록 세션이 무거우면 서버 메모리를 과도하게 차지한다.
@@ -15,17 +23,23 @@
 
 !image.png
 
-- HTTP는 무상태(Stateless) 프로토콜이라 매 요청을 완전히 독립된 사건으로 취급한다.
+#### HTTP의 근본적 한계 : 무상태성(Satateless)
+
+- HTTP는 무상태 프로토콜이라 매 요청을 완전히 독립된 사건으로 취급해 상태를 기억하지 못한다.
 - 로그인에 성공해도 다음 페이지로 이동하면 서버는 "당신이 누구시죠?"라고 다시 묻는다. 서버가 방금 일어난 일을 유지하지 않기 때문이다.
 - 그래서 상태(State)를 기억할 별도의 장치가 필수적이다.
 
 !image.png
+
+#### HTTP 무상태성의 물품보관함 비유
 
 - 물품보관함 비유로 이해한다. 로그인에 성공하면 서버가 전용 보관함을 하나 배정한다.
 - 서버는 사용자를 식별할 수 있는 번호표(세션 ID)를 발급한다.
 - 다음 요청부터는 매번 신분증을 보여줄 필요 없이 이 번호표만 내밀면 된다.
 
 !image.png
+
+#### 세션 관련 용어 정리
 
 | 구분 | 비유 | 위치 / 특징 |
 | --- | --- | --- |
@@ -36,24 +50,32 @@
 
 !image.png
 
+#### 전달 매커니즘 : 쿠키 발급과 전달 흐름
+
 - 서버가 응답에 JSESSIONID를 담아 보낸다.
 - 브라우저가 이 쿠키를 자체 저장소에 보관한다.
 - 이후 같은 서버로 보내는 모든 요청에 브라우저가 알아서 쿠키를 함께 보낸다. 개발자가 직접 신경 쓸 필요가 없다.
 
 !image.png
 
-- `request.getSession(false)` 는 세션이 없을 때 새로 만들지 않고 null을 반환한다.
-- `/me`는 조회만 하는 API이므로, 로그인 안 한 사람에게 빈 보관함을 낭비하며 새로 만들 이유가 없다.
-- `getSession()` 은 세션이 없으면 새로 만들고, `getSession(false)` 는 null을 반환한다.
+#### 신원 확인과 ‘false’의 비밀 : getSession(false)
+
+- request.getSession(false) 는 세션이 없을 때 새로 만들지 않고 null을 반환한다.
+- /me는 조회만 하는 API이므로, 로그인 안 한 사람에게 빈 보관함을 낭비하며 새로 만들 이유가 없다.
+- getSession() 은 세션이 없으면 새로 만들고, getSession(false) 는 null을 반환한다.
 
 !image.png
 
-- 검증 코드는 `if (session == null || session.getAttribute(...) == null) { throw new IllegalStateException(...); }` 형태다.
+#### 로그인 여부 검증 결과
+
+- 검증 코드는 if (session == null || session.getAttribute(...) == null) { throw new IllegalStateException(...); } 형태다.
 - 성공: 쿠키가 있으면 200 OK와 함께 회원 정보를 반환한다(보관함 안의 id로 DB에서 회원 조회).
 - 실패: 쿠키가 없거나 보관함이 비어 있으면 예외가 발생하고, ApiExceptionHandler를 통해 401 Unauthorized로 자동 변환된다.
 - 완전히 같은 API인데 결과가 정반대인 이유는 오직 쿠키 지참 여부뿐이다.
 
 !image.png
+
+#### 세션의 저장 위치
 
 - 세션은 데이터베이스 테이블이 아니라 자바 프로세스의 메모리(서버 RAM)에 저장된다.
 - 장점(Speed): 데이터 조회가 매우 빠르다.
@@ -61,54 +83,57 @@
 
 !image.png
 
+#### 세션의 독립성
+
 - 두 사람이 동시에 로그인해도 세션은 서로 섞이지 않는다.
 - 서버는 각 사람이 들고 온 쿠키(세션 ID)로 보관함을 엄격히 구분한다.
 - 두 세션의 ID는 완전히 다른 고유 문자열로 생성된다.
 
 !image.png
 
-- 로그아웃은 `HttpSession session = request.getSession(false); if (session != null) { session.invalidate(); }` 로 처리한다.
-- `invalidate()` 는 보관함 안의 내용물을 비우고 번호표 자체를 폐기한다.
-- 이후 같은 쿠키를 들고 `/me`를 다시 호출해도 서버가 번호표를 인식하지 못해 401 에러를 반환한다.
+#### 기억의 소멸(Logout & Destruction) : invalidate()
 
-!image.png
-
-- 세션 하이재킹: 다른 사람이 내 세션 ID(쿠키)를 알아내 자기 요청에 그대로 넣으면, 서버는 그 사람을 나로 착각한다.
-- 공용 컴퓨터를 쓴 뒤 반드시 로그아웃을 눌러야 하는 이유다. 로그아웃(`invalidate()`)을 하지 않으면 다음 사람이 내 세션을 그대로 이어받을 수 있다.
-
-세션 하이재킹 ?
-
-- 공격자가 다른 사용자의 세션 ID(쿠키)를 알아내서, 그 사용자인 척 서버에 요청하는 공격이다.
-- 서버는 세션 ID만 보고 사용자를 식별하므로, 유효한 세션 ID를 들고 오면 본인으로 착각한다.
-- 방어 방법은 공용 컴퓨터에서 반드시 로그아웃(`invalidate()`) 하기, 쿠키에 HttpOnly·Secure 속성 주기, HTTPS 사용, 로그인 시 세션 ID 재발급, 세션 만료 시간 설정 등이다.
+- 로그아웃은 HttpSession session = request.getSession(false); if (session != null) { session.invalidate(); } 로 처리한다.
+- invalidate() 는 보관함 안의 내용물을 비우고 번호표 자체를 폐기한다.
+- 이후 같은 쿠키를 들고 /me를 다시 호출해도 서버가 번호표를 인식하지 못해 401 에러를 반환한다.
 
 !image.png
 
 ---
 
-- 앞으로 구글 계정 로그인(OAuth)이 추가되어도 "기억하는" 부분의 세션 구조는 완전히 동일하게 유지된다. 바뀌는 것은 본인 확인을 누가 대신 해주느냐뿐이다.
-- 본인 확인(Authentication)과 상태 유지(State Maintenance)를 분리해서 생각하는 것이 핵심이다.
-- 오늘 배운 세션/쿠키 흐름은 특정 프레임워크를 넘어선 범용적인 웹 아키텍처 패턴이다.
+## 보안 취약점 : 세션 하이재킹이란?
+
+- 다른 사람이 내 세션 ID(쿠키)를 알아내 자기 요청에 그대로 넣으면, 서버는 그 사람을 나로 착각하는 것이다.
+- 공용 컴퓨터를 쓴 뒤 반드시 로그아웃을 눌러야 하는 이유다. 로그아웃(invalidate())을 하지 않으면 다음 사람이 내 세션을 그대로 이어받을 수 있다.
+- 공격자가 다른 사용자의 세션 ID(쿠키)를 알아내서, 그 사용자인 척 서버에 요청하는 공격이다.
+- 서버는 세션 ID만 보고 사용자를 식별하므로, 유효한 세션 ID를 들고 오면 본인으로 착각한다.
+- 방어 방법은 공용 컴퓨터에서 반드시 로그아웃(invalidate()) 하기, 쿠키에 HttpOnly·Secure 속성 주기, HTTPS 사용, 로그인 시 세션 ID 재발급, 세션 만료 시간 설정 등이다.
 
 !image.png
 
-- 9일차 주제는 로그인 상태 유지이고, 세션 방식으로 진행한다.
+!image.png
 
 !image.png
 
-- 오늘 하루의 흐름은 개념을 잡고 → 저장하고 → 확인하고 → 독립을 검증하는 순서다.
-- 5교시: 세션 방식 확정과 개념 정리, 6교시: login()에 세션 저장, 7교시: /me · /logout 만들고 테스트, 8교시: 세션 독립 확인과 정리.
-
 !image.png
+
+---
+
+#### 상태를 기억할 장치가 필요한 이유
 
 - HTTP는 매 요청을 기억하지 못한다. 로그인에 성공해도 바로 다음 요청에서 서버는 다시 "누구세요"라고 묻는다.
-- 요청 1(로그인 성공) → 연결 끊김(서버는 다 잊음) → 요청 2(같은 사람인데 서버는 모름) → 기억하는 장치를 직접 담아야 한다.
+
+```
+요청 1(로그인 성공) → 연결 끊김(서버는 다 잊음) → 요청 2(같은 사람인데 서버는 모름) → 기억하는 장치를 직접 담아야 한다.
+```
 
 !image.png
 
-토큰(jwt : java web token) 이란?
+---
 
-- JWT는 JSON Web Token의 약자다. (기존 메모의 java web token은 잘못된 표기다.)
+## 토큰(JWT) 이란?
+
+- JWT는 JSON Web Token의 약자다.
 - Header.Payload.Signature 세 부분을 점(.)으로 이어 붙인 문자열이다.
 - 서버가 상태를 저장하지 않고, 인증 정보를 토큰 자체에 담아 클라이언트가 보관한다.
 - 서버는 서명(Signature)이 유효한지만 검증하므로 DB 조회가 필요 없다.
@@ -124,61 +149,46 @@
 
 !image.png
 
-- 세션은 물품보관함에 비유한다. 로그인하면 서버가 보관함 번호(세션 ID)를 하나 내준다.
-- 보관함 번호표 = 세션 ID(서버가 로그인 시 발급), 보관함 안의 물건 = 서버 메모리에 저장된 '이 사람은 누구'라는 정보, 번호표를 다시 내미는 것 = 다음 요청마다 쿠키로 세션 ID를 함께 보내는 것이다.
-
 !image.png
 
-- 번호표는 JSESSIONID라는 이름의 쿠키에 담겨 오고, 브라우저가 자동으로 들고 다닌다.
-- 흐름은 로그인 성공(서버가 세션 하나를 만듦) → 쿠키 발급(JSESSIONID를 응답에 실어 보냄) → 브라우저 저장(다음 요청마다 자동 동봉) → 서버 확인(쿠키의 ID로 보관함을 찾음)이다.
+#### 번호표는 JSESSIONID라는 이름의 쿠키에 담겨 오고, 브라우저가 자동으로 들고 다닌다.
 
-!image.png
+#### 쿠키 흐름
 
-- 세션은 DB가 아니라 서버(자바 프로세스)의 메모리 안에 저장된다.
-- 서버 메모리(오늘 방식)는 빠르지만 서버를 재시작하면 전부 사라지고, DB(선택 사항)는 느리지만 재시작해도 유지된다.
-- 오늘 우리 코드는 기본값 그대로 메모리에 저장한다.
-
-!image.png
-
-| API | 역할 |
-| --- | --- |
-| POST /api/users/login (선배포+오늘) | 로그인 확인(이미 있음) + 오늘부터 세션 저장 |
-| GET /api/users/me (신규) | 지금 세션이 누구인지 확인 |
-| POST /api/users/logout (신규) | 세션을 지운다 |
-- 로그인은 미리 준비된 코드에 기억을 붙이고, 확인·해제를 더하는 것이 오늘 작업이다.
-
-!image.png
-
-- Swagger(OpenAPI definition) 화면에서 `/api/users/logout`, `/api/users/login` 등 새 API가 보이는 것을 확인했다.
-- 오늘 만들 `/me` · `/logout`은 이미 준비되어 있다(강사가 미리 완성해 확인함).
-
-!image.png
-
-- 5교시 정리: 개념은 끝났고 6교시부터 손을 움직인다.
-- 세션 방식 확정 = HTTP 무상태 문제 해결 + 최소 복잡도, 세션의 정체 = 서버 메모리에 저장된 '이 사람이 누구인지' 정보, 세션 ID 전달 = JSESSIONID 쿠키로 브라우저가 자동 동봉한다.
-
-!image.png
-
-- 6교시는 login()에 '기억'을 붙이는 작업이다. 강사가 미리 완성해서 붙여둔 login() 코드는 아이디·비밀번호 확인까지만 한다.
-
-#### [ UserController ]
-
-```java
-@PostMapping("/login")
-public UserResponse login(@RequestBody Map<String, String> body) {
-    return userService.login(body.get("loginId"), body.get("password"));
-}
+```
+로그인 성공(서버가 세션 하나를 만듦) → 쿠키 발급(JSESSIONID를 응답에 실어 보냄) → 브라우저 저장(다음 요청마다 자동 동봉) → 서버 확인(쿠키의 ID로 보관함을 찾음)
 ```
 
 !image.png
 
-- `HttpServletRequest` 는 지금 들어온 HTTP 요청 그 자체를 표현하는 객체다.
-- 오늘 필요한 이유는 여기서 `getSession()` 을 불러야 세션을 쓸 수 있기 때문이다.
-- 받는 방법은 컨트롤러 메서드 파라미터에 그냥 추가하면 스프링이 넣어준다.
+#### 세션은 어디에 저장되는지?
+
+| 저장 위치 | 특징 |
+| --- | --- |
+| 서버 메모리 | 빠르지만 서버를 재시작하면 세션 정보가 전부 사라진다. |
+| DB | 느리지만 서버를 재시작해도 세션 정보가 유지된다. |
 
 !image.png
 
-- `request.getSession()` 은 세션이 있으면 꺼내오고, 없으면 새로 만든다.
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+#### HttpServletRequest가 하는 일
+
+| 항목 | 내용 |  |
+| --- | --- | --- |
+| HttpServletRequest | 지금 들어온 HTTP 요청 그 자체를 표현하는 객체다. |  |
+| getSession() | HttpServletRequest에서 getSession()을 호출하여 세션을 사용할 수 있다. |  |
+| 받는 방법 | 컨트롤러 메서드의 파라미터에 추가하면 스프링이 넣어준다. |  |
+
+!image.png
+
+#### request.getSession() 은 세션이 있으면 꺼내오고, 없으면 새로 만든다.
 
 ```java
 HttpSession session = request.getSession();
@@ -188,9 +198,7 @@ HttpSession session = request.getSession();
 
 !image.png
 
-- 세션 키를 상수로 뺀다. 문자열을 그냥 쓰면 오타 하나로 로그인 상태가 조용히 깨지기 때문이다.
-
-####  [SessionConst.java ]
+#### 세션 키를 상수로 뺀다. 문자열을 그냥 쓰면 오타 하나로 로그인 상태가 조용히 깨지기 때문이다.
 
 ```java
 public class SessionConst {
@@ -198,11 +206,9 @@ public class SessionConst {
 }
 ```
 
-- 경로: `src/main/java/com/dwacademy/shop/config/SessionConst.java`
-
 !image.png
 
-- `setAttribute` 는 이름표(키)와 물건(값), 두 개가 필요하다.
+#### setAttribute 는 이름표(키)와 물건(값), 두 개가 필요하다.
 
 ```java
 session.setAttribute("이름표", 물건);
@@ -213,9 +219,7 @@ session.setAttribute(SessionConst.LOGIN_USER_ID, user.getId());
 
 !image.png
 
-- login()에 세션 저장 코드가 들어간 완성본이다. 노란색 표시 두 줄이 오늘 추가한 부분이다.
-
-#### [ UserController ]
+#### login()에 세션 저장 코드 추가
 
 ```java
 @PostMapping("/login")
@@ -228,66 +232,46 @@ public UserResponse login(@RequestBody Map<String, String> body,
 }
 ```
 
-- 경로: `src/main/java/com/dwacademy/shop/controller/UserController.java`
+!image.png
 
 !image.png
 
-- 세션은 DB에 저장되지 않는다. 오교시에 배운 내용을 코드 짠 직후 다시 확인한다.
+!image.png
 
-```
-docker exec shop-mysql8 mysql -uroot -p... shop -e "SHOW TABLES;"
-products
-users
-# 세션(session)이라는 테이블은 없다 — 서버 메모리 안에만 있다
-```
+#### 쿠키는 파일로 저장한다.
+
+- 로그인 응답에 Set-Cookie: JSESSIONID=...; Path=/; HttpOnly 줄이 서버가 브라우저(클라이언트)에게 세션 쿠키를 발급했다는 증거이다.
 
 !image.png
 
-- 실제로 로그인해보면 `-c` 옵션으로 서버가 주는 쿠키를 파일로 저장한다.
+#### setAttribute가 없다면?
 
-```
-curl -i -c cookies.txt -X POST http://localhost:8080/api/users/login \
-  -d '{"loginId":"본인아이디","password":"본인비밀번호"}'
-```
-
-!image.png
-
-- 로그인 응답에 `Set-Cookie: JSESSIONID=...; Path=/; HttpOnly` 줄이 보인다. 이 줄이 오늘의 증거다.
-- 서버가 브라우저(클라이언트)에게 세션 쿠키를 발급했다는 뜻이다.
-
-!image.png
-
-- `setAttribute` 를 빼먹으면 코드는 멀쩡히 돌아가지만 세션에 아무것도 안 남는다.
+- setAttribute 를 빼먹으면 코드는 멀쩡히 돌아가지만 세션에 아무것도 안 남는다.
 - 있을 때는 세션에 회원 id가 저장되어 다음 요청에서 알아볼 수 있고, 빠지면 세션은 만들어지지만 빈 채로 누구인지 기억을 못 한다.
 
 !image.png
 
-- 회원 전체가 아니라 id만 저장하는 이유는 가볍게 만들고 필요할 때마다 최신 정보를 다시 조회하기 위해서다.
-- id만 저장(오늘 방식): 세션이 가볍고 `/me` 호출 때마다 최신 정보를 조회한다.
-- 회원 객체 통째로 저장: 세션이 무거워지고, 이름을 바꿔도 세션 속 정보는 옛날 것이다.
+#### 왜 id만 저장하고 회원 전체를 저장하지 않는지?
+
+| 저장 방식 | 특징 |  |
+| --- | --- | --- |
+| id만 저장 | 세션이 가볍고, /me 호출 때마다 최신 회원 정보를 조회한다. |  |
+| 회원 객체 통째로 저장 | 세션이 무거워지고, 이름을 바꿔도 세션 속 정보는 옛날 정보일 수 있다. |  |
 
 !image.png
 
-- 6교시 정리: 로그인 코드에 딱 세 줄을 더했더니 쿠키가 발급됐다.
-- `HttpServletRequest` 는 지금 들어온 요청 자체를 다루는 객체, `request.getSession()` 은 세션을 가져온다(없으면 새로 만든다), `session.setAttribute(...)` 는 세션에 값을 저장하며 쿠키가 자동 발급된다.
+!image.png
 
 !image.png
 
----
+#### getSession(false)에서 왜 ‘false’인지?
 
-- 7교시는 지금 누가 로그인했는지 물어보는 `/me` API를 만든다. 쿠키를 들고 온 사람이 누구인지 서버가 대답하는 API다.
-- 흐름은 요청 도착(쿠키 JSESSIONID 함께 옴) → 세션 확인(없으면 401, 있으면 계속) → id 꺼내기(세션에서 회원 id 조회) → 회원 조회(그 id로 UserResponse 반환)다.
-
-!image.png
-
-- `getSession(false)` 는 세션이 없을 때 새로 만들지 말라는 뜻이다.
-- `getSession()` 은 세션이 없으면 새로 하나 만들어서 반환하고, `getSession(false)` 는 null을 반환한다(새로 안 만듦).
+- getSession(false) 는 세션이 없을 때 새로 만들지 말라는 뜻이다.
+- getSession() 은 세션이 없으면 새로 하나 만들어서 반환하고, getSession(false) 는 null을 반환한다.(새로 안 만든다.)
 
 !image.png
 
-- 세션이 없으면 예외를 던진다. 지난 시간에 배운 예외 패턴을 오늘도 그대로 쓴다.
-
-#### [ UserController ]
+#### 세션이 없으면 예외를 던진다.
 
 ```java
 HttpSession session = request.getSession(false);
@@ -298,7 +282,7 @@ if (session == null || session.getAttribute(SessionConst.LOGIN_USER_ID) == null)
 
 !image.png
 
-- 세션에서 값을 꺼낼 때는 넣을 때 쓴 그 키(LOGIN_USER_ID)로 똑같이 꺼낸다.
+#### 세션에서 값을 꺼낼 때는 넣을 때 쓴 그 키(LOGIN_USER_ID)로 똑같이 꺼낸다.
 
 ```java
 Long userId = (Long) session.getAttribute(SessionConst.LOGIN_USER_ID);
@@ -307,9 +291,7 @@ return userService.findById(userId);
 
 !image.png
 
-- 완성된 `/me` 메서드는 확인, 예외, 조회 세 조각이 하나의 메서드로 합쳐진 모습이다.
-
-#### [ UserController ]
+#### 완성된 /me 메서드는 확인, 예외, 조회 세 조각이 하나의 메서드로 합쳐진 모습이다.
 
 ```java
 @GetMapping("/me")
@@ -325,7 +307,7 @@ public UserResponse me(HttpServletRequest request) {
 
 !image.png
 
-- 로그인 전에 먼저 눌러보면, 세션(쿠키) 없이 `/me`를 호출하는 상황이다.
+#### 로그인 전에 먼저 눌러보면, 세션(쿠키) 없이 /me를 호출하는 상황이다.
 
 ```
 curl -i http://localhost:8080/api/users/me
@@ -333,12 +315,9 @@ curl -i http://localhost:8080/api/users/me
 
 !image.png
 
-- 로그인 전 `/me`는 401 Unauthorized가 나오고, 우리가 직접 쓴 `{"message":"로그인이 필요합니다"}` 메시지가 그대로 내려온다.
-- 쿠키 없이 호출하면 서버는 이 요청이 누구인지 모른다.
-
 !image.png
 
-- 로그인하고 쿠키를 들고 물어볼 때는 `-b` 옵션으로 저장해둔 쿠키를 실어 보낸다.
+#### 로그인하고 쿠키를 들고 물어볼 때는 -b 옵션으로 저장해둔 쿠키를 실어 보낸다.
 
 ```
 curl -c cookies.txt -X POST http://localhost:8080/api/users/login \
@@ -347,24 +326,24 @@ curl -c cookies.txt -X POST http://localhost:8080/api/users/login \
 curl -i -b cookies.txt http://localhost:8080/api/users/me
 ```
 
-!image.png
-
-- 쿠키를 들고 오니 `/me`가 200 OK와 함께 회원 정보(id, loginId, name, email, role 등)를 돌려준다.
+- 쿠키를 들고 오니 /me가 200 OK와 함께 회원 정보(id, loginId, name, email, role 등)를 돌려준다.
 - 같은 API인데 쿠키 유무에 따라 결과가 완전히 달라진다. 이것이 로그인 상태 유지의 실체다.
 
 !image.png
 
-왜 session 방식에서 deletemapping이 아닌, postmapping인지 서치
+!image.png
+
+---
+
+## 로그아웃은 왜 DeleteMapping이 아니라 PostMapping인가?
 
 - 일반적으로 알려진 설명을 정리한 것이며, 직접 검색해서 확인한 내용은 아니므로 강사 설명이나 공식 문서로 다시 확인해두면 좋다.
-- DELETE는 URL이 가리키는 특정 자원(예: `/users/3`)을 삭제한다는 의미인데, 로그아웃은 자원 삭제가 아니라 "현재 세션을 끝내라"는 동작(액션)이다.
-- 로그인(`POST /login`)과 짝을 이루는 동작 요청이라 POST로 통일한다.
+- DELETE는 URL이 가리키는 특정 자원(예시: /users/3)을 삭제한다는 의미인데, 로그아웃은 자원 삭제가 아니라 "현재 세션을 끝내라"는 동작(액션)이다.
+- 로그인(POST /login)과 짝을 이루는 동작 요청이라 POST로 통일한다.
 - 상태를 바꾸는 요청을 GET으로 만들면 링크나 이미지 태그만으로 로그아웃되는 CSRF 위험이 있어 GET은 피한다. Spring Security의 기본 로그아웃도 POST다.
 - HTML form은 GET과 POST만 지원해서 POST가 가장 다루기 쉽다.
 
-- logout은 `invalidate()` 한 줄이면 보관함을 통째로 비운다.
-
-#### [ UserController ]
+#### logout은 invalidate() 한 줄이면 보관함을 통째로 비운다.
 
 ```java
 @PostMapping("/logout")
@@ -378,8 +357,7 @@ public void logout(HttpServletRequest request) {
 
 !image.png
 
-- 로그아웃하고 같은 쿠키로 `/me`를 다시 호출하면 401이 나온다.
-- 쿠키 파일은 그대로인데 서버 쪽 세션이 지워졌기 때문이다.
+#### 로그아웃하고 같은 쿠키로 /me를 다시 호출하면 401이 나오는데, 쿠키 파일은 그대로인데 서버 쪽 세션이 지워졌기 때문이다.
 
 ```
 curl -i -b cookies.txt -X POST http://localhost:8080/api/users/logout   # 200 OK
@@ -388,33 +366,13 @@ curl -i -b cookies.txt http://localhost:8080/api/users/me                # 401 U
 
 !image.png
 
-- ApiExceptionHandler에 한 줄을 추가해 IllegalStateException을 401로 바꿔준다.
-
-#### [ ApiExceptionHandler ]
-
-```java
-@ExceptionHandler(IllegalStateException.class)
-public ResponseEntity<Map<String, String>> handleUnauthorized(IllegalStateException e) {
-    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            .body(Map.of("message", e.getMessage()));
-}
-```
-
-- 경로: `src/main/java/com/dwacademy/shop/controller/ApiExceptionHandler.java`
+!image.png
 
 !image.png
 
-- 7교시 정리: 로그인·확인·로그아웃, 세 API로 로그인 상태 유지가 완성됐다.
-- `GET /api/users/me`는 쿠키가 없으면 401, 있으면 회원 정보를 반환하고, `POST /api/users/logout`은 `session.invalidate()`로 세션을 삭제하며, ApiExceptionHandler는 IllegalStateException을 401로 자동 변환한다.
-
 !image.png
 
-- 8교시는 세션이 각자 독립적인지 확인한다. 두 사람이 동시에 로그인하면 서로의 정보가 섞일까 하는 질문이다.
-- 예상 보기는 A. 나중에 로그인한 사람 정보로 덮어써진다, B. 각자 자기 쿠키로 각자의 정보만 본다, C. 둘 다 로그인이 안 된다이고, 정답은 B다.
-
-!image.png
-
-- 두 계정으로 동시에 로그인해보려면 쿠키 파일을 A용, B용으로 따로 만든다.
+#### 두 계정으로 동시에 로그인해보려면 쿠키 파일을 A용, B용으로 따로 만든다.
 
 ```
 curl -c cookies_A.txt -X POST http://localhost:8080/api/users/login \
@@ -424,112 +382,111 @@ curl -c cookies_B.txt -X POST http://localhost:8080/api/users/login \
   -d '{"loginId":"계정B","password":"비번B"}'
 ```
 
-!image.png
-
-- 두 로그인의 세션 ID가 서로 다르고, `/me` 결과도 각자 자기 정보만 돌려받는다(A는 hong, B는 kim).
+- 두 로그인의 세션 ID가 서로 다르고, /me 결과도 각자 자기 정보만 돌려받는다(A는 hong, B는 kim).
 - 세션 ID가 서로 다르고 각자 자기 정보만 받으니 세션은 독립적이다.
 
 !image.png
 
-| 상황 | 결과 |
-| --- | --- |
-| 내 JSESSIONID를 남에게 알려줌 | 그 사람이 내 세션으로 /me를 호출 가능 |
-| 공용 컴퓨터에서 로그아웃 안 함 | 다음 사람이 내 세션을 그대로 이어받음 |
-| 오늘의 교훈 | 쿠키는 '지금 이 순간의 나'를 증명하는 열쇠다 |
+!image.png
 
 !image.png
 
-| 구분 | 확인하기 - matches() | 기억하기 - 오늘 만든 세션 |
-| --- | --- | --- |
-| 하는 일 | 아이디·비밀번호로 확인 | 확인 + 세션 저장 |
-| 특징 | 확인이 끝나면 그걸로 끝, 다음 요청은 다시 남남 | 쿠키로 계속 '나'임을 증명, /me로 언제든 재확인 가능 |
+#### 로그인 확인과 로그인 기억의 차이
+
+| 구분 | 확인하기 - matches() |  |  | 기억하기 - 오늘 만든 세션 |  |  |
+| --- | --- | --- | --- | --- | --- | --- |
+| 하는 일 | 아이디·비밀번호로 확인 |  |  | 확인 + 세션 저장 |  |  |
+| 특징 | 확인이 끝나면 그걸로 끝, 다음 요청은 다시 남남 |  |  | 쿠키로 계속 '나'임을 증명, /me로 언제든 재확인 가능 |  |  |
 
 !image.png
 
-- 오늘 만든 API 지도는 회원가입(D8) → 로그인(matches() 확인 + 세션 저장) → `/me`(쿠키로 본인 확인) → `/logout`(세션 삭제 후 다시 401)으로 이어진다.
-
 !image.png
 
-## 쿠키와 세션, 세션과 토큰의 관계
+## 쿠키와 세션, 그리고 세션과 토큰의 관계
 
-- 쿠키와 세션의 관계: 세션은 서버 쪽 저장소이고, 쿠키는 그 세션의 번호표(세션 ID)를 브라우저가 들고 다니게 하는 전달 수단이다.
-- 세션과 토큰의 관계: 둘 다 로그인 상태를 유지하는 방법이며, 차이는 상태를 어디에 저장하느냐다. 세션은 서버가, 토큰은 클라이언트가 들고 있다.
+#### 쿠키와 세션의 관계
+
+- 세션은 서버 쪽 저장소이고, 쿠키는 그 세션의 번호표(세션 ID)를 브라우저가 들고 다니게 하는 전달 수단이다.
+
+#### 세션과 토큰의 관계
+
+- 둘 다 로그인 상태를 유지하는 방법이며, 차이는 상태를 어디에 저장하느냐다. 세션은 서버가, 토큰은 클라이언트가 들고 있다.
 
 | 구분 | 쿠키 | 세션 | 토큰(JWT) |
 | --- | --- | --- | --- |
 | 정체 | 브라우저에 저장되는 전달 수단 | 서버 쪽 저장소 | 인증 정보를 담은 문자열 |
 | 저장 위치 | 브라우저(클라이언트) | 서버(메모리/DB) | 클라이언트 |
 | 서로의 관계 | 세션 ID를 담아 전달한다 | 쿠키의 세션 ID로 찾는다 | 쿠키나 헤더에 담아 전달한다 |
-
-- 면접에서 자주 나오는 질문은 세션과 쿠키의 차이다.
 - 세션과 쿠키는 같은 것이 아니다. 쿠키는 전달 수단이고, 세션은 서버 쪽 저장소다.
 - 세션은 서버 메모리에 저장된다(오늘 우리 코드 기준).
-- 로그아웃하면 서버가 `session.invalidate()`로 저장소를 비운다.
+- 로그아웃하면 서버가 session.invalidate()로 저장소를 비운다.
 
 !image.png
 
-- 실습 확인 체크리스트: 로그인 응답 헤더에 `Set-Cookie: JSESSIONID=...` 가 보이면 정상이다.
-- 로그인 전 `/me`는 401 + '로그인이 필요합니다', 로그인 후 `/me`는 200 + 본인 회원 정보, 로그아웃 후 같은 쿠키로 `/me`는 다시 401이면 정상이다.
-
 !image.png
+
+#### Redis 란?
 
 - 실무에서는 세션을 Redis에 두기도 한다. 배운 걸 그대로 두되 저장 위치만 바꾸는 방식이다.
-- Redis는 메모리 기반의 아주 빠른 외부 저장소이고, 서버가 여러 대여도 모든 서버가 같은 세션을 공유할 수 있어서 쓴다.
-- 코드 구조(`getSession`, `setAttribute`)는 거의 그대로다.
+- 메모리 기반의 아주 빠른 외부 저장소이고, 서버가 여러 대여도 모든 서버가 같은 세션을 공유할 수 있어서 쓴다.
+- 코드 구조(getSession, setAttribute)는 대부분 그대로다.
 
 !image.png
 
-- 다음 미리보기는 상품 도메인이다. 회원 때와 똑같은 패턴이 새로운 이름(Product)으로 반복된다.
-- 회원(User)은 UserController, UserService(join/login/me), UserRepository·User 엔티티이고, 상품(Product)은 ProductController, ProductService(등록/조회/수정/삭제), ProductRepository·Product 엔티티다.
+!image.png
 
 !image.png
 
-- 앞으로 남은 일정은 GCP 배포까지다. 오늘을 포함해 아홉 번, 마지막 날엔 앱이 인터넷에 떠 있다.
-- 내일은 상품 CRUD(이미 완성된 코드를 읽고 확인), 그다음은 Dockerfile(앱을 컨테이너 하나로 포장), 그다음은 배포 리허설·구글 소셜 로그인 추가, 결승선은 GCP에 실제로 배포, 마지막은 면접·포트폴리오 준비와 회고다.
+!image.png
+
+## 상태 잃은 웹이 사용자를 기억하는 법
+
+- 웹 인증 아키텍처의 진화와 JWT의 역설
+- 흐름
 
 !image.png
 
----
+#### The Origin Problem : HTTP의 건망증(Stateless)
 
-- 오늘 세 가지 API로 '기억'을 완성했다. 로그인·확인·삭제가 세션이라는 하나의 개념으로 묶여 있었다.
-- 5교시는 세션 방식 확정과 세션·쿠키 개념 정리, 6교시는 login()에 `session.setAttribute()` 추가, 7교시는 `/me` · `/logout` 신규 구현과 401 처리, 8교시는 두 세션의 독립성 확인과 보안 함정 소개다.
-
-!image.png
-
-- 웹 인증 아키텍처의 진화와 JWT의 역설을 다룬 자료다(제목: 상태 잃은 웹이 사용자를 기억하는 법).
-- 흐름은 HTTP의 무상태 문제 → 쿠키 → 세션 → JWT → 토큰 이중화·로테이션 → 실전 트러블슈팅 → 최종 선택 가이드 순서다.
-
-!image.png
-
-- HTTP는 매 요청을 완전히 독립된 사건으로 취급하므로, 방금 로그인에 성공했더라도 다음 요청에서 서버는 다시 신원을 요구한다(Stateless).
+- HTTP는 매 요청을 완전히 독립된 사건으로 취급하므로, 방금 로그인에 성공했더라도 다음 요청에서 서버는 다시 신원을 요구한다.(Stateless)
 - 이상적인 상태 유지(Stateful)는 요청 1(로그인), 요청 2(페이지 이동), 요청 3(장바구니 담기)이 하나로 이어지는 것이다.
 - Stateless한 프로토콜 위에 State를 얹어야 하는 모순이 모든 웹 인증 아키텍처의 출발점이다.
 
 !image.png
 
-- 첫 번째 방식은 쿠키(클라이언트의 주머니)다. 쿠키의 발급 주체는 서버이지만 보관 주체는 브라우저다.
-- 서버가 `Set-Cookie: sessionId=abc123` 으로 내려주면, 브라우저가 저장소에 보관했다가 도메인 요청 시 `Cookie: sessionId=abc123` 을 항상 자동으로 실어 보낸다.
+#### Paradigm 1 : Cookie
+
+- 첫 번째 방식은 쿠키의 발급 주체는 서버이지만 보관 주체는 브라우저다.
+- 서버가 Set-Cookie: sessionId=abc123 으로 내려주면, 브라우저가 저장소에 보관했다가 도메인 요청 시 Cookie: sessionId=abc123 을 항상 자동으로 실어 보낸다.
 
 !image.png
+
+#### Vulnerability : 쿠키의 치명적인 약점(CSRF)
 
 - 쿠키의 치명적 약점은 CSRF다. 브라우저의 '자동 전송' 특성을 악용한 공격이다.
 - 사용자가 해커 사이트를 방문하면, 해커 사이트가 은행 서버로 의도치 않은 요청을 보낸다. 이때 은행 쿠키가 자동으로 동봉되므로 서버는 정상 요청으로 착각하고 승인한다.
-- `SameSite=Lax/Strict` 속성으로 방어할 수 있지만, GET으로 상태를 변경하는 API가 있거나 완벽한 UX를 위해서는 한계가 있다.
+- SameSite=Lax/Strict 속성으로 방어할 수 있지만, GET으로 상태를 변경하는 API가 있거나 완벽한 UX를 위해서는 한계가 있다.
 
 !image.png
+
+#### Paradigm 2 : Session
 
 - 두 번째 방식은 세션(서버의 물품보관함)이다. 중요한 데이터는 모두 서버(메모리/DB)가 보관하고, 브라우저에는 의미 없는 랜덤 문자열(Session ID)만 열쇠로 쥐여준다.
-- 쿠키는 운반 수단일 뿐이며, 서버가 생명주기를 완벽히 제어할 수 있어 `session.invalidate()` 로 강제 로그아웃을 즉시 실행할 수 있다.
+- 쿠키는 운반 수단일 뿐이며, 서버가 생명주기를 완벽히 제어할 수 있어 session.invalidate() 로 강제 로그아웃을 즉시 실행할 수 있다.
 
 !image.png
+
+#### Paradigm 3 : JWT
 
 - 세 번째 방식은 JWT다(서버를 가볍게, 증명은 스스로). 서버가 아무것도 저장하지 않고(Stateless), 인증 정보를 토큰 자체에 담아 클라이언트가 보관한다.
 - DB 조회 없이 토큰의 서명(Signature) 유효성만 즉시 검증하며, MSA(마이크로서비스) 환경에 최적화되어 있다.
 
 !image.png
 
+#### Anatomy of JWT
+
 - JWT는 암호화(Encryption)가 아니라 인코딩(Encoding)이다. 누구나 Payload를 디코딩해서 볼 수 있다.
-- Header는 알고리즘과 타입(`alg: HS256`, `typ: JWT`), Payload는 담긴 정보(`userId`, `role`)이며 디코딩하면 평문으로 노출되므로 민감 정보를 절대 넣으면 안 된다.
+- Header는 알고리즘과 타입(alg: HS256, typ: JWT), Payload는 담긴 정보(userId, role)이며 디코딩하면 평문으로 노출되므로 민감 정보를 절대 넣으면 안 된다.
 - Signature는 위변조 방지용으로, 비밀키(Secret Key)로 해싱된 서명이다. 이 값이 맞아야 서버가 신뢰한다. 서명의 목적은 정보 은닉이 아니라 위변조 방지(Integrity)다.
 
 !image.png
@@ -548,8 +505,6 @@ curl -c cookies_B.txt -X POST http://localhost:8080/api/users/login \
 - JWT의 Header와 Payload는 Base64URL(+, / 대신 -, _ 를 쓰는 변형)로 인코딩되어 있어서, 디코딩하면 평문으로 보이므로 민감 정보를 넣으면 안 된다.
 - 3바이트를 4글자로 바꾸기 때문에 크기가 약 33% 늘어난다.
 
-- 모든 아키텍처는 트레이드오프이고 완벽한 은탄환(Silver Bullet)은 없다.
-
 | 비교 항목 | Cookie Only | Session | Pure JWT |
 | --- | --- | --- | --- |
 | 서버 상태 저장(State) | X | O (DB/Memory) | X (Stateless) |
@@ -560,6 +515,8 @@ curl -c cookies_B.txt -X POST http://localhost:8080/api/users/login \
 
 !image.png
 
+#### The Compromise : 토큰 이중화 전략
+
 - 토큰 이중화 전략은 무효화가 불가능하다는 JWT의 약점을 완화하기 위해 생명주기가 다른 두 개의 토큰을 쓰는 방식이다.
 - Access Token은 짧은 수명(예: 15분)에 메모리/로컬 변수에 보관하며 빠른 API 요청용(Stateless)이다.
 - Refresh Token은 긴 수명(예: 7~30일)에 HttpOnly 쿠키로 보관(XSS 방어)하며 Access Token 갱신 재발급용이다.
@@ -567,17 +524,29 @@ curl -c cookies_B.txt -X POST http://localhost:8080/api/users/login \
 
 !image.png
 
+#### Security Engineering : 토큰 로테이션 체인
+
 - 토큰 로테이션 체인은 Refresh Token을 일회용으로 만들어 재사용(Replay) 공격을 방어한다.
 - 정상 흐름은 사용자가 RT_1로 재발급 요청 → 서버가 RT_1 확인 → RT_1 즉시 폐기 & 새로운 RT_2 발급이다.
-- 해커가 이미 폐기된 RT_1을 다시 쓰면 서버가 이를 감지하고 방어 로직이 가동되어, 해당 유저의 모든 토큰을 강제 파기하고 재로그인을 요구한다(탈취 감지).
+- 해커가 이미 폐기된 RT_1을 다시 쓰면 서버가 이를 감지하고 방어 로직이 가동되어, 해당 유저의 모든 토큰을 강제 파기하고 재로그인을 요구한다.(탈취 감지)
 
 !image.png
+
+#### Real-world Trap 1 : 동시성 장애(Race Condition)
 
 - 실전 트러블슈팅 1은 동시성 장애(Race Condition)다. '조회 후 없으면 생성'하는 애플리케이션 레벨의 로직은 원자적(Atomic)이지 않다.
-- Request A~D가 동시에 DB를 조회하면 모두 '토큰 없음'을 반환하고, 4개가 모두 `save()`를 실행해서 DB에 중복 토큰 4개가 적재된다.
-- 그 결과 `NonUniqueResultException: Query did not return a unique result: 4 results were returned` 가 발생하고 재로그인이 영구적으로 실패한다. 시험 당일 학생들의 로그인을 막아버린 치명적 장애의 원인이었다.
+- Request A~D가 동시에 DB를 조회하면 모두 '토큰 없음'을 반환하고, 4개가 모두 save()를 실행해서 DB에 중복 토큰 4개가 적재된다.
+- 그 결과 NonUniqueResultException: Query did not return a unique result: 4 results were returned 가 발생하고 재로그인이 영구적으로 실패한다. 시험 당일 학생들의 로그인을 막아버린 치명적 장애의 원인이었다.
 
 !image.png
+
+## Real-world Trap 2 : 기기 독점 정책과 24h 락아웃
+
+- 중복 방지를 위해 DB Upsert와 Redis Lock(First Login Wins)을 도입했으나, 비정상 종료 시 로그아웃 요청이 누락되어 24시간 락아웃되는 새로운 문제가 발생했다.
+
+!image.png
+
+#### Synthesis : JWT의 역설
 
 - JWT의 역설: 완벽한 Stateless 토큰 인증은 이론에만 존재한다. 동시성 제어, 토큰 로테이션, 락아웃 방지, 하트비트 폴링을 구현하다 보면 세션과 토큰의 경계가 흐려지고 결국 다시 Stateful로 돌아오게 된다.
 - 흐름은 Session(완벽한 Stateful) → Pure JWT(완벽한 Stateless의 꿈) → Refresh Token 도입(DB 저장 시작) → 다중 로그인/동시성 제어(Redis Lock 도입) → 결국 완벽한 Stateful 아키텍처로 회귀다.
@@ -585,8 +554,12 @@ curl -c cookies_B.txt -X POST http://localhost:8080/api/users/login \
 
 !image.png
 
+#### Final Archiyect’s Guide
+
 - 기술 선택에 정답은 없으며, '어디에 상태(State)를 저장할 것인가'에 대한 책임의 무게(Trade-off)를 이해하는 것만이 유일한 정답이다.
 - 의사결정 트리: 강제 로그아웃이나 다중 로그인 제어가 필수적이면 Session 기반 구조를 선택한다.
 - 마이크로서비스(MSA) 간의 인증 전파가 필요하면 JWT(Access/Refresh 이중화)를 선택한다.
 - 극강의 보안과 기기 제어가 동시에 필요하면 하트비트 폴링 + 토큰 로테이션 하이브리드 아키텍처를 선택한다.
 - 어떤 기술을 고를지보다, 왜 그 기술이 필요한지 이해하는 것이 먼저다.
+
+---
