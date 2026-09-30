@@ -1,3 +1,57 @@
+
+# 한눈에 보기
+
+| 명령어                         | 주요 용도              |
+| --------------------------- | ------------------ |
+| `pwd`                       | 현재 위치 확인           |
+| `ls`                        | 파일/폴더 목록           |
+| `ls -a`                     | 숨김 파일 포함 목록        |
+| `ls -l`                     | 상세 목록              |
+| `ll`                        | 상세 목록              |
+| `cd`                        | 디렉토리 이동            |
+| `cd ~`                      | 홈 디렉토리 이동          |
+| `cd ..`                     | 상위 디렉토리 이동         |
+| `mkdir`                     | 디렉토리 생성            |
+| `touch`                     | 파일 생성              |
+| `rm`                        | 파일 삭제              |
+| `rm -r`                     | 디렉토리 삭제            |
+| `rm -rf`                    | 강제 삭제              |
+| `cat`                       | 파일 내용 확인           |
+| `echo`                      | 문자열 출력             |
+| `./파일명`                     | 실행                 |
+| `chmod`                     | 권한 변경              |
+| `chown`                     | 소유자 변경             |
+| `sudo`                      | 관리자 권한             |
+| `apt update`                | 패키지 목록 갱신          |
+| `apt upgrade`               | 패키지 업그레이드          |
+| `apt install`               | 프로그램 설치            |
+| `apt remove`                | 프로그램 삭제            |
+| `apt list --installed`      | 설치 패키지 확인          |
+| `grep`                      | 문자열 검색             |
+| `fastfetch`                 | 시스템 정보 확인          |
+| `java -version`             | Java 버전 확인         |
+| `javac -version`            | Java 컴파일러 버전 확인    |
+| `update-alternatives`       | 기본 Java 버전 선택      |
+| `ssh-keygen`                | SSH 키 생성           |
+| `cat ~/.ssh/id_ed25519.pub` | SSH 공개키 확인         |
+| `ss`                        | 포트/네트워크 상태 확인      |
+| `ps -ef`                    | 프로세스 확인            |
+| `kill`                      | 프로세스 종료            |
+| `kill -9`                   | 프로세스 강제 종료         |
+| `wget`                      | 파일 다운로드            |
+| `curl`                      | HTTP 요청/다운로드       |
+| `install`                   | 파일/디렉토리 생성 및 권한 설정 |
+
+# WSL 전용 명령
+
+| 명령어                          | 실행 위치      | 용도                |
+| ---------------------------- | ---------- | ----------------- |
+| `wsl --install`              | PowerShell | WSL 설치            |
+| `wsl --set-version Ubuntu 2` | PowerShell | Ubuntu를 WSL 2로 변경 |
+| `wsl --shutdown`             | PowerShell | WSL 종료            |
+
+
+
 # Linux(Ubuntu) 명령어
 
 ## 1. WSL 관리 명령
@@ -456,54 +510,3 @@ sudo install -m 0755 -d /etc/apt/keyrings
 ```
 
 ---
-
-# 한눈에 보기
-
-| 명령어                         | 주요 용도              |
-| --------------------------- | ------------------ |
-| `pwd`                       | 현재 위치 확인           |
-| `ls`                        | 파일/폴더 목록           |
-| `ls -a`                     | 숨김 파일 포함 목록        |
-| `ls -l`                     | 상세 목록              |
-| `ll`                        | 상세 목록              |
-| `cd`                        | 디렉토리 이동            |
-| `cd ~`                      | 홈 디렉토리 이동          |
-| `cd ..`                     | 상위 디렉토리 이동         |
-| `mkdir`                     | 디렉토리 생성            |
-| `touch`                     | 파일 생성              |
-| `rm`                        | 파일 삭제              |
-| `rm -r`                     | 디렉토리 삭제            |
-| `rm -rf`                    | 강제 삭제              |
-| `cat`                       | 파일 내용 확인           |
-| `echo`                      | 문자열 출력             |
-| `./파일명`                     | 실행                 |
-| `chmod`                     | 권한 변경              |
-| `chown`                     | 소유자 변경             |
-| `sudo`                      | 관리자 권한             |
-| `apt update`                | 패키지 목록 갱신          |
-| `apt upgrade`               | 패키지 업그레이드          |
-| `apt install`               | 프로그램 설치            |
-| `apt remove`                | 프로그램 삭제            |
-| `apt list --installed`      | 설치 패키지 확인          |
-| `grep`                      | 문자열 검색             |
-| `fastfetch`                 | 시스템 정보 확인          |
-| `java -version`             | Java 버전 확인         |
-| `javac -version`            | Java 컴파일러 버전 확인    |
-| `update-alternatives`       | 기본 Java 버전 선택      |
-| `ssh-keygen`                | SSH 키 생성           |
-| `cat ~/.ssh/id_ed25519.pub` | SSH 공개키 확인         |
-| `ss`                        | 포트/네트워크 상태 확인      |
-| `ps -ef`                    | 프로세스 확인            |
-| `kill`                      | 프로세스 종료            |
-| `kill -9`                   | 프로세스 강제 종료         |
-| `wget`                      | 파일 다운로드            |
-| `curl`                      | HTTP 요청/다운로드       |
-| `install`                   | 파일/디렉토리 생성 및 권한 설정 |
-
-# WSL 전용 명령
-
-| 명령어                          | 실행 위치      | 용도                |
-| ---------------------------- | ---------- | ----------------- |
-| `wsl --install`              | PowerShell | WSL 설치            |
-| `wsl --set-version Ubuntu 2` | PowerShell | Ubuntu를 WSL 2로 변경 |
-| `wsl --shutdown`             | PowerShell | WSL 종료            |
