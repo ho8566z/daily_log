@@ -7,13 +7,26 @@
 
 #### Docker 란?
 
+- 애플리케이션을 실행하는 데 필요한 환경을 하나의 컨테이너로 묶어서, 어디서든 동일하게 실행할 수 있도록 해주는 컨테이너 플랫폼이다.
+- Docker를 사용하면 필요한 환경을 이미지(Image) 로 만들어 두고, 그 이미지를 기반으로 컨테이너(Container) 를 실행할 수 있다.
+
 #### DockerHub 란?
+
+- Docker Image를 저장하고 공유할 수 있는 온라인 저장소(Registry)이다.
+
+#### Docker와 DockerHub의 관계
+
+| 구분 | 내용 |  |
+| --- | --- | --- |
+| **Docker** | 애플리케이션을 실행하는 데 필요한 환경의 묶음 |  |
+| **DockerHub** | Docker Image를 저장하고 공유할 수 있는 공간 |  |
 
 ---
 
-#### WAS(Web Application Server)
+#### WAS(Web Application Server) 란?
 
-- Tomcat과 비슷하다.
+- 웹 애플리케이션을 실행하고, 클라이언트의 요청을 받아 애플리케이션의 로직을 처리하는 서버이다.
+- 서버 프로그램을 WAS라고 하며, Tomcat은 대표적인 WAS 중 하나이다.
 
 !image.png
 
@@ -21,4 +34,18 @@
 
 #### L4장비 란?
 
+#### L4장비 란?
+
+#### L4장비 란?
+
 ---
+
+## VirtualBox Server 복제하는 방법
+
+!image.png
+
+!image.png
+
+!image.png
+
+복제 다음에 복원
