@@ -65,3 +65,129 @@ docker start shop-mysql
 !image.png
 
 ---
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+| 막힌 부분 | 증상 |  | 원인 |  | 해결 |  |
+| --- | --- | --- | --- | --- | --- | --- |
+| WSL | wsl이 인식되지 않는다.
+창이 바로 닫힌다. |  | WSL 미설치거나 or 가상화 꺼져 있다. |  | WSL Install
+Docker Install & Start |  |
+| Docker | inactive / Cannot connect to be the Docker daemon |  | 엔진이 꺼져 있다. |  | sudo systemctl start docker |  |
+| DB | docker ps 가 비어 있다. |  | 우분투가 꺼져서 멈췄다. |  | docker start shop-mysql |  |
+| DB | port is already allocated |  | 3306을 다른 곳에서 사용한다. |  | docker ps 로 확인 후 그것을 stop한다. |  |
+| 앱 | Communication link failure |  | DB가 안 떠 있다.
+아직 준비 중이다. |  | DB Up 확인, 20~30초 확인 뒤 다시 실행한다. |  |
+| 앱 | Post 8080 was already in use |  | 앱이 이미 떠 있다. |  | 기존 실행 중인 앱을 종료하거나 8080 포트를 사용하는 프로세스를 종료한 후 다시 실행한다. |  |
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+#### 회원과 상품의 CRUD 비교
+
+| 구분 | 생성(Create/Insert) | 조회(Read/Select) | 수정(Update/Put) | 삭제(Delete) |
+| --- | --- | --- | --- | --- |
+| 회원 | join | login | me | logout |
+| 상품 | create | findAll/findById | update | delete |
+
+!image.png
+
+!image.png
+
+#### 하나의 서비스를 표현하는 클래스 구분
+
+| 클래스 종류 | 어디서, 어디를 | 왜 구분하는지 |  |
+| --- | --- | --- | --- |
+| Product(Entity) | DB 서버 내부만 | 테이블 그대로 → id 자동 생성필드 포함 |  |
+| ProductRequest | 클라이언트 → 서버 | 등록할 때 필요한 값만, id 없음 |  |
+| ProductResponse | 서버 → 클라이언트 | 보여줄 값만, soldOut 같은 파생 필드 추가 |  |
+
+!image.png
+
+!image.png
+
+#### Service 코드 예시
+
+| 메서드 | 하는 일 |
+| --- | --- |
+| findAll(keyword) | 전체 조회, keyword 있으면 검색 |
+| findById(id) | 상품 하나 조회 |
+| create(request) | 새 상품 등록 |
+| update(id, request) | 상품 정보 수정 |
+| delete(id) | 상품 삭제 |
+
+!image.png
+
+#### API와 메서드
+
+| API | 메서드 |
+| --- | --- |
+| GET /api/products | findAll(keyword) 호출 |
+| GET /api/products/{id} | findById(id) 호출 |
+| POST /api/products | create(request) 호출 |
+| PUT /api/products/{id} | update(id, request) 호출 |
+| DELETE /api/products/{id} | delete(id) 호출 |
+
+!image.png
+
+!image.png
+
+#### curl 명령어 예시
+
+- docker가 start 중이고, IntelliJ에서 run되어서 server가 실행 중일때 InrelliJ의 Terminal에 입력한다.
+- products : 블루투스 스피커를 추가하는 curl명령
+
+```powershell
+curl -X POST http://localhost:8080/api/products -H "Content-Type: application/json" -d'{"name":"블루투스 스피커", "price":45000, "stock":20, "description":"휴대용, 방수."}'
+```
+
+#### curl 명령어 결과 화면
+
+- http://localhost:8080/
+
+!image.png
+
+- http://localhost:8080/api/products
+
+!image.png
+
+- postman에서 상품목록 조회한 결과(products : ‘블루투스 스피커’가 추가된 모습)
+
+!image.png
+
+- postman에서 ‘블루투스 스피커’ 상품정보 수정(PUT)할 때, 가격을 음수로 설정하면 발생하는 BadRequset의 모습
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+---
