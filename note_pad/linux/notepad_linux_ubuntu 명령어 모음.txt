@@ -1,0 +1,509 @@
+# Linux(Ubuntu) 명령어
+
+## 1. WSL 관리 명령
+
+### `wsl --install`
+
+Windows에 WSL 설치
+
+```powershell
+wsl --install
+```
+
+> Windows PowerShell에서 실행
+
+### `wsl --set-version Ubuntu 2`
+
+Ubuntu를 WSL 2로 변경
+
+```powershell
+wsl --set-version Ubuntu 2
+```
+
+### `wsl --shutdown`
+
+WSL 전체 종료
+
+```powershell
+wsl --shutdown
+```
+
+> PowerShell에서 실행
+
+---
+
+## 2. 현재 위치 / 파일 확인
+
+### `pwd`
+
+현재 작업 디렉토리 확인
+
+```bash
+pwd
+```
+
+### `ls`
+
+현재 디렉토리의 파일과 폴더 목록 확인
+
+```bash
+ls
+```
+
+### `ls -a`
+
+숨김 파일을 포함하여 모두 확인
+
+```bash
+ls -a
+```
+
+### `ls -l`
+
+파일과 폴더의 상세 정보 확인
+
+```bash
+ls -l
+```
+
+### `ll`
+
+파일 목록을 상세하게 확인
+
+```bash
+ll
+```
+
+> `ls -l`의 별칭으로 사용되는 경우가 많음
+
+---
+
+## 3. 디렉토리 이동
+
+### `cd`
+
+디렉토리 이동
+
+```bash
+cd 디렉토리명
+```
+
+### `cd ~`
+
+현재 사용자의 홈 디렉토리로 이동
+
+```bash
+cd ~
+```
+
+### `cd ..`
+
+상위 디렉토리로 이동
+
+```bash
+cd ..
+```
+
+---
+
+## 4. 파일 / 디렉토리 생성 및 삭제
+
+### `mkdir`
+
+디렉토리 생성
+
+```bash
+mkdir 디렉토리명
+```
+
+### `touch`
+
+빈 파일 생성
+
+```bash
+touch hello.txt
+```
+
+### `rm`
+
+파일 삭제
+
+```bash
+rm hello.txt
+```
+
+### `rm -r`
+
+디렉토리와 내부 내용을 재귀적으로 삭제
+
+```bash
+rm -r 디렉토리명
+```
+
+### `rm -rf`
+
+강제 삭제
+
+```bash
+rm -rf 디렉토리명
+```
+
+> 삭제한 내용을 되돌리기 어려우므로 특히 주의
+
+---
+
+## 5. 파일 내용 확인 / 출력
+
+### `cat`
+
+파일의 내용을 터미널에 출력
+
+```bash
+cat hello.txt
+```
+
+### `echo`
+
+문자열을 출력
+
+```bash
+echo "hello"
+```
+
+파일에 내용 저장:
+
+```bash
+echo "hello" > hello.txt
+```
+
+---
+
+## 6. 파일 실행
+
+### `./파일명`
+
+현재 디렉토리에 있는 실행 파일 실행
+
+```bash
+./hello.sh
+```
+
+---
+
+## 7. 파일 권한
+
+### `chmod`
+
+파일이나 디렉토리의 권한 변경
+
+```bash
+chmod +x hello.sh
+```
+
+`+x`는 실행 권한을 추가한다.
+
+권한 확인:
+
+```bash
+ls -l hello.sh
+```
+
+---
+
+## 8. 파일 소유자 변경
+
+### `chown`
+
+파일 또는 디렉토리의 소유자 변경
+
+```bash
+sudo chown kim hello.sh
+```
+
+사용자와 그룹을 동시에 변경:
+
+```bash
+sudo chown kim:developers hello.sh
+```
+
+---
+
+## 9. 관리자 권한
+
+### `sudo`
+
+명령어를 관리자(root) 권한으로 실행
+
+```bash
+sudo 명령어
+```
+
+예:
+
+```bash
+sudo apt update
+```
+
+---
+
+## 10. Ubuntu 패키지 관리
+
+### `apt update`
+
+패키지 목록 최신화
+
+```bash
+sudo apt update
+```
+
+### `apt upgrade`
+
+설치된 패키지를 최신 버전으로 업그레이드
+
+```bash
+sudo apt upgrade
+```
+
+### `apt install`
+
+프로그램 설치
+
+```bash
+sudo apt install 프로그램명
+```
+
+예:
+
+```bash
+sudo apt install git
+sudo apt install openjdk-17-jdk
+```
+
+### `apt remove`
+
+프로그램 삭제
+
+```bash
+sudo apt remove 프로그램명
+```
+
+### `apt list --installed`
+
+설치된 패키지 목록 확인
+
+```bash
+apt list --installed
+```
+
+---
+
+## 11. 패키지 검색
+
+### `grep`
+
+문자열을 검색하여 해당 내용이 포함된 줄만 출력
+
+```bash
+grep tree
+```
+
+파이프와 함께 사용:
+
+```bash
+apt list --installed | grep tree
+```
+
+> 설치된 패키지 중 `tree`가 포함된 항목을 찾을 때 사용
+
+---
+
+## 12. 시스템 정보
+
+### `fastfetch`
+
+운영체제, CPU, 메모리 등 시스템 정보를 한눈에 확인
+
+```bash
+fastfetch
+```
+
+---
+
+## 13. Java 관리
+
+### `java -version`
+
+현재 Java 버전 확인
+
+```bash
+java -version
+```
+
+### `javac -version`
+
+Java 컴파일러 버전 확인
+
+```bash
+javac -version
+```
+
+### `update-alternatives --config java`
+
+여러 Java 버전 중 기본 Java 버전 선택
+
+```bash
+sudo update-alternatives --config java
+```
+
+---
+
+## 14. SSH
+
+### `ssh-keygen`
+
+SSH 키 생성
+
+```bash
+ssh-keygen -t ed25519 -C "이메일"
+```
+
+### `cat ~/.ssh/id_ed25519.pub`
+
+SSH 공개키 확인
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+---
+
+## 15. 네트워크 / 포트
+
+### `ss`
+
+현재 사용 중인 네트워크 소켓 및 포트 확인
+
+```bash
+ss -tlno
+```
+
+특정 포트 검색:
+
+```bash
+ss -tlno | grep 8080
+```
+
+---
+
+## 16. 프로세스
+
+### `ps -ef`
+
+현재 실행 중인 프로세스 확인
+
+```bash
+ps -ef
+```
+
+특정 프로세스 검색:
+
+```bash
+ps -ef | grep myapp
+```
+
+### `kill`
+
+프로세스 종료
+
+```bash
+kill [PID]
+```
+
+### `kill -9`
+
+프로세스를 강제로 종료
+
+```bash
+kill -9 [PID]
+```
+
+---
+
+## 17. Docker 설치 과정에서 사용한 Linux 명령
+
+### `wget`
+
+인터넷에서 파일 다운로드
+
+```bash
+wget URL
+```
+
+### `curl`
+
+HTTP 요청 및 파일 다운로드 등에 사용
+
+```bash
+curl URL
+```
+
+### `install`
+
+파일/디렉토리를 생성하면서 권한 등을 설정
+
+```bash
+sudo install -m 0755 -d /etc/apt/keyrings
+```
+
+---
+
+# 한눈에 보기
+
+| 명령어                         | 주요 용도              |
+| --------------------------- | ------------------ |
+| `pwd`                       | 현재 위치 확인           |
+| `ls`                        | 파일/폴더 목록           |
+| `ls -a`                     | 숨김 파일 포함 목록        |
+| `ls -l`                     | 상세 목록              |
+| `ll`                        | 상세 목록              |
+| `cd`                        | 디렉토리 이동            |
+| `cd ~`                      | 홈 디렉토리 이동          |
+| `cd ..`                     | 상위 디렉토리 이동         |
+| `mkdir`                     | 디렉토리 생성            |
+| `touch`                     | 파일 생성              |
+| `rm`                        | 파일 삭제              |
+| `rm -r`                     | 디렉토리 삭제            |
+| `rm -rf`                    | 강제 삭제              |
+| `cat`                       | 파일 내용 확인           |
+| `echo`                      | 문자열 출력             |
+| `./파일명`                     | 실행                 |
+| `chmod`                     | 권한 변경              |
+| `chown`                     | 소유자 변경             |
+| `sudo`                      | 관리자 권한             |
+| `apt update`                | 패키지 목록 갱신          |
+| `apt upgrade`               | 패키지 업그레이드          |
+| `apt install`               | 프로그램 설치            |
+| `apt remove`                | 프로그램 삭제            |
+| `apt list --installed`      | 설치 패키지 확인          |
+| `grep`                      | 문자열 검색             |
+| `fastfetch`                 | 시스템 정보 확인          |
+| `java -version`             | Java 버전 확인         |
+| `javac -version`            | Java 컴파일러 버전 확인    |
+| `update-alternatives`       | 기본 Java 버전 선택      |
+| `ssh-keygen`                | SSH 키 생성           |
+| `cat ~/.ssh/id_ed25519.pub` | SSH 공개키 확인         |
+| `ss`                        | 포트/네트워크 상태 확인      |
+| `ps -ef`                    | 프로세스 확인            |
+| `kill`                      | 프로세스 종료            |
+| `kill -9`                   | 프로세스 강제 종료         |
+| `wget`                      | 파일 다운로드            |
+| `curl`                      | HTTP 요청/다운로드       |
+| `install`                   | 파일/디렉토리 생성 및 권한 설정 |
+
+# WSL 전용 명령
+
+| 명령어                          | 실행 위치      | 용도                |
+| ---------------------------- | ---------- | ----------------- |
+| `wsl --install`              | PowerShell | WSL 설치            |
+| `wsl --set-version Ubuntu 2` | PowerShell | Ubuntu를 WSL 2로 변경 |
+| `wsl --shutdown`             | PowerShell | WSL 종료            |

@@ -1,3 +1,67 @@
 20260930
 
 
+!image.png
+
+!image.png
+
+!image.png
+
+| 순서 및 할 일 | 어디서 / 무엇을 |  | 성공했을 때, 보이는 것 |  |
+| --- | --- | --- | --- | --- |
+| 1 WSL 켜기 | PowerShell에서 wsl |  | 이름@컴퓨터 : ~$ 프롬프트 |  |
+| 2 Docker 확인 | Ubuntu에서 docker ps |  | 머리글 한 줄(오류 없음) |  |
+| 3 DB 켜기 | Ubuntu에서 docker start shop-mysql |  | docker ps에 Up |  |
+| 4 IntelliJ 열기 | 프로젝트 shop-project-5th (WSL 경로) |  | 아래 터미널이 Ubuntu |  |
+| 5 앱 실행 | → (ShopApplication) 또는 ./gradlew bootRun |  | Started ShopApplication |  |
+| 6 브라우저 확인 | localhost:8080/api/products |  | 상품 목록 JSON |  |
+
+!image.png
+
+#### WSL 켜기
+
+```powershell
+wsl
+```
+
+```powershell
+whoami
+```
+
+```powershell
+pwd
+```
+
+!image.png
+
+#### Docker 확인
+
+```powershell
+docker —version
+```
+
+```powershell
+systemctl is-active docker
+```
+
+```powershell
+docker ps
+```
+
+```powershell
+docker ps -a
+```
+
+!image.png
+
+!image.png
+
+#### DB 켜기
+
+```powershell
+docker start shop-mysql
+```
+
+!image.png
+
+---
