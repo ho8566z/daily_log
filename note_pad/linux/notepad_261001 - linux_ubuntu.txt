@@ -7,7 +7,32 @@
 
 !슬라이드37.PNG
 
+#### JPA Entity에서 DB 테이블의 기본 키(PK)를 자동으로 생성하도록 설정하는 코드
+
+```java
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+```
+
+| 코드 | 의미 |  |
+| --- | --- | --- |
+| @Id | 이 필드를 기본 키(PK) 로 지정 |  |
+| @GeneratedValue | 기본 키 값을 자동으로 생성하도록 설정 |  |
+| GenerationType.IDENTITY | DB의 AUTO_INCREMENT 기능을 사용해서 번호를 자동 생성 |  |
+| private Long id | 생성되는 기본 키 값을 저장하는 id 변수 |  |
+
 !슬라이드38.PNG
+
+#### Products 등록할 때, 재고를 0으로 등록한다면, SoldOut인지?
+
+- postman에서 재고가 0인 상품을 등록한다.
+
+!image.png
+
+- localhost:8080로 브라우저를 열었을 때, 재고가 0인 상품은 ‘품절’로 나타나는 모습
+
+!image.png
 
 !슬라이드39.PNG
 
@@ -31,13 +56,65 @@
 
 !슬라이드49.PNG
 
+#### 변경 감지 VS. 명시적 save()
+
+| 구분 | 차이점 |
+| --- | --- |
+| 명시적 save()(join, create) | Entity를 처음 저장 |
+| 변경 감지(update) | 이미 존재하는 Entity를 수정 |
+
 !슬라이드50.PNG
+
+#### PUT은 왜 항상 값을 전부 다시 보내야 하는지?
+
+- 리소스 전체를 새로운 상태로 교체하기 때문이다.
+- 현재의 Products 데이터
+
+```json
+{
+  "id": 6,
+  "name": "모션 데스크",
+  "price": 400000,
+  "stock": 0,
+  "description": "상하 틸트 기능",
+  "soldOut": true,
+  "createdAt": "2026-10-01T16:46:06.924736"
+}
+```
+
+- price를 PUT으로 수정한다면
+
+```
+http://
+
+PUT /api/products/6
+```
+
+```json
+{
+  "name": "모션 데스크",
+  "price": 450000,
+  "stock": 0,
+  "description": "상하 틸트 기능",
+  "soldOut": true
+}
+```
+
+- PUT으로 실행하는 “/api/products/6”은 id가 6번인 products의 전체 정보를 새로운 내용으로 교체한다.
+- 때문에 id, createdAt 같은 서버가 관리하는 값은 PUT 요청에서 보통 클라이언트가 보내지 않도록 설계한다.
 
 !슬라이드51.PNG
 
 !슬라이드52.PNG
 
 !슬라이드53.PNG
+
+#### 삭제의 종류
+
+| 구분 | 차이점 | 장점 | 단점 |
+| --- | --- | --- | --- |
+| 물리 삭제(Hard Delete) | DB에서 해당 데이터를 실제로 삭제한다. | 구조가 단순하고 불필요한 데이터가 남지 않는다. | 삭제한 데이터를 복구하기 어렵다. |
+| 논리 삭제(Soft Delete) | 데이터를 삭제하지 않고 deleted 같은 컬럼을 true로 변경하여 삭제된 것으로 처리한다. | 실수로 삭제해도 복구할 수 있고, 삭제 이력을 유지할 수 있다. | 조회할 때 삭제된 데이터를 제외하는 조건이 필요하고, 데이터가 계속 DB에 남는다. |
 
 !슬라이드54.PNG
 
@@ -47,13 +124,65 @@
 
 !슬라이드57.PNG
 
+#### postman에서 한글 키워드 ‘모션’을 검색해, ‘모션 데스크’가 출력된 모습(한글 검색 예시)
+
+!image.png
+
 !슬라이드58.PNG
 
+#### postman에서는 한글검색이 가능하지만, Terminal에서는 한글 인코딩(--data-urlencode)가 필요하다.
+
+- HTTP/1.1 400 Bad Request
+
+```sql
+curl -i “http://localhost:8080/api/products?keyword=모션”
+```
+
+- HTTP/1.1 200 OK
+
+```sql
+curl -G --data-urlencode “keyword=모션” http://localhost:8080/api/products
+```
+
 !슬라이드59.PNG
+
+#### LIKE 검색 이란?
+
+- 문자열이 특정 패턴과 일치하는 데이터를 찾는 SQL 검색 방법이다.
+- 특히 검색어가 포함되어 있는 데이터를 찾을 때 많이 사용한다.
+
+```sql
+SELECT *
+FROM products
+WHERE name LIKE '%데스크%';
+```
+
+- name에 "모션"라는 문자열이 포함된 products를 조회한다.
+
+#### %의 의미
+
+| 패턴 | 의미 | 예시 |
+| --- | --- | --- |
+| LIKE '모션' | 정확히 ‘모션’과 일치 | 모션 |
+| LIKE '모션%' | ‘모션’로 시작 | 모션 데스크, 모션 테이블 |
+| LIKE '%모션' | ‘모션’로 끝남 | 스마트 모션 |
+| LIKE '%모션%' | ‘모션’가 포함됨 | 모션 데스크, 스마트 모션 |
 
 !슬라이드60.PNG
 
 !슬라이드61.PNG
+
+#### Ubuntu에서 DB에 Data 등록, 수정, 삭제의 결과가 나타난다.
+
+```sql
+docker exec shop-mysql mysql -uroot -pshop1234 \
+```
+
+```sql
+> -e "SELECT id, name, price, stock, FROM products ORDER BY id;"
+```
+
+!image.png
 
 !슬라이드62.PNG
 
@@ -66,6 +195,12 @@
 !슬라이드66.PNG
 
 !슬라이드67.PNG
+
+# 여기부터 재시작
+
+# 여기부터 재시작
+
+# 여기부터 재시작
 
 !슬라이드68.PNG
 
