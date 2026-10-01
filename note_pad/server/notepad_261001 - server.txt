@@ -52,3 +52,9 @@ sudo systemctl restart vsftpd
 !image.png
 
 ---
+
+참고 : https://hoazzinews.tistory.com/1
+
+참고 : https://hoazzinews.tistory.com/3
+
+---
