@@ -1,3 +1,54 @@
 20261001
 
 
+## DHCP 란?
+
+## FTP 란?
+
+#### vsFTPd 란?
+
+#### vsFTPd 설치
+
+```powershell
+sudo apt-get install vsftpd
+```
+
+#### vsFTPd 상태 확인
+
+```powershell
+sudo systemctl status vsftpd
+```
+
+#### vsFTPd 설정 편집(주석)
+
+```powershell
+sudo nano /etc/vsftpd.conf
+```
+
+- anonymous_enable=NO
+    - 익명 사용자의 FTP 접속을 막아 보안을 강화한다.
+- write_enable=YES
+    - FTP 서버에서 파일 업로드 및 수정 등의 쓰기 작업을 허용한다.
+- xferlog_file=/var/log/vsftpd.log
+    - FTP 서버에서 발생한 파일 전송 로그를 /var/log/vsftpd.log에 기록한다.
+
+#### vsFTPd reStart
+
+```powershell
+sudo systemctl restart vsftpd
+```
+
+---
+
+## FileZilla 란?
+
+- 공식 웹사이트 : https://filezilla-project.org/
+- 처음 실행한 모습
+
+!image.png
+
+- 새 사이트를 만들고, 연결한 모습
+
+!image.png
+
+---
