@@ -59,3 +59,39 @@
 !image.png
 
 !image.png
+
+```powershell
+docker build --progress=plain -t shop-project-5th-app .
+```
+
+!image.png
+
+!image.png
+
+!image.png
+
+```powershell
+docker run --rm --entrypoint ls shop-project-5th-app -lh /app/app.jar
+```
+
+```powershell
+docker images shop-project-5th-app
+```
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+!image.png
+
+애
+
+!image.png
+
+!image.png
