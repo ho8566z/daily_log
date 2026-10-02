@@ -1,13 +1,24 @@
 20261002
 
 
-참고 : https://hoazzinews.tistory.com/4
+## 프로파일(Profile) 이란?
 
-참고 : https://hoazzinews.tistory.com/5
+- 프로파일은 실행 환경(로컬 / 개발 / 운영)마다 달라지는 설정값을 파일로 나눠서 관리하는 Spring Boot 기능이다.
+- DB 주소, 계정, 비밀번호처럼 환경마다 다른 값을 파일별로 분리해 두고, 실행할 때 어떤 파일을 쓸지만 고른다.
 
----
+#### 설정 파일 구성
 
-- 이미지 만들기
+!image.png
+
+| 파일 | 용도 |
+| --- | --- |
+| application.properties | 모든 환경 공통 설정 (앱 이름, 포트, Tomcat, Thymeleaf 등) |
+| application-local.properties | 로컬 PC 환경의 DB 정보 |
+| application-dev.properties | 개발 서버 환경의 DB 정보 |
+| application-prod.properties | 운영(배포) 서버 환경의 DB 정보 |
+- 파일 이름 규칙은 application-{프로파일명}.properties 이다.
+
+#### 프로파일 활성화
 
 !image.png
 
@@ -15,66 +26,145 @@
 
 !image.png
 
----
-
-- 5번 포스트 명령어 정리
-
----
-
-- 환경변수를 이용한 프로파일 구분
-
----
-
-- 차이점
-
-application-local.yml
-
-application-local.properties
-
----
-
----
-
----
-
-spring boot app을 docker-image로 만들어서 docker container로 배포 실행하는 환경이다. 이때 docker container를 실행할때 ubuntu 시스템 환경변수(.profile)의 SPRING_PROFILES_ACTIVE 값을 사용하는 방법은?
-
-### 1. Ubuntu `.profile`
+!image.png
 
 ```
-exportSPRING_PROFILES_ACTIVE=prod
+# application.properties
+spring.profiles.active=local
 ```
 
-적용:
+- spring.profiles.active : 공통 설정에 더해 어떤 프로파일 파일을 읽을지 정한다.
+- 환경을 바꿀 때는 이 값만 바꾸면 된다.
+
+#### 설정값 사용
+
+```java
+@Value("${server.name}")
+private String serverName;
+```
+
+- @Value : 설정 파일의 값을 필드에 주입한다.
+- 활성화된 프로파일 파일의 값이 공통 파일의 값보다 우선 적용된다.
+
+---
+
+#### 방법 1. 실행 명령어에 옵션으로 지정
+
+```powershell
+java -jar samplepjt-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
+```
+
+- 명령어 옵션이 application.properties의 값보다 우선하므로 dev 프로파일이 적용된다.
+- 한계 : application.properties의 값을 직접 고치는 방식은 배포할 때마다 값을 고쳐야 하고, 로컬 설정인 채로 배포하는 실수가 생길 수 있다.
+
+---
+
+## 방법 2. 환경변수로 프로파일 구분
+
+- 서버마다 환경변수를 한 번만 등록해 두면, 실행 명령어는 어느 서버에서나 똑같이 쓸 수 있다.
+- 개발자가 매번 옵션을 붙이지 않아도 서버가 알아서 알맞은 프로파일로 실행된다.
+
+#### 환경변수 등록
+
+```powershell
+cd
+sudo nano .profile
+```
+
+- 홈 디렉터리의 .profile 파일을 연다.
 
 ```
+SPRING_PROFILES_ACTIVE=dev
+```
+
+- 파일 맨 아래에 추가한다.
+- nano에서 저장 : Ctrl+X → Y → Enter
+
+#### 적용 후 실행
+
+```powershell
+source .profile
+cd samplepjt/build/libs/
+java -jar samplepjt-0.0.1-SNAPSHOT.jar
+```
+
+- source : 다시 로그인하지 않고 변경한 .profile을 바로 적용한다.
+
+#### 적용 우선순위
+
+| 순위 | 방식 |
+| --- | --- |
+| 1 (가장 높음) | 실행 명령어 옵션 |
+| 2 | 환경변수 |
+| 3 (가장 낮음) | application.properties |
+
+---
+
+## application-local.yml 과 .properties 의 차이점
+
+| 구분 | .properties | .yml |
+| --- | --- | --- |
+| 형식 | key=value 를 한 줄씩 쓴다. | 들여쓰기로 계층을 표현한다. |
+| 반복 | spring.datasource. 같은 앞부분을 매번 반복한다. | 공통 앞부분을 한 번만 쓴다. |
+| 주의 | 특별한 문법 주의점이 적다. | 들여쓰기와 콜론 뒤 공백이 틀리면 오류가 난다. |
+
+```
+# application-local.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/shop
+spring.datasource.username=root
+```
+
+```
+# application-local.yml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/shop
+    username: root
+```
+
+- 프로파일 이름 규칙(application-{프로파일명})은 두 형식 모두 같다.
+
+---
+
+## Docker 컨테이너에서 SPRING_PROFILES_ACTIVE 사용하기
+
+- 상황 : Spring Boot 앱을 Docker 이미지로 만들어 컨테이너로 배포하고 있다.
+- 목표 : Ubuntu 시스템 환경변수(.profile)에 등록한 SPRING_PROFILES_ACTIVE 값을 컨테이너가 그대로 쓰게 한다.
+
+#### 1. Ubuntu .profile 에 환경변수 등록
+
+```
+export SPRING_PROFILES_ACTIVE=prod
+```
+
+- ~/.profile 맨 아래에 추가한다. (export 를 붙여야 하위 프로세스에도 전달된다.)
+
+```powershell
 source ~/.profile
+echo $SPRING_PROFILES_ACTIVE
 ```
 
-확인:
-
-```
-echo$SPRING_PROFILES_ACTIVE
-```
-
-결과:
-
-```
-prod
-```
+- source : 변경한 .profile 을 바로 적용한다.
+- echo : 값이 제대로 들어있는지 확인한다. 결과로 prod 가 출력되면 정상이다.
 
 ---
 
-### 2. Docker 컨테이너 실행 시 전달
+#### 2. docker run 의 -e 옵션으로 전달
 
-가장 간단한 방법은 `-e` 옵션입니다.
+- 컨테이너는 Ubuntu 의 환경변수를 자동으로 물려받지 않는다. 그래서 -e 옵션으로 직접 넘겨줘야 한다.
 
-```
-docker run-d \-eSPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE \--name shop-app \
+```powershell
+docker run -d \
+  -e SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE \
+  --name shop-app \
   shop-app:latest
 ```
 
-흐름은 다음과 같습니다.
+- -d : 백그라운드로 실행한다.
+- -e : 컨테이너 안에 환경변수를 하나 만들어 준다.
+- --name : 컨테이너 이름을 shop-app 으로 지정한다.
+
+#### 전달 흐름
 
 ```
 Ubuntu
@@ -96,92 +186,123 @@ Spring Boot
 application-prod.yml
 ```
 
-즉,
+- -e SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE 의 의미 : Ubuntu 의 SPRING_PROFILES_ACTIVE 값을 컨테이너의 SPRING_PROFILES_ACTIVE 환경변수로 넘겨준다.
 
-```
--eSPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE
-```
+---
 
-의 의미는
+#### 3. 컨테이너 안에서 확인
 
-> **Ubuntu의 `SPRING_PROFILES_ACTIVE` 값을 Docker 컨테이너의 `SPRING_PROFILES_ACTIVE` 환경변수로 전달한다.**
-> 
-
-입니다.
-
-### 3. 컨테이너 내부에서 확인
-
-```
+```powershell
 docker exec shop-app printenv SPRING_PROFILES_ACTIVE
 ```
 
-결과:
-
-```
-prod
-```
-
-Spring Boot에서는 이 값을 자동으로 인식해서:
-
-```
-application.yml
-application-prod.yml
-```
-
-중 `prod` 프로파일을 활성화합니다.
+- docker exec : 실행 중인 컨테이너 안에서 명령어를 실행한다.
+- printenv : 환경변수 값을 출력한다. 결과로 prod 가 나오면 전달이 된 것이다.
+- Spring Boot 는 이 값을 읽어서 application.yml 에 더해 application-prod.yml 을 적용한다.
 
 ---
 
-### 더 간단하게도 가능
+#### 더 간단한 방법 (추천)
 
-Docker에서는 `-e`에 변수명만 적으면 호스트의 같은 이름의 환경변수를 전달할 수 있습니다.
-
-```
-docker run-d \-e SPRING_PROFILES_ACTIVE \--name shop-app \
+```powershell
+docker run -d \
+  -e SPRING_PROFILES_ACTIVE \
+  --name shop-app \
   shop-app:latest
 ```
 
-따라서 **추천 형태는 이것**입니다.
+- -e 뒤에 변수 이름만 쓰면, 현재 셸의 같은 이름 환경변수 값을 그대로 전달한다.
+- 주의 : 현재 셸에 그 변수가 실제로 있어야 한다. echo $SPRING_PROFILES_ACTIVE 로 prod 가 나오는지 먼저 확인한다.
+
+---
+
+## Nginx 란?
+
+- Nginx는 웹 서버이자 리버스 프록시로 많이 쓰는 프로그램이다.
+- 이미 Docker + Spring Boot 로 운영 중인 서비스 앞에 Nginx 를 붙여서 Nginx + Docker + Spring Boot 구조로 바꾼다.
+
+#### Nginx 를 앞단에 두면 좋은 점
+
+- 웹 서버(Nginx)와 WAS(Spring Boot)의 역할이 나뉜다.
+- 정적 파일을 Nginx 가 빠르게 처리한다.
+- SSL/HTTPS 를 붙이기 쉽다.
+- 요청 라우팅과 로드 밸런싱이 가능하다.
+- Spring Boot 는 비즈니스 로직에만 집중한다.
 
 ```
-docker run-d \-e SPRING_PROFILES_ACTIVE \--name shop-app \
-  shop-app:latest
+브라우저 → Nginx(80) → Spring Boot 컨테이너(8090)
 ```
 
-단, 현재 셸에서 해당 변수가 실제로 존재해야 합니다.
+---
+
+#### 1. Nginx 설치
+
+```powershell
+sudo apt update
+sudo apt install nginx -y
+nginx -v
+```
+
+- -y : 설치 중 묻는 질문에 모두 yes 로 답한다.
+- nginx -v : 버전이 나오면 설치가 된 것이다.
+
+---
+
+#### 2. 리버스 프록시 설정
+
+```powershell
+sudo nano /etc/nginx/sites-available/default
+```
+
+- Nginx 기본 설정 파일을 열고 아래 내용으로 바꾼다.
 
 ```
-echo$SPRING_PROFILES_ACTIVE
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://localhost:8090;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
 ```
 
-→ `prod`
+| 설정 항목 | 의미 |
+| --- | --- |
+| listen 80 | 80번 포트(HTTP)로 들어오는 요청을 받는다. |
+| proxy_pass http://localhost:8090 | 받은 요청을 Docker 로 띄운 Spring Boot(8090)에 넘긴다. |
+| proxy_set_header | 원래 요청의 Host, 클라이언트 IP 정보를 Spring Boot 에 그대로 전달한다. |
 
 ---
 
----
+#### 3. 적용과 재시작
+
+```powershell
+docker ps
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+- docker ps : Spring Boot 컨테이너가 실행 중인지, 8090 포트가 열려 있는지 먼저 확인한다.
+- nginx -t : 설정 파일에 문법 오류가 없는지 검사한다.
+- systemctl restart : 설정을 적용하려면 재시작해야 한다.
 
 ---
 
-참고 : https://hoazzinews.tistory.com/183
+#### 4. 동작 확인
+
+- 브라우저에서 서버 IP 로 접속한다. (포트 번호 없이 http://서버IP)
+- 포트 번호 없이 Spring Boot 화면이 나오면 Nginx 가 정상적으로 요청을 넘겨주고 있는 것이다.
+- 다음 단계 : HTTPS 적용(Let's Encrypt + certbot), Nginx 도 Docker 로 실행, Docker Compose 로 통합 관리
 
 ---
 
-기존에 **Docker + Spring Boot**로 운영 중인 서비스를 **Nginx + Docker + Spring Boot** 구조로 변경해보는 가이드입니다.
+## ping 이란?
 
-Nginx를 앞단에 두면, 웹 서버와 WAS 역할을 분리하여 다음과 같은 이점을 얻을 수 있습니다:
-
-- 정적 파일 처리 최적화
-- SSL/HTTPS 적용 용이
-- 요청 라우팅 및 로드밸런싱 가능
-- Spring Boot는 비즈니스 로직 처리에 집중
-
----
-
-Ngnix 설치 등의 명령어 정리
-
-Ngnix 동작 확인
-
----
+- 특정 IP 주소나 컴퓨터에 네트워크 연결이 가능한지 확인하는 명령어이다.
 
 !image.png
 
@@ -189,6 +310,10 @@ Ngnix 동작 확인
 ping 192.168.56.102
 ```
 
+- 192.168.x.x 대역은 사설 IP(Private IP)이다qvqi.
+
 ---
+
+#### VirtualBox에서 네트워크를 ‘어댑터에 브리지’의 연결방법으로 변경한 모습
 
 !image.png
