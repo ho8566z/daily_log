@@ -196,11 +196,15 @@ docker exec shop-mysql mysql -uroot -pshop1234 \
 
 !슬라이드67.PNG
 
-# 여기부터 재시작
+#### REST 규칙
 
-# 여기부터 재시작
-
-# 여기부터 재시작
+| 규칙 | 예시 |
+| --- | --- |
+| 명사로 경로를 짓는다. | /api/products (동사 아님) |
+| 동작은 http 메서드로 | GET, POST, PUT, DELETE로 구분 |
+| 단건은 /{id} | /api/products/6 |
+| 성공은 200번대, 실패는 400번대 | 200, 201, 204 그리고 400 |
+| 컬렉션은 배열, 단건은 객체 | […] 대 {…} |
 
 !슬라이드68.PNG
 
@@ -208,16 +212,114 @@ docker exec shop-mysql mysql -uroot -pshop1234 \
 
 !슬라이드70.PNG
 
+#### localhost 란?
+
+| 접속 위치 | localhost가 가리키는 곳 | 3306 뒤에 있는 것 | 실제 의미 |
+| --- | --- | --- | --- |
+| Windows 프로그램
+(DataGrip, Chrome, Postman) | Windows 자기 자신 | Windows에 설치된 MySQL | localhost:3306 → Windows의 3306 포트 |
+| Ubuntu 내부
+(터미널, IntelliJ가 실행한 앱) | Ubuntu 자기 자신 | Docker가 열어 둔 포트 → shop-mysql 컨테이너 | localhost:3306 → Ubuntu의 3306 포트 → shop-mysql |
+| 컨테이너 내부
+(앱 컨테이너) | 해당 컨테이너 자기 자신 | 같은 컨테이너가 아니므로 mysql 같은 서비스/컨테이너 이름 사용 | mysql:3306 → MySQL 컨테이너 |
+
 !슬라이드71.PNG
+
+#### 포트 연결 -p가 하는 일 — 문을 이어 준다.
+
+```docker
+DatGrip(Window 프로그램에서 출발) → Ubuntu의 주소(wsl : hostname -I / 예시 : 172.21.X.X) → Ubuntu의 3306문(docker run의 -p 3306:3306) → shop-mysql(컨테이너 안 MySQL : 3306)
+```
 
 !슬라이드72.PNG
 
+#### 나의 Ubuntu 주소 찾는법
+
+| 명령 입력(Terminal or Ubuntu) | 설명 |
+| --- | --- |
+| wsl hostname -I | 내 PC의 Ubuntu가 받은 주소를 직접 확인한다. |
+
 !슬라이드73.PNG
+
+#### DataGrip의 접속값 — Host 칸에 무엇을 넣는지?
+
+| 구분 | Host | Port | User | Password | Database | 비고 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Windows에 MySQL이 설치된 경우 | localhost | 3306 | root | shop1234 | shop | Windows의 MySQL에 접속 |
+| Windows에 MySQL이 없고 WSL의 Docker MySQL에 접속하는 경우 | WSL IP | 3306 | root | shop1234 | shop | wsl hostname -I로 확인 |
+| WSL IP 확인 명령 | wsl hostname -I | - | - | - | - | 예: 172.21.112.234 172.17.0.1 |
+| 실제 Host 입력값 | 172.21.112.234 | 3306 | root | shop1234 | shop | 첫 번째 IP만 입력 |
 
 !슬라이드74.PNG
 
+#### DataGrip이 붙지 않을 때 — 확인 순서
+
+| 확인 순서 | 어디서, 무엇을 | 정상 출력 예시 |
+| --- | --- | --- |
+| 1. DB가 떠 있는지? | Ubuntu에서 docker ps | shop-mysql이  Up되었다. |
+| 2. Host가 맞는지? | PowerShell, wsl에서 hostname -I | 첫 주소가 Host와 같다. |
+| 3. 윈도우가 3306을 잡고 있는지? | PowerShell Get-NetTCPConnection -LocalPort 3306 -State Listen | 아무것도 나오지 않으면 정상(나오면 localhost 대신 IP) |
+| 4. 계정 - DB 이용 | User root, 비밀번호 shop1234, Database shop | Access denied면 비밀번호 부터 |
+
 !슬라이드75.PNG
 
-utf-8 이란?
+## utf-8(Unicode Transformation Format - 8-bit) 이란?
 
-hostname -I 란?
+- 문자(한글, 영어, 숫자, 특수문자 등)를 컴퓨터가 저장하고 전송할 수 있는 바이트 형태로 변환하는 문자 인코딩 방식이다.
+
+```
+"ABC"
+    ↓ UTF-8 인코딩
+41 42 43
+```
+
+```
+"가"
+    ↓ UTF-8 인코딩
+EA B0 80
+```
+
+#### 왜 UTF-8을 사용하는지?
+
+- 한글이나 영어처럼 다양한 문자를 하나의 인코딩 방식으로 처리할 수 있기 때문에 개발할 때 다음처럼 자주 볼 수 있다.
+
+```
+Content-Type: application/json; charset=UTF-8
+```
+
+- JSON 데이터를 UTF-8 방식으로 인코딩한다는 의미이다.
+
+---
+
+## hostname -I 란?
+
+- 현재 Linux/Ubuntu 컴퓨터가 가지고 있는 IP 주소를 확인하는 명령어이다.
+
+```
+hostname -I
+```
+
+```
+172.21.112.234 172.17.0.1
+```
+
+| hostname | 컴퓨터의 호스트 이름과 관련된 정보를 확인하는 명령이다. |  |
+| --- | --- | --- |
+| -I | 컴퓨터의 IP 주소(들)를 출력한다. |  |
+
+#### hostname -i와 차이
+
+- 대문자 I와 소문자 i는 다르다.
+- 컴퓨터에 할당된 IP 주소들을 확인한다.
+
+```
+hostname-I
+```
+
+- 호스트 이름을 기준으로 IP 주소를 확인한다.
+
+```
+hostname-i
+```
+
+---
