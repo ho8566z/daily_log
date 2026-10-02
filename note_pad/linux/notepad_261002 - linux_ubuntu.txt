@@ -1,6 +1,3 @@
-202601002
-
-
 <aside>
 📃
 
@@ -48,21 +45,92 @@ docker-compose up-d--build
 
 !image.png
 
-## 여기부터 재시작
+### Compose의 핵심 요소
+
+| 무엇을 사용하는지? | 설정 | 의미 |  |
+| --- | --- | --- | --- |
+| 무엇으로 만드는지? | image: / build: | DB는 mysql:8.0 이미지를 그대로 사용하고, 앱은 현재 폴더의 Dockerfile을 이용해 이미지를 직접 빌드한다. |  |
+| 어떤 문을 여는지? | ports: | 컨테이너의 포트를 외부에 연결한다. 예: 3306:3306 |  |
+| 어떻게 설정하는지? | environment: | DB 비밀번호, 데이터베이스 이름, 앱이 사용할 DB 주소 등의 환경변수를 설정한다. |  |
+| 실행 순서를 어떻게 정하는지? | depends_on: | 다른 서비스가 먼저 시작되도록 서비스 간 의존 관계를 설정한다. |  |
+| 서비스가 정상인지 어떻게 확인하는지? | healthcheck: | 컨테이너 안의 서비스가 실제로 정상적으로 동작하는지 확인한다. |  |
+
+!image.png
+
+#### YAML 읽는 법(들여쓰기 = 구조)
+
+| 규칙 순서 | 설명 |  |  |
+| --- | --- | --- | --- |
+| 폴더 구조 | 공백 2칸 들여쓰기가 ‘안에 포함됨’을 의미한다.(주의 : Tab키는 시용 금지) |  |  |
+| 이름표 | ‘이름 : 값’ 형태이다.(콜론 뒤에 반드시 공백 1칸 필수) |  |  |
+| 목록 | 여러 개를 나열할 때는 줄 앞에 ‘- ’(하이픈+공백)을 붙인다. |  |  |
+
+!image.png
+
+#### docker run 옵션 → compose 항목
+
+| docker 옵션? | compose 항목 |
+| --- | --- |
+| “mysql:8.0” | image: mysql:8.0 |
+| --name shop-mysql | mysql: (서비스 이름) |
+| -e MYSQL_DATABASE=shop | enviroment:MYSQL_DATABASE: shop |
+| -p 3306:3306 | ports: - ’3306:3306’ |
+| “-d” (백그라운드) | “docker-compose up -d”로 붙는다. |
 
 !image.png
 
 !image.png
 
-!image.png
+#### docker compose에서 이름표 란?
+
+- 내부 통신망이다.
+- Docker Compose는 실행 시 자기들만의 전용 네트워크를 만든다. 이 내부에서는 IP주소를 몰라도, 파일에 적을 ‘서비스 이름(mysql)’이 곧 주소가 된다.
 
 !image.png
 
-!image.png
+## localhost 란?
+
+- localhost는 DB를 의미하는 것이 아니라, 현재 프로그램이 실행되고 있는 자기 자신을 의미한다.
+
+#### 핵심 원리
+
+- 컨테이너 내부에서 localhost를 호출하면 → 그 컨테이너 자신을 가리킨다.
+- 따라서 앱 컨테이너에서 DB 컨테이너로 접속할 때 localhost를 사용하면 안 된다.
+- 같은 Docker Compose 네트워크에 있는 DB 컨테이너는 Compose의 서비스 이름(mysql)으로 접근한다.
+
+#### IntelliJ에서 실행할 때와 차이
+
+| 앱 실행 위치 | DB 주소 |
+| --- | --- |
+| IntelliJ → Windows에서 직접 실행 | localhost |
+| Docker 컨테이너에서 실행 | mysql |
 
 !image.png
 
+#### Up(떴다) VS. Ready(준비됐다)
+
+| 구분 | 의미 |  | 예시 |  |
+| --- | --- | --- | --- | --- |
+| **Up** | 컨테이너가 실행 중이다. |  | MySQL 프로세스가 컨테이너 안에서 실행되고 있다. |  |
+| **Ready** | 애플리케이션이 실제로 요청을 처리할 준비가 됐다. |  | MySQL이 초기화까지 끝나서 접속을 받을 수 있다. |  |
+
 !image.png
+
+### healthcheck — 측정기 VS. depends_on — 출발 신호
+
+| 항목 | `healthcheck` — 측정기 | `depends_on` — 출발 신호 |
+| --- | --- | --- |
+| **역할** | 서비스가 실제로 정상 작동하는지 확인 | 서비스 간 실행 순서와 의존 관계를 설정 |
+| **비유** | 측정기 | 출발 신호 |
+| **질문** | `"DB야, 지금 사용할 수 있어?"` | `"DB가 준비됐으니 이제 앱을 시작해!"` |
+| **결과** | `healthy` → 정상적으로 사용할 준비가 됨 | 조건이 충족되면 의존하는 서비스가 시작됨 |
+| **핵심** | **Up 상태가 아니라 Ready 상태인지 확인** | **앱이 DB보다 너무 일찍 시작하지 않도록 함** |
+
+# 여기부터 재시작
+
+# 여기부터 재시작
+
+# 여기부터 재시작
 
 !image.png
 
@@ -102,6 +170,10 @@ docker build --progress=plain -t shop-project-5th-app .
 
 !image.png
 
+#### docker build --progress=plain -t shop-project-5th-app .
+
+!image.png
+
 !image.png
 
 !image.png
@@ -134,6 +206,10 @@ docker images shop-project-5th-app
 
 !image.png
 
+#### docker network ls
+
+!image.png
+
 !image.png
 
 ## .dockerignore 란?
@@ -149,6 +225,10 @@ docker images shop-project-5th-app
 !image.png
 
 !image.png
+
+!image.png
+
+#### docker-compose up -d --build
 
 !image.png
 
