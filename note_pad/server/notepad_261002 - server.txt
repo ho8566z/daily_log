@@ -32,3 +32,151 @@ application-local.yml
 application-local.properties
 
 ---
+
+---
+
+---
+
+spring boot app을 docker-image로 만들어서 docker container로 배포 실행하는 환경이다. 이때 docker container를 실행할때 ubuntu 시스템 환경변수(.profile)의 SPRING_PROFILES_ACTIVE 값을 사용하는 방법은?
+
+### 1. Ubuntu `.profile`
+
+```
+exportSPRING_PROFILES_ACTIVE=prod
+```
+
+적용:
+
+```
+source ~/.profile
+```
+
+확인:
+
+```
+echo$SPRING_PROFILES_ACTIVE
+```
+
+결과:
+
+```
+prod
+```
+
+---
+
+### 2. Docker 컨테이너 실행 시 전달
+
+가장 간단한 방법은 `-e` 옵션입니다.
+
+```
+docker run-d \-eSPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE \--name shop-app \
+  shop-app:latest
+```
+
+흐름은 다음과 같습니다.
+
+```
+Ubuntu
+  │
+  │ ~/.profile
+  │ SPRING_PROFILES_ACTIVE=prod
+  ▼
+Ubuntu 환경변수
+  │
+  │ -e SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE
+  ▼
+Docker Container
+  │
+  │ SPRING_PROFILES_ACTIVE=prod
+  ▼
+Spring Boot
+  │
+  ▼
+application-prod.yml
+```
+
+즉,
+
+```
+-eSPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE
+```
+
+의 의미는
+
+> **Ubuntu의 `SPRING_PROFILES_ACTIVE` 값을 Docker 컨테이너의 `SPRING_PROFILES_ACTIVE` 환경변수로 전달한다.**
+> 
+
+입니다.
+
+### 3. 컨테이너 내부에서 확인
+
+```
+docker exec shop-app printenv SPRING_PROFILES_ACTIVE
+```
+
+결과:
+
+```
+prod
+```
+
+Spring Boot에서는 이 값을 자동으로 인식해서:
+
+```
+application.yml
+application-prod.yml
+```
+
+중 `prod` 프로파일을 활성화합니다.
+
+---
+
+### 더 간단하게도 가능
+
+Docker에서는 `-e`에 변수명만 적으면 호스트의 같은 이름의 환경변수를 전달할 수 있습니다.
+
+```
+docker run-d \-e SPRING_PROFILES_ACTIVE \--name shop-app \
+  shop-app:latest
+```
+
+따라서 **추천 형태는 이것**입니다.
+
+```
+docker run-d \-e SPRING_PROFILES_ACTIVE \--name shop-app \
+  shop-app:latest
+```
+
+단, 현재 셸에서 해당 변수가 실제로 존재해야 합니다.
+
+```
+echo$SPRING_PROFILES_ACTIVE
+```
+
+→ `prod`
+
+---
+
+---
+
+---
+
+참고 : https://hoazzinews.tistory.com/183
+
+---
+
+기존에 **Docker + Spring Boot**로 운영 중인 서비스를 **Nginx + Docker + Spring Boot** 구조로 변경해보는 가이드입니다.
+
+Nginx를 앞단에 두면, 웹 서버와 WAS 역할을 분리하여 다음과 같은 이점을 얻을 수 있습니다:
+
+- 정적 파일 처리 최적화
+- SSL/HTTPS 적용 용이
+- 요청 라우팅 및 로드밸런싱 가능
+- Spring Boot는 비즈니스 로직 처리에 집중
+
+---
+
+Ngnix 설치 등의 명령어 정리
+
+Ngnix 동작 확인
