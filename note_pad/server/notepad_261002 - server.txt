@@ -180,3 +180,15 @@ Nginx를 앞단에 두면, 웹 서버와 WAS 역할을 분리하여 다음과 �
 Ngnix 설치 등의 명령어 정리
 
 Ngnix 동작 확인
+
+---
+
+!image.png
+
+```powershell
+ping 192.168.56.102
+```
+
+---
+
+!image.png
