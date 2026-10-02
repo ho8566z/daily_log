@@ -7,8 +7,28 @@
 
 ---
 
-차이점
+- 이미지 만들기
+
+!image.png
+
+!image.png
+
+!image.png
+
+---
+
+- 5번 포스트 명령어 정리
+
+---
+
+- 환경변수를 이용한 프로파일 구분
+
+---
+
+- 차이점
 
 application-local.yml
 
 application-local.properties
+
+---
