@@ -1,0 +1,9 @@
+powershell에서 flask 돌리기
+
+cd C:\lyh\plate-prototype\flask-ai
+
+.\.venv\Scripts\Activate.ps1
+
+pip install -r requirements.txt
+
+python app.py
