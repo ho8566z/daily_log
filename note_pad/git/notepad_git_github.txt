@@ -14,7 +14,7 @@ git config --global user.name "ho8566z"
 git config --list
 #email, name을 비롯한 모든 정보 확인
 
-git config --list
+git config --global --list
 #email, name만 확인
 
 ------------------------------------------------------------------------
