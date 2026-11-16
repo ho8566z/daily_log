@@ -1,0 +1,28 @@
+Figma 시안 교체용 사진 출처 (2026-11-16 다운로드)
+
+unsplash-GE5T26wd3QM.jpg
+  Aerial view of a bustling city street at night - Kevin Bonilla (@kevinography)
+  https://unsplash.com/photos/aerial-view-of-a-bustling-city-street-at-night-GE5T26wd3QM
+  License: Unsplash License
+
+unsplash-rFYAxgF43vw.jpg
+  Busy nighttime cityscape with a large pedestrian crossing - Sarmat Batagov
+  https://unsplash.com/photos/busy-nighttime-cityscape-with-a-large-pedestrian-crossing-rFYAxgF43vw
+  License: Unsplash License
+
+unsplash-9TwYpXHX978.jpg
+  A city street at night with a lot of people - Filipe Freitas (@filipephotographs)
+  https://unsplash.com/photos/a-city-street-at-night-with-a-lot-of-people-9TwYpXHX978
+  License: Unsplash License
+
+pexels-2716060.jpg
+  Aerial View of People Walking on Street During Nighttime - Khairi Harry
+  https://www.pexels.com/photo/aerial-view-of-people-walking-on-street-during-nighttime-2716060/
+  License: Pexels License
+
+참고: 사용 전 각 페이지에서 라이선스 조건을 한 번 더 확인할 것.
+
+osm-daejeon-yuseong.png
+  OpenStreetMap 타일(z15, 대전 유성구 일대)을 이어 붙임
+  https://www.openstreetmap.org/copyright
+  License: ODbL, 표기: © OpenStreetMap contributors (이미지 하단에 포함)
