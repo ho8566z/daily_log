@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="ko" data-type="service">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>이윤호 — Java · Spring 백엔드 개발자</title>
+<meta name="description" content="테스트를 먼저 쓰고 문제는 원인까지 기록하는 Java · Spring 백엔드 신입 개발자 이윤호의 포트폴리오. 프로젝트 5개, 담당 기능 27개 통과, 팀 자동 테스트 2,248건.">
+<meta name="page-type" content="service">
+<meta name="site-kind" content="other">
+<meta name="theme-color" content="#f4f1ea">
+<meta property="og:title" content="이윤호 — Java · Spring 백엔드 개발자">
+<meta property="og:description" content="실패하는 상황까지 확인하는 백엔드 신입 개발자의 프로젝트와 기록.">
+<meta property="og:image" content="https://ho8566z.github.io/yunho-portfolio-2611/images/me-cutout.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314120f'/%3E%3Cpath d='M9 22V10h5.5a3.5 3.5 0 0 1 0 7H9' fill='none' stroke='%23f4f1ea' stroke-width='2.6' stroke-linejoin='round'/%3E%3Ccircle cx='23' cy='22' r='2.4' fill='%23e4572e'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f4f1ea; --surface:#fbfaf6; --ink:#14120f; --muted:#5f5a50; --line:#dcd6c8;
+  --accent:#e4572e; --accent-ink:#b8401d; --dark:#14120f; --on-dark:#f4f1ea;
+  --r:14px; --wrap:1200px; --gut:clamp(20px,4vw,48px);
+  --sans:"Pretendard Variable",Pretendard,system-ui,-apple-system,"Segoe UI","Malgun Gothic",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere}
+body.lock{overflow:hidden}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3,h4,h5,p,ul,dl,dd{margin:0}
+ul{padding:0;list-style:none}
+.wrap{max-width:calc(var(--wrap) + var(--gut)*2);margin:0 auto;padding:0 var(--gut)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+.skip{position:absolute;left:12px;top:-60px;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;z-index:100;text-decoration:none}
+.skip:focus{top:12px}
+
+/* buttons: one pair */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 20px;border:1.5px solid var(--ink);border-radius:999px;background:transparent;color:var(--ink);font:600 15px/1 var(--sans);text-decoration:none;cursor:pointer;transition:transform .18s var(--ease),background .18s,color .18s,box-shadow .18s}
+.btn:hover{background:var(--ink);color:var(--bg);transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.97)}
+.btn.primary{background:var(--ink);color:var(--bg)}
+.btn.primary:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.sm{min-height:40px;padding:0 16px;font-size:14px}
+.ulink{position:relative;text-decoration:none;font-weight:600}
+.ulink::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease)}
+.ulink:hover::after{transform:scaleX(1)}
+
+/* header */
+.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:68px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;text-decoration:none;letter-spacing:-.01em}
+.logo i{width:12px;height:12px;border-radius:50%;background:var(--accent)}
+#menu{display:flex;gap:6px;margin-left:auto}
+#menu a{display:block;padding:10px 14px;border-radius:999px;font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;transition:color .15s,background .15s}
+#menu a:hover{color:var(--ink);background:rgba(20,18,15,.06)}
+#menu a.on{color:var(--ink);font-weight:700}
+
+/* hero */
+.hero{min-height:calc(100svh - 68px);display:flex;align-items:center;padding:clamp(28px,5vh,56px) 0 0}
+.hero .wrap{width:100%}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(24px,5vw,72px);align-items:end}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font:500 14px/1 var(--mono);letter-spacing:.02em;color:var(--muted);margin-bottom:22px}
+.eyebrow b{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+h1.big{font-size:clamp(40px,6.4vw,92px);line-height:1.04;letter-spacing:-.035em;font-weight:800}
+h1.big .st{color:var(--accent)}
+.lead{margin-top:26px;max-width:34em;font-size:clamp(17px,1.5vw,20px);color:var(--muted)}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.portrait{position:relative;align-self:end;justify-self:center;width:100%;max-width:440px}
+.portrait::before{content:"";position:absolute;left:6%;right:6%;bottom:0;height:78%;background:var(--accent);border-radius:var(--r) var(--r) 0 0}
+.portrait img{position:relative;width:100%;height:auto;filter:drop-shadow(0 18px 24px rgba(20,18,15,.18))}
+.portrait .tags{position:absolute;left:-4%;bottom:10%;display:grid;gap:8px}
+.portrait .tags span{background:var(--surface);border:1.5px solid var(--ink);border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:600;white-space:nowrap;box-shadow:3px 3px 0 var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:clamp(28px,5vh,56px);border-top:1.5px solid var(--ink)}
+.stat{padding:20px 20px 22px 0}
+.stat+.stat{padding-left:22px;border-left:1px solid var(--line)}
+.stat b{display:block;font-size:clamp(28px,3.4vw,44px);line-height:1.1;font-weight:800;letter-spacing:-.03em}
+.stat span{display:block;margin-top:6px;font-size:14px;color:var(--muted);line-height:1.45}
+
+/* sections */
+section.sec{padding:clamp(72px,11vh,120px) 0}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,48px)}
+.sec-head small{display:block;font:500 13px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:14px}
+.sec-head h2{font-size:clamp(28px,3.6vw,48px);line-height:1.15;letter-spacing:-.03em;font-weight:800;max-width:20em}
+.sec-sub{margin-top:12px;color:var(--muted);font-size:16px}
+
+/* about */
+.about{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(24px,5vw,64px)}
+.pr{display:grid;grid-template-columns:56px 1fr;gap:18px;padding:26px 0;border-top:1px solid var(--line)}
+.pr:first-child{border-top:1.5px solid var(--ink)}
+.pr i{font:500 15px/1.9 var(--mono);color:var(--accent-ink);font-style:normal}
+.pr h3{font-size:22px;letter-spacing:-.02em;font-weight:700;margin-bottom:6px}
+.pr p{color:var(--muted)}
+.facts{display:grid;grid-template-columns:76px 1fr;gap:0 18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:8px 26px}
+.facts dt,.facts dd{padding:15px 0;border-top:1px solid var(--line)}
+.facts dt:first-of-type,.facts dd:first-of-type{border-top:0}
+.facts dt{font:500 13px/1.9 var(--mono);color:var(--muted)}
+.facts dd{font-size:15.5px;line-height:1.55}
+.facts small{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+
+/* projects */
+.filters{display:flex;gap:8px}
+.chip-btn{min-height:42px;padding:0 18px;border:1.5px solid var(--line);border-radius:999px;background:transparent;font:600 14.5px/1 var(--sans);color:var(--muted);cursor:pointer;transition:all .18s var(--ease)}
+.chip-btn:hover{border-color:var(--ink);color:var(--ink);transform:translateY(-2px)}
+.chip-btn[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.plist{display:grid;gap:22px}
+.proj{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:transform .22s var(--ease),box-shadow .22s,border-color .22s}
+.proj:hover{transform:translateY(-2px);border-color:var(--ink);box-shadow:0 14px 30px -18px rgba(20,18,15,.35)}
+.proj[hidden]{display:none}
+.shot{position:relative;display:block;background:#fff;border-right:1px solid var(--line);overflow:hidden;min-height:300px}
+.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:18px;transition:transform .5s var(--ease)}
+.proj:hover .shot img{transform:scale(1.025)}
+.shot .tag{position:absolute;left:14px;top:14px;z-index:1;background:var(--ink);color:var(--bg);font:500 12px/1 var(--mono);letter-spacing:.06em;padding:7px 11px;border-radius:999px}
+.shot .no{position:absolute;right:16px;bottom:10px;z-index:1;font:500 13px/1 var(--mono);color:var(--muted)}
+.pbody{padding:clamp(22px,2.6vw,34px);display:flex;flex-direction:column;gap:14px}
+.pbody h3{font-size:clamp(24px,2.4vw,32px);letter-spacing:-.025em;font-weight:800}
+.pbody .one{color:var(--ink);font-size:16.5px}
+.pbody .meta{font:400 13px/1.6 var(--mono);color:var(--muted)}
+.pbody .meta b{color:var(--accent-ink);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chips span{padding:5px 11px;border:1px solid var(--line);border-radius:999px;font-size:13px;color:var(--muted);background:var(--bg)}
+.metrics{display:flex;flex-wrap:wrap;gap:8px 28px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.metrics b{display:block;font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+.metrics span{font-size:12.5px;color:var(--muted)}
+.proj-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
+
+/* skills */
+.skills{display:grid;grid-template-columns:repeat(2,1fr);gap:0 clamp(24px,5vw,64px)}
+.sk{padding:26px 0;border-top:1.5px solid var(--ink)}
+.sk h3{font:500 13px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:18px}
+.tools{display:flex;flex-wrap:wrap;gap:10px}
+.tool{display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 15px 0 11px;background:var(--surface);border:1px solid var(--line);border-radius:999px;font-size:15px;font-weight:500;transition:transform .18s var(--ease),border-color .18s}
+.tool:hover{transform:translateY(-2px);border-color:var(--ink)}
+.tool img{width:22px;height:22px}
+.tool.noicon{padding-left:15px}
+.note{margin-top:26px;padding:18px 22px;border-left:4px solid var(--accent);background:var(--surface);border-radius:0 var(--r) var(--r) 0;font-size:15.5px;color:var(--muted)}
+
+/* contact */
+.contact{background:var(--dark);color:var(--on-dark);border-radius:calc(var(--r)*1.6);padding:clamp(32px,6vw,72px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,64px);align-items:end}
+.contact h2{font-size:clamp(30px,4.4vw,58px);line-height:1.1;letter-spacing:-.035em;font-weight:800}
+.contact p{margin-top:16px;color:#b9b3a5;max-width:26em}
+.contact .links{display:grid}
+.contact .links a{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;border-top:1px solid #3a362e;text-decoration:none;font-weight:700;font-size:19px;transition:padding .22s var(--ease),color .18s}
+.contact .links a:last-child{border-bottom:1px solid #3a362e}
+.contact .links a span{font:400 13.5px/1.3 var(--mono);color:#a29c8e;text-align:right}
+.contact .links a:hover{padding-left:12px;color:var(--accent)}
+footer{padding:36px 0 44px;color:var(--muted);font-size:14px}
+
+/* dialog */
+dialog{width:min(920px,calc(100vw - 24px));max-height:calc(100svh - 24px);padding:0;border:0;border-radius:var(--r);background:var(--bg);color:var(--ink);box-shadow:0 30px 80px rgba(20,18,15,.45);overflow:hidden}
+dialog::backdrop{background:rgba(20,18,15,.6)}
+dialog[open]{display:flex;flex-direction:column;animation:pop .28s var(--ease)}
+@keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;border-bottom:1px solid var(--line);background:var(--surface)}
+.dlg-head h3{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.icon-btn{width:44px;height:44px;border:1.5px solid var(--ink);border-radius:50%;background:transparent;font-size:16px;cursor:pointer;transition:transform .18s,background .18s,color .18s}
+.icon-btn:hover{background:var(--ink);color:var(--bg);transform:rotate(90deg)}
+.dlg-body{overflow:auto;padding:clamp(20px,3vw,34px);display:grid;gap:30px}
+.dlg-body h4{font:500 13px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:14px}
+.dlg-body ul{padding-left:20px;display:grid;gap:7px;list-style:disc;font-size:15.5px}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.shots figure{margin:0}
+.shots a{display:block;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;transition:transform .2s var(--ease)}
+.shots a:hover{transform:translateY(-2px)}
+.shots img{width:100%;height:210px;object-fit:contain;padding:8px}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.dgrid .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+.dgrid h5{font-size:16px;font-weight:700;margin-bottom:6px}
+.dgrid p{font-size:14.5px;color:var(--muted);line-height:1.6}
+.dgrid p b{color:var(--ink)}
+.cid{font:500 12px/1 var(--mono);color:var(--accent-ink);margin-right:4px}
+pre{margin:0;padding:18px 20px;background:var(--dark);color:#eae5d8;border-radius:10px;font:400 13.5px/1.7 var(--mono);overflow:auto;white-space:pre}
+.warn{padding:18px 22px;border:1.5px solid var(--accent);border-radius:10px;background:#fff3ec;font-size:15px}
+.dlg-body .proj-actions{margin-top:0}
+
+/* hero entrance: once, on load */
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes slide{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+[data-enter]>*{animation:rise .7s var(--ease) both}
+[data-enter]>*:nth-child(2){animation-delay:.08s}
+[data-enter]>*:nth-child(3){animation-delay:.16s}
+[data-enter]>*:nth-child(4){animation-delay:.24s}
+.portrait{animation:slide .8s .15s var(--ease) both}
+.stats{animation:rise .7s .35s var(--ease) both}
+
+@media (max-width:960px){
+  .hero{min-height:0;padding-top:28px}
+  .hero-grid,.about,.contact,.skills{grid-template-columns:1fr}
+  .portrait{max-width:340px;order:-1;justify-self:start}
+  .proj{grid-template-columns:1fr}
+  .shot{min-height:240px;border-right:0;border-bottom:1px solid var(--line)}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(3){padding-left:0;border-left:0}
+  .stat:nth-child(n+3){border-top:1px solid var(--line)}
+  .contact .links a span{display:none}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  #menu{display:none}
+  .nav .wrap{justify-content:space-between}
+  .nav-cta{margin-left:auto}
+  .cta .btn,.proj-actions .btn{flex:1 1 100%}
+  .proj-actions .btn.sm{flex:1 1 calc(50% - 8px)}
+  .portrait .tags{position:static;margin-top:-6px;display:flex;flex-wrap:wrap}
+  .facts{grid-template-columns:1fr;padding:6px 20px}
+  .facts dt{padding-bottom:0}
+  .facts dd{border-top:0;padding-top:2px}
+  .btn,.chip-btn{min-height:48px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body id="top">
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top"><i></i>이윤호</a>
+    <ul id="menu">
+      <li><a class="on" href="#top">홈</a></li>
+      <li><a href="#about">소개</a></li>
+      <li><a href="#projects">프로젝트</a></li>
+      <li><a href="#skills">기술</a></li>
+      <li><a href="#contact">연락처</a></li>
+    </ul>
+    <a class="btn sm primary nav-cta" href="#contact">연락하기 →</a>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero" aria-labelledby="h1">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div data-enter>
+        <p class="eyebrow"><b></b>Java · Spring 백엔드 신입 개발자</p>
+        <h1 class="big" id="h1">배움을 <span class="st">멈추지 않는</span><br>개발자 이윤호입니다</h1>
+        <p class="lead">실패하는 상황까지 확인해야 사용자가 서비스를 믿고 쓸 수 있다고 생각합니다.</p>
+        <div class="cta">
+          <a class="btn primary" href="#projects">프로젝트 보기 →</a>
+          <a class="btn" href="https://github.com/ho8566z" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn" href="https://app.notion.com/p/5bf00b1cd77d83e6abff018c339379b6?source=copy_link" target="_blank" rel="noopener">Notion 포트폴리오</a>
+        </div>
+      </div>
+      <div class="portrait">
+        <img src="https://ho8566z.github.io/yunho-portfolio-2611/images/me-cutout.png" alt="이윤호 프로필" width="720" height="867">
+        <div class="tags" aria-hidden="true"><span>✓ 테스트로 확인</span><span>✓ 문제는 기록으로</span><span>✓ 한계는 솔직하게</span></div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>5</b><span>프로젝트 (팀 2 · 개인 3)</span></div>
+      <div class="stat"><b>27</b><span>2차 팀에서 맡아 통과시킨 기능</span></div>
+      <div class="stat"><b>34 / 36</b><span>2차 팀 미해결 버그 중 해결</span></div>
+      <div class="stat"><b>1,120h</b><span>K-디지털 트레이닝 교육 시간</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="about">
+  <div class="wrap">
+    <div class="sec-head"><div><small>01 — About</small><h2>서버와 데이터를 책임지는 개발자를 지향합니다</h2></div></div>
+    <div class="about">
+      <div class="principles">
+        <div class="pr"><i>01</i><div><h3>테스트로 확인합니다</h3><p>구현 전에 실패하는 테스트를 먼저 쓰고, 정상 동작뿐 아니라 실패 상황까지 검증합니다.</p></div></div>
+        <div class="pr"><i>02</i><div><h3>문제를 기록합니다</h3><p>문제 → 원인 → 해결 → 재발 방지를 트러블슈팅 시트로 남겨 같은 실수를 줄입니다.</p></div></div>
+        <div class="pr"><i>03</i><div><h3>한계를 숨기지 않습니다</h3><p>확인하지 못한 것과 미해결 항목을 '확인 필요'로 구분해 문서에 적습니다.</p></div></div>
+      </div>
+      <dl class="facts">
+        <dt>교육</dt><dd>DW아카데미 K-디지털 트레이닝<small>AIoT 기반 드론 영상 관제시스템 개발 5회차 · 총 1,120시간 (2026.04 ~ 11)</small></dd>
+        <dt>학력</dt><dd>한남대학교 경영학과<small>학점 3.57 / 4.5</small></dd>
+        <dt>자격</dt><dd>유통관리사 3급 · 6시그마 GB 1급 · 구글 AI Essential · 1종 보통</dd>
+        <dt>이메일</dt><dd><a class="ulink" href="mailto:ho8566z@gmail.com">ho8566z@gmail.com</a></dd>
+        <dt>지원</dt><dd>Java · Spring 백엔드 개발자 (신입) · 대전·충남·충북·세종</dd>
+        <dt>병역</dt><dd>군필 (공군 병장 전역)</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="projects" style="background:var(--surface);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><small>02 — Projects</small><h2>프로젝트</h2><p class="sec-sub">카드를 누르면 맡은 역할, 핵심 설계, 한계까지 자세히 볼 수 있습니다.</p></div>
+      <div class="filters" role="group" aria-label="프로젝트 필터">
+        <button class="chip-btn" data-f="all" aria-pressed="true">전체</button>
+        <button class="chip-btn" data-f="team" aria-pressed="false">팀</button>
+        <button class="chip-btn" data-f="solo" aria-pressed="false">개인</button>
+      </div>
+    </div>
+    <div class="plist" id="plist"></div>
+  </div>
+</section>
+
+<section class="sec" id="skills">
+  <div class="wrap">
+    <div class="sec-head"><div><small>03 — Skills</small><h2>프로젝트에서 실제로 사용한 기술</h2></div></div>
+    <div class="skills" id="skills-grid"></div>
+    <p class="note">협업 규칙: 기능 1개 = 이슈 1개 = 브랜치 1개 = PR 1개 · main ← dev ← feature/* · 코드·커밋 컨벤션 문서화</p>
+  </div>
+</section>
+
+<section class="sec" id="contact" style="padding-top:0">
+  <div class="wrap">
+    <div class="contact">
+      <div>
+        <h2>함께 일할 기회를 기다립니다</h2>
+        <p>결과에 책임지는 백엔드 개발자로 성장하겠습니다. 편하게 연락 주세요.</p>
+      </div>
+      <div class="links">
+        <a href="mailto:ho8566z@gmail.com">Email <span>ho8566z@gmail.com</span></a>
+        <a href="https://github.com/ho8566z" target="_blank" rel="noopener">GitHub <span>github.com/ho8566z</span></a>
+        <a href="https://github.com/white-eyes1" target="_blank" rel="noopener">Team GitHub <span>github.com/white-eyes1</span></a>
+        <a href="https://app.notion.com/p/5bf00b1cd77d83e6abff018c339379b6?source=copy_link" target="_blank" rel="noopener">Notion <span>포트폴리오 페이지</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">© 2026 이윤호 · Java/Spring Backend Portfolio</div></footer>
+
+<dialog id="dlg" aria-labelledby="dlg-title">
+  <div class="dlg-head"><h3 id="dlg-title"></h3><button class="icon-btn" id="dlg-close" type="button" aria-label="닫기">✕</button></div>
+  <div class="dlg-body" id="dlg-body"></div>
+</dialog>
+
+<script>
+var BASE="https://ho8566z.github.io/yunho-portfolio-2611/";
+var P = [
+ { id:"white-eyes", kind:"team", wide:true, name:"white-eyes",
+   one:"드론·CCTV 영상에서 사람 수, 유입/유출, 체류 시간을 분석해 구역별 통계와 혼잡 이벤트 알림으로 보여 주는 유동인구 분석 시스템",
+   meta:"2차 팀 프로젝트 · 2026.10.06 ~ 11.23 · 6인", role:"담당: 보안 · 계정 · 이벤트",
+   stack:["Java 17","Spring Boot","Spring Security","JPA","MySQL","Flask","YOLOv8","Docker"],
+   metrics:[["41","PR (39건 dev 병합)"],["27","담당 기능 통과"],["2,248","팀 자동 테스트 (실패 0)"]],
+   links:[["소개 Repo","https://github.com/white-eyes1/white-eyes-introduce"],["코드 Repo","https://github.com/white-eyes1/white-eyes-spring"],["Notion","https://app.notion.com/p/41400b1cd77d8003b89edf0efe261379"]],
+   detail:{
+     images:[["시스템 구성도","images/projects/white-eyes-architecture.png","white-eyes 서비스 구성도: nginx, 사용자 앱·관리자 앱, 분석 서버, MySQL, NFS 스토리지"],["ERD (주요 컬럼)","images/projects/white-eyes-erd.png","white-eyes ERD: 계정·세션, 지역·구역·캠, 이벤트·기록, 통계 테이블"],["실행 화면 · 사용자 대시보드 (데모 계정)","images/projects/white-eyes-user-dashboard.jpg","white-eyes 사용자 앱 대시보드: 지도 위 구역별 현재 인원과 통계 패널"]],
+     summary:"사용자 앱·관리자 앱(Spring Boot)과 분석 서버(Flask, YOLOv8 + OpenCV)를 분리한 멀티 서비스 구조입니다. 저는 인증·권한 보안, 계정 관리, 혼잡·급증·캠 이상 이벤트 판정과 실시간 알림을 맡았습니다.",
+     role:["비밀번호 bcrypt(강도 10), 공통 오류 처리, 로그인, 접근 권한 검사, 세션 만료를 가장 먼저 만들어 다른 기능의 기반으로 삼았습니다.","사용자 앱과 관리자 앱의 로그인을 서로 독립시켰습니다. 세션 테이블·쿠키 이름도 앱별로 분리했습니다.","최고 관리자 초기 등록, 관리자 비활성화·강제 로그아웃(접속 중인 세션도 함께 삭제), 비밀번호 재설정을 구현했습니다.","혼잡·급증·캠 이상 판정, 목록·상세, 처리 상태 변경, 엑셀 다운로드, SSE 관리자 알림 스트림을 구현했습니다.","기능 하나 = 이슈 하나 = PR 하나로 white-eyes-spring에 PR 41건(39건 병합), 이슈 27건, white-eyes-docs에 PR 41건(37건 병합)을 남겼습니다."],
+     design:[["동시 처리는 한 명만","이벤트 행을 잠그고 읽어, 화면이 보던 상태와 다르면 409 STATUS_CONFLICT로 거부합니다. 상태 저장과 작업 기록은 한 트랜잭션입니다."],["경계값 깜빡임 방지","혼잡 이벤트는 '주의' 미만이 5분 이상 유지될 때 닫습니다. 결과가 30초 미만인 불완전한 1분은 판정에서 제외합니다."],["엑셀 5만 건 제한","데이터를 읽기 전에 건수부터 세어 초과 시 400 TOO_MANY_ROWS와 기간 축소 안내를 응답합니다. 50,006건 시험 데이터로 확인했습니다."],["SSE 대기열","연결마다 대기열로 순서를 보장하고 200건 초과 시 연결을 끊어 재연결합니다. 30초 keepalive, 연결별 스레드 풀을 사용합니다."]],
+     code:"// EventStatusService (개념)\n행 잠금 후 조회 → 화면이 보던 상태와 비교\n일치  → 상태 저장 + 작업 기록 (한 트랜잭션)\n불일치 → 409 STATUS_CONFLICT",
+     numbers:"팀 전체 자동 테스트 2,248건 통과(spring 1,525 + flask 723), 기능 명세 98개 중 93개 통과(94.9%), 미해결 버그 36건 중 34건 해결. 담당 기능 27개는 자동 테스트와 화면·통합 시험으로 확인했습니다.",
+     limits:["혼잡 단계 경계(0.7 / 1.5명/㎡)가 실제 분석 결과의 밀집도(약 0.03명/㎡)와 맞지 않아 기본값으로는 이벤트가 생기지 않을 수 있습니다. 경계를 낮춰 판정 동작을 확인했고, 조정은 미해결로 남겼습니다.","강제 로그아웃을 해도 이미 열린 실시간 화면은 바로 끊기지 않습니다(알려진 한계).","화면 시험 다수가 H2와 가짜 서버로 진행되어 일부는 실제 MySQL·nginx 통합 시험으로 보완했고, 확인하지 못한 항목은 '미확인'으로 기록했습니다."]
+   }},
+ { id:"obsidian", kind:"team", name:"obsidian-shield",
+   one:"CCTV·드론 영상에서 AI가 보행자를 탐지·추적하고 등록된 대상이 발견되면 실시간으로 알리는 관제 시스템",
+   meta:"1차 팀 프로젝트 · 2026.06.25 ~ 07.24 · 5인", role:"담당: 로그 분석",
+   stack:["Python","Flask","OpenCV","YOLOv8n","InsightFace","SSE"],
+   metrics:[["23","PR (19건 병합)"],["6","담당 기능"]],
+   links:[["Repo","https://github.com/Kanabig/obsidian-shield"],["Notion","https://app.notion.com/p/41400b1cd77d800fb83bcc3a81c240c1"]],
+   detail:{
+     images:[["서비스 구성도","images/projects/obsidian-architecture.png","obsidian-shield 서비스 구성도: 웹 브라우저, Flask 서버, AI 탐지, 로그 저장, 관리자 기능"]],
+     summary:"이벤트 로그 히스토리 기능 전체를 맡았습니다. AI 탐지 이벤트를 저장하고, 조회·검색·필터·읽음 처리·엑셀 내보내기·실시간 알림까지 구현했습니다.",
+     role:["HST-001~006: 조회·자동 갱신, 탐지 히스토리, 읽음 처리, 목록·내보내기, 검색, 필터·정렬","logger 브랜치를 logger → logger9로 단계별로 나눠 PR 23건(19건 main 병합)","SSE로 새 이벤트가 생기면 목록이 자동 갱신되고 알림음·토스트가 나오도록 구현"],
+     design:[["SSE 흐름","add_event 저장 → notify_new_log → /stream_log → EventSource 수신 → /new?after= 조회 → 목록 행 추가"]],
+     code:"for event_id in event_ids:\n    if events[event_id][KEY_IS_READ]:\n        continue                      # 중복 기록 방지\n    events[event_id][KEY_IS_READ] = True\n    add_user_log(event_id, viewer_id) # 반복문 안으로 이동",
+     numbers:"PR 23건 중 19건 main 병합 (2026-06-26 ~ 07-14). 데이터는 DB 없이 JSON 파일에 저장했습니다.",
+     limits:["구현에 집중한 나머지 검증이 부족해 같은 오류가 반복된 경험이 있습니다. 이후 2차 프로젝트에서 검증 기준을 먼저 세우고 test → feat 순서로 진행하게 된 계기가 되었습니다."]
+   }},
+ { id:"calendar", kind:"solo", name:"calendar-bot",
+   one:"월간 달력으로 일정을 관리하고, 매주 일요일 21시에 다음 주 일정을 텔레그램으로 보내주는 서비스",
+   meta:"1차 개인 프로젝트 · 2026.11.07 ~ 11.12 · 1인", role:"기획 · 설계 · 구현 · 테스트 · 문서",
+   stack:["Java 17","Spring Boot","Spring Security","JPA","MyBatis","MySQL"],
+   metrics:[["318","자동 테스트"],["29","트러블슈팅 기록"]],
+   links:[["코드","https://github.com/ho8566z/calendar-bot"],["문서","https://github.com/ho8566z/calendar-bot_word"],["Notion","https://app.notion.com/p/41400b1cd77d80a1a8faf9bc78e7d37d"]],
+   detail:{
+     images:[["시스템 구성도","images/projects/calendar-architecture.png","calendar-bot 시스템 구성도: 브라우저에서 Spring Boot, MySQL·텔레그램·Gmail·로컬 디스크로 연결"],["DB 테이블 구조","images/projects/calendar-database.png","calendar-bot DB 테이블 6개 구조"]],
+     summary:"일정을 등록해 두고 다시 열어 보지 않으면 놓치는 문제를 주간 브리핑으로 풀었습니다. 단순 CRUD에서 끝내지 않고 시간·검색·통계·보안·모바일까지 기본기를 채웠습니다.",
+     role:["주간 브리핑: 1회용 연동 코드(10분 만료) + 텔레그램 롱 폴링, 일요일 21:00(KST) 스케줄러, '지금 보내기'(10초 제한), 발송 기록","일정 관리: 월간 달력, 등록·수정·삭제, 시작 시간, 이미지 선택 첨부, 검색, 월별 통계 (쓰기는 JPA, 동적 조회는 MyBatis)","회원·관리자: 가입 후 관리자 승인(PRE_USER → USER), 사용자 목록·승인 취소","모바일 대응: 768px 이하 접는 메뉴·모달, 13개 화면에 viewport 적용"],
+     design:[["소유자 검증","일정 번호와 로그인 사용자 ID를 함께 조건으로 조회해 남의 일정 번호는 404가 됩니다. (T-0002)"],["로그인 시도 제한","같은 아이디·IP에서 연속 5회 실패하면 10분 잠금. LOGIN_LOCK 테이블에 횟수와 해제 시각을 저장합니다."],["비밀 값 분리","메일·DB 비밀번호가 설정 파일에 평문으로 커밋된 것을 환경변수로 분리하고 .gitignore 규칙을 추가했습니다. (T-0001)"]],
+     code:"// 남의 일정 번호를 넣으면 찾지 못해 404\nplannerRepository\n  .findByPlanNoAndPlanOwnerId(no, ownerId);",
+     numbers:"자동 테스트 318개(317개는 DB 없이 통과), 실제 MySQL로 가입→승인→로그인→일정→검색→통계→브리핑 흐름 64개 점검 통과.",
+     limits:["CSRF 보호가 꺼져 있습니다.","이미지 제공 경로가 로그인만 하면 다른 사용자 경로도 열립니다(T-0017, 미해결).","일정의 월·일을 서버가 검증하지 않아 2월 31일도 저장됩니다(T-0025, 미해결).","휴대폰 실기기는 갤럭시(Chrome)로만 확인했습니다."]
+   }},
+ { id:"tube", kind:"solo", name:"tube-filter",
+   one:"YouTube 기본 검색에 없는 구독자 수·길이·좋아요율 조건을 조합해 영상을 걸러 주는 정밀 필터 검색",
+   meta:"2차 개인 프로젝트 · 2026.11.10 ~ 11.13 · 1인", role:"기획 · 점검 · 결정 (Claude·Codex 협업)",
+   stack:["Python","FastAPI","SQLAlchemy","SQLite","Chart.js"],
+   metrics:[["556","pytest 통과"],["204","검색 1회 units"]],
+   links:[["코드","https://github.com/ho8566z/tube-filter"],["문서","https://github.com/ho8566z/tube-filter_word"],["Notion","https://app.notion.com/p/41400b1cd77d8018ac7bf0af12fb8720"]],
+   detail:{
+     images:[["시스템 구성도","images/projects/tube-architecture.png","tube-filter 시스템 구성도"],["데이터 모델 (테이블 9개)","images/projects/tube-data-model.png","tube-filter 데이터 모델: 회원 데이터 4개와 캐시·운영 테이블 5개"]],
+     summary:"외부 API 쿼터(하루 10,000 units) 안에서 동작하도록 설계한 프로젝트입니다. 기능 수보다 외부 API 제약(쿼터·정책) 안에서 어떻게 설계했는지를 보여 주는 것이 목표였습니다.",
+     role:["본인: 주제 선정, YouTube API 정책 검토, 명세서 검토와 최종 결정, ERD·구성도, PPT","Claude: 명세서 초안, 단계별 위임 지시, pytest·ruff 직접 실행 후 커밋","Codex: 명세서 기준으로 한 단계씩 구현, 단계별 단위·경계값 테스트"],
+     design:[["검색 파이프라인","후보 수집 → 영상 필터 15개 → 채널 필터 → 채널 활동 순으로 비용이 낮고 많이 줄여 주는 필터부터 적용해 쿼터를 아낍니다. (필터 32개: 영상 24 · 채널 8)"],["쿼터 관리","호출 전에 비용을 먼저 기록해 동시 요청의 이중 사용을 막고, 소프트 상한(9,000)을 넘으면 503 QUOTA_BLOCKED로 차단합니다. 하루 약 44회 검색이 가능합니다."],["캐시","검색 결과 6시간, 영상 통계 24시간, 카테고리 7일, 보관 상한 28일."],["Funnel 집계","한 영상이 여러 필터에 걸려도 첫 탈락 사유 하나만 세어 '후보 100 → 41 → 12' 합계가 항상 일치합니다."]],
+     code:"with self._lock:\n    if self.soft_limit - used_units(db, now) < cost:\n        self.reject(now)   # 503 QUOTA_BLOCKED\n    record_call(db, endpoint, now, search_id)",
+     numbers:"pytest 556개 통과, ruff 통과. 테스트 코드 4,557줄 / 앱 코드 3,947줄. 시행착오(샌드박스 네트워크 차단, 79분 위임 정지 등)로 위임 규칙을 정했습니다.",
+     limits:["YouTube Data API 키를 발급하지 못해 실제 응답 기반 검증(차트·재생 모달·CSV·응답 시간)은 하지 못했습니다. mock 어댑터 테스트까지가 검증 범위입니다.","트러블슈팅 5건은 모두 환경·도구(AI 위임) 문제였고, TS-004(샌드박스 소유 폴더 삭제)는 미해결입니다."]
+   }},
+ { id:"jobfeed", kind:"solo", name:"job-feed",
+   one:"채용공고를 주기적으로 수집해 중복을 거르고, 대기열과 재시도를 거쳐 안정적으로 노션에 전달하는 서비스",
+   meta:"3차 개인 프로젝트 · 2026.11.10 ~ 11.13 · 1인", role:"기획 · 설계 · 구현 · 테스트 · 문서",
+   stack:["Java 17","Spring Boot","JPA","MySQL / H2","Notion API"],
+   metrics:[["64","자동 테스트"],["14/14","노션 전송 성공"]],
+   links:[["코드","https://github.com/ho8566z/job-feed"],["문서","https://github.com/ho8566z/job-feed_word"],["Notion","https://app.notion.com/p/41500b1cd77d814dbae5d3498b3116ce"]],
+   detail:{
+     images:[["시스템 구성도","images/projects/jobfeed-architecture.png","job-feed 시스템 구성도"],["ERD","images/projects/jobfeed-erd.png","job-feed ERD: source, job, send_log"]],
+     summary:"채용공고가 여러 곳에 흩어져 있어 매일 직접 확인해야 하는 문제를 해결합니다. 고용24 공채속보를 1시간마다 수집해 (소스, 공고 ID) 기준으로 중복을 거르고, 속도 제한에 맞춰 노션 DB로 전달합니다.",
+     role:["스케줄러 수집(1시간) → 중복 제거 → send_log 대기열(PENDING) → 노션 전송(1분마다 10건) 파이프라인 설계·구현","실패·재시도·격리 정책과 내부 운영 API(수동 수집, 전송 현황) 구현","개인회원이 쓸 수 있는 API 제약을 확인해 소스를 공채속보 API로 변경"],
+     design:[["중복 제거","(source, external_id) 복합 유니크. URL은 회사 공통 페이지일 수 있어 기준으로 쓰지 않습니다. 신규 공고만 job + send_log를 한 트랜잭션에 저장합니다."],["큐와 속도 제한","send_log를 큐로 사용해 PENDING을 오래된 순 10건씩, 건 사이 400ms. 노션 호출은 트랜잭션 밖, 결과 기록만 건별 트랜잭션입니다."],["재시도와 실패 격리","실패 시 retry_count +1, 3회째 FAILED. 한 건의 실패가 나머지를 막지 않고, 429·401·403은 횟수를 올리지 않고 그 주기만 중단합니다."]],
+     code:"public void markFailure(String error) {\n    this.retryCount++;\n    this.lastError = error;\n    if (this.retryCount >= MAX_RETRY) {   // 3\n        this.status = SendStatus.FAILED;\n    }\n}",
+     numbers:"열린 공채 238건 → 개발·IT 키워드 21건 → 제외어 적용 14건(오탐 7건 제거) → 노션 전송 14/14. 자동 테스트 64개 중 62 통과, 2개는 실제 호출·환경변수가 필요해 건너뜀(실패 0). 1회 실연동 기준입니다.",
+     limits:["소스가 공채속보 하나라 개발 직군 공고가 적고(238건 중 14건) 지역 정보가 없습니다.","FAILED 건을 다시 보내는 방법이 없고, 429의 Retry-After를 읽지 않습니다.","노션 생성 직후 DB 기록이 실패하면 중복 전송될 수 있습니다.","제외어 때문에 정상 공고가 빠지는 비율은 측정하지 못했습니다."]
+   }}
+];
+
+var CASES = [
+ ["white-eyes · TS 603","관리자 비활성화 순서","세션 삭제를 먼저 하면 기록 저장이 실패해도 로그아웃만 일어남","되돌릴 수 있는 일(상태 변경·작업 기록)을 먼저, 되돌릴 수 없는 세션 삭제를 마지막에 수행. 실패 시 세션이 남는지 시험으로 확인"],
+ ["white-eyes · TS 604","가끔만 실패하던 SQL 수 테스트","'이벤트가 늘어도 SQL 수는 같다' 시험이 CI에서 가끔 실패","같은 요청 약 3,900번을 반복하며 스레드 이름을 기록해 원인(10초마다 도는 캠 이상 감지 스케줄러)을 확정. 현재 스레드 SQL만 세는 카운터로 교체"],
+ ["white-eyes · TS 601","한글 Windows에서만 빌드 실패","소스 인코딩 설정이 없어 CP949로 UTF-8을 읽고, 오류 없이 한글이 깨져 테스트까지 실패","options.encoding = 'UTF-8' 제안 → PR #95 반영. 한글 메시지 검증 테스트가 '조용히 깨지는' 문제를 잡아냄"],
+ ["calendar-bot · T-0023","남의 일정을 덮어쓸 수 있는 요청","폼 객체의 번호·소유자를 그대로 신뢰해, 남의 일정 번호를 넣으면 덮어쓸 수 있음","년·월·일·제목·내용만 폼에서 받고 나머지는 서버가 정한 값만 사용. 실제 DB로 위조 요청이 새 행으로만 처리됨을 확인"],
+ ["job-feed · S-0003","URL을 중복 기준으로 쓰면 안 되는 이유","샘플 응답에 회사 공통 페이지 URL이 있어 서로 다른 공고가 한 건으로 합쳐질 수 있음","소스가 주는 공고 ID를 external_id로 저장하고 (source_id, external_id)를 복합 유니크로 변경. URL이 같아도 별개 공고로 저장되는 테스트 추가"],
+ ["obsidian-shield · 501","일괄 읽음 처리 시 로그 1건만 저장","이벤트 상태는 전부 읽음인데 사용자 로그에는 마지막 1건만 기록됨","add_user_log() 호출이 for문 밖으로 이동한 것이 원인. 반복문 안으로 옮기고 이미 읽은 이벤트는 continue로 건너뛰어 중복 방지"],
+ ["obsidian-shield · 502","SSE 연결이 페이지마다 중복 생성","스크립트 최상단에서 EventSource를 바로 만들어, 그 스크립트를 쓰는 페이지마다 연결이 하나씩 늘어남","연결을 window.eventSource에 보관하고, 이미 있으면 새로 만들지 않도록 변경"],
+ ["obsidian-shield · 503","캡처 이미지 키 불일치로 KeyError","configs.py 상수와 routes.py가 쓰는 문자열 키가 달라 저장된 이미지 키(IMG_ROOT)를 찾지 못함","상수 값을 저장된 실제 키(IMG_ROOT)와 일치시킴"],
+ ["tube-filter · TS-002","시간대 DB가 없어 쿼터 초기화 날짜를 못 구함","쿼터 일일 초기화 기준인 태평양 시간(PT) 날짜를 계산하다 ZoneInfoNotFoundError 발생. 위임받은 Codex가 시간대 파일과 라이선스 파일 3개를 코드에 직접 넣어 우회함","원인은 Windows에 시스템 IANA 시간대 DB가 없는 것. tzdata 패키지를 의존성에 추가하고 직접 넣은 파일·우회 코드를 삭제. 서머타임 경계 테스트를 포함해 pytest 55개 통과"],
+ ["tube-filter · TS-003","위임 후 79분 동안 파일이 하나도 생기지 않음","10단계(화면 12개)를 한 번에 맡겼더니 79분간 산출물이 없고 로그에는 'Reading additional input from stdin...' 한 줄뿐","stdin이 닫히지 않아 입력을 기다린 것으로 추정(확정은 아님). 작업을 멈추고 stdin을 닫고 25분 시간 제한을 걸어 3개 범위로 나눠 다시 맡김. 이후 위임은 모두 정상 종료"]
+];
+
+function el(h){var t=document.createElement("template");t.innerHTML=h.trim();return t.content.firstChild;}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+
+/* projects */
+var plist=document.getElementById("plist");
+P.forEach(function(p,i){
+  var d=p.detail,im=d.images[p.id==="white-eyes"?d.images.length-1:0];
+  plist.appendChild(el('<article class="proj" data-kind="'+p.kind+'">'+
+   '<a class="shot" href="#" data-open="'+p.id+'" aria-label="'+esc(p.name)+' 자세히 보기"><span class="tag">'+(p.kind==="team"?"TEAM":"SOLO")+'</span><span class="no">0'+(i+1)+'</span><img src="'+BASE+im[1]+'" alt="'+esc(im[2])+'" loading="lazy"></a>'+
+   '<div class="pbody"><h3>'+esc(p.name)+'</h3><p class="one">'+esc(p.one)+'</p>'+
+   '<div class="meta">'+esc(p.meta)+'<br><b>'+esc(p.role)+'</b></div>'+
+   '<div class="chips">'+p.stack.map(function(s){return"<span>"+esc(s)+"</span>";}).join("")+'</div>'+
+   '<div class="metrics">'+p.metrics.map(function(m){return"<div><b>"+esc(m[0])+"</b><span>"+esc(m[1])+"</span></div>";}).join("")+'</div>'+
+   '<div class="proj-actions"><button class="btn sm primary" type="button" data-open="'+p.id+'">자세히 보기</button>'+
+   p.links.map(function(l){return'<a class="btn sm" href="'+l[1]+'" target="_blank" rel="noopener">'+esc(l[0])+' ↗</a>';}).join("")+'</div></div></article>'));
+});
+
+/* skills with real icons */
+var DI="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/";
+var IC={"Java 17":"java/java-original.svg","Spring Boot":"spring/spring-original.svg","MySQL":"mysql/mysql-original.svg","Docker":"docker/docker-original.svg","Flask":"flask/flask-original.svg","FastAPI":"fastapi/fastapi-original.svg","OpenCV":"opencv/opencv-original.svg","Python":"python/python-original.svg","Git · GitHub Actions":"github/github-original.svg","JavaScript":"javascript/javascript-original.svg","Postman":"postman/postman-original.svg","Notion":"notion/notion-original.svg","nginx":"nginx/nginx-original.svg","SQLite":"sqlite/sqlite-original.svg","JUnit 5":"junit/junit-original.svg","Chart.js":"chartjs/chartjs-original.svg","WSL2 (Ubuntu)":"ubuntu/ubuntu-plain.svg","Thymeleaf":"thymeleaf/thymeleaf-original.svg","pytest":"pytest/pytest-original.svg","Spring Security":"spring/spring-original.svg","Spring Data JPA":"spring/spring-original.svg"};
+var SK=[["Backend",["Java 17","Spring Boot","Spring Security","Spring Data JPA","MyBatis","Spring Session JDBC","JUnit 5"]],["Data · Infra",["MySQL","H2","SQLite","Docker","WSL2 (Ubuntu)","nginx","Flyway"]],["Python · AI",["Flask","FastAPI","OpenCV","YOLOv8","InsightFace","pytest"]],["Frontend · Tool",["Thymeleaf","JavaScript","Chart.js","Git · GitHub Actions","Postman","Notion"]]];
+var sg=document.getElementById("skills-grid");
+SK.forEach(function(g){
+  sg.appendChild(el('<div class="sk"><h3>'+esc(g[0])+'</h3><div class="tools">'+g[1].map(function(t){
+    return IC[t]?'<span class="tool"><img src="'+DI+IC[t]+'" alt="" width="22" height="22" loading="lazy" onerror="this.parentNode.classList.add(\'noicon\');this.remove()">'+esc(t)+'</span>':'<span class="tool noicon">'+esc(t)+'</span>';
+  }).join("")+'</div></div>'));
+});
+
+/* dialog */
+var dlg=document.getElementById("dlg"),body=document.getElementById("dlg-body"),title=document.getElementById("dlg-title"),opener=null;
+function openP(id){
+  var p=P.filter(function(x){return x.id===id;})[0],d=p.detail;
+  var cs=CASES.filter(function(c){return c[0].split(" · ")[0]===p.name;});
+  title.textContent=p.name;
+  body.innerHTML=
+   '<div><p style="margin:0 0 8px;color:var(--muted);font-size:14px">'+esc(p.meta)+' · '+esc(p.role)+'</p><p style="font-size:17.5px">'+esc(d.summary)+'</p></div>'+
+   '<div><h4>맡은 역할</h4><ul>'+d.role.map(function(x){return"<li>"+esc(x)+"</li>";}).join("")+'</ul></div>'+
+   (d.images?'<div><h4>구조 · ERD · 화면</h4><div class="shots">'+d.images.map(function(m){return'<figure><a href="'+BASE+m[1]+'" target="_blank" rel="noopener"><img src="'+BASE+m[1]+'" alt="'+esc(m[2])+'" loading="lazy"></a></figure>';}).join("")+'</div></div>':'')+
+   '<div><h4>핵심 설계 · 해결</h4><div class="dgrid">'+d.design.map(function(x){return'<div class="card"><h5>'+esc(x[0])+'</h5><p>'+esc(x[1])+'</p></div>';}).join("")+'</div></div>'+
+   (cs.length?'<div><h4>직접 겪은 문제와 해결</h4><div class="dgrid">'+cs.map(function(c){return'<div class="card"><h5><span class="cid">'+esc(c[0].split(" · ")[1])+'</span> '+esc(c[1])+'</h5><p><b>문제</b> '+esc(c[2])+'</p><p><b>해결</b> '+esc(c[3])+'</p></div>';}).join("")+'</div></div>':'')+
+   '<div><h4>코드</h4><pre>'+esc(d.code)+'</pre></div>'+
+   '<div><h4>검증 결과</h4><p style="font-size:15.5px">'+esc(d.numbers)+'</p></div>'+
+   '<div class="warn"><b>확인하지 못한 것 · 한계</b><ul style="margin-top:8px">'+d.limits.map(function(x){return"<li>"+esc(x)+"</li>";}).join("")+'</ul></div>'+
+   '<div class="proj-actions">'+p.links.map(function(l){return'<a class="btn sm" href="'+l[1]+'" target="_blank" rel="noopener">'+esc(l[0])+' ↗</a>';}).join("")+'</div>';
+  if(typeof dlg.showModal==="function"){dlg.showModal();}else{dlg.setAttribute("open","");}
+  document.body.classList.add("lock");
+  dlg.querySelector(".dlg-body").scrollTop=0;
+}
+document.addEventListener("click",function(e){
+  var b=e.target.closest("[data-open]");
+  if(b){e.preventDefault();opener=b;openP(b.getAttribute("data-open"));return;}
+  if(e.target===dlg){dlg.close();}
+});
+document.getElementById("dlg-close").addEventListener("click",function(){dlg.close();});
+dlg.addEventListener("close",function(){document.body.classList.remove("lock");if(opener)opener.focus();});
+
+/* filter */
+var fb=document.querySelectorAll(".chip-btn");
+fb.forEach(function(b){b.addEventListener("click",function(){
+  fb.forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+  var f=b.getAttribute("data-f");
+  document.querySelectorAll(".proj").forEach(function(c){c.hidden=!(f==="all"||c.getAttribute("data-kind")===f);});
+});});
+
+/* active nav */
+var links=document.querySelectorAll("#menu a");
+if("IntersectionObserver" in window){
+  var so=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){var id=en.target.id==="top"||en.target.classList.contains("hero")?"top":en.target.id;links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+id);});}});},{rootMargin:"-45% 0px -50% 0px"});
+  document.querySelectorAll("main section").forEach(function(s){so.observe(s);});
+}
+</script>
+</body>
+</html>
